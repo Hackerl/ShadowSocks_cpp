@@ -6,10 +6,11 @@
 #define SHADOWSOCKSR_CPP_JSONHELPER_H
 
 #include <json/json.h>
-#include <cstdio.h>
+#include <cstdio>
 #include "Singleton.h"
 
 class CJSONHelper {
+#define g_JSON SINGLETON_(CJSONHelper)
 public:
     bool HasArray(const Json::Value &jv, const char *Name);
 
