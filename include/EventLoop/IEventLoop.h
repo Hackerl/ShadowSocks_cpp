@@ -5,7 +5,7 @@
 #ifndef SHADOWSOCKSR_CPP_IEVENTLOOP_H
 #define SHADOWSOCKSR_CPP_IEVENTLOOP_H
 
-#include "ISocket.h"
+#include "Socket/ISocket.h"
 
 class IEventLoop
 {

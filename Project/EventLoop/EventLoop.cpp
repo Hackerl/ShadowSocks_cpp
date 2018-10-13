@@ -8,6 +8,11 @@ CEventLoop::CEventLoop() {
     m_EventBase = event_base_new();
 }
 
+CEventLoop::~CEventLoop() {
+    event_base_free(m_EventBase);
+    m_EventBase = nullptr;
+}
+
 bool CEventLoop::AddServer(int fd, ISocketAcceptCallback * ServerHandler) {
 
     struct Stub

@@ -6,12 +6,13 @@
 #define SHADOWSOCKSR_CPP_EVENTLOOP_H
 
 #include "EventLoop/IEventLoop.h"
+#include "Socket/ISocket.h"
 
 class CEventLoop : public IEventLoop
 {
 public:
     CEventLoop();
-    ~CEventLoop() = default;
+    ~CEventLoop();
 
 public:
     bool AddServer (int fd, ISocketAcceptCallback * ServerHandler) override;
