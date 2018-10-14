@@ -30,7 +30,7 @@ bool CEventLoop::AddServer(int fd, ISocketAcceptCallback * ServerHandler)
 
     event_add(Event, nullptr);
 
-    m_SocketEventMap.insert(std::pair<int, event*>(1, Event));
+    m_SocketEventMap.insert(std::pair<int, event*>(fd, Event));
 
     return true;
 }
@@ -64,7 +64,7 @@ bool CEventLoop::AddClient(int fd, ISocketEventCallback * ClientHandler)
 
     event_add(Event, nullptr);
 
-    m_SocketEventMap.insert(std::pair<int, event*>(1, Event));
+    m_SocketEventMap.insert(std::pair<int, event*>(fd, Event));
 
     return false;
 }
@@ -88,18 +88,6 @@ bool CEventLoop::SetEvent(int fd, short Mode, event_callback_fn OnEvent, void * 
 }
 
 bool CEventLoop::Remove(int fd)
-{
-    auto Iterator = m_SocketEventMap.find(fd);
-
-    if(Iterator == m_SocketEventMap.end())
-        return false;
-
-    m_SocketEventMap.erase(fd);
-
-    return true;
-}
-
-bool CEventLoop::RemoveEvent(int fd)
 {
     auto Iterator = m_SocketEventMap.find(fd);
 

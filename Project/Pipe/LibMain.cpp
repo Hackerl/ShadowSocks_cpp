@@ -7,6 +7,12 @@
 class CTestPipe : public CPipe, public IDelayInstance
 {
 public:
+    CTestPipe()
+    {
+        m_ID = -1;
+    }
+
+public:
     bool PipeOut(const char * Buffer, size_t Length) override
     {
         std::cout << m_ID << "Pipe Out" << std::endl;

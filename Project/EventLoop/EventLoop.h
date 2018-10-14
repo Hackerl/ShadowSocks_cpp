@@ -19,7 +19,6 @@ public:
     bool AddServer (int fd, ISocketAcceptCallback * ServerHandler) override;
     bool AddClient (int fd, ISocketEventCallback * ClientHandler) override;
     bool Remove(int fd) override;
-    bool RemoveEvent(int fd) override;
     bool SetEvent(int fd, short Mode, event_callback_fn OnEvent, void * arg) override;
     void Loop() override;
     void Destroy();

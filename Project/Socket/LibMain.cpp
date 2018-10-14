@@ -58,6 +58,13 @@ void TestClient()
 
 class CClient : public CTCPSocket , public ISocketEventCallback
 {
+public:
+    CClient()
+    {
+        m_Loop = nullptr;
+    }
+
+public:
     void OnRead(int fd ,short Event) override
     {
         std::cout << "Can Read" << std::endl;
@@ -75,7 +82,7 @@ class CClient : public CTCPSocket , public ISocketEventCallback
     void OnClose(int fd ,short Event) override
     {
         std::cout << "Closed" << std::endl;
-        m_Loop->RemoveEvent(fd);
+        m_Loop->Remove(fd);
     }
 
 public:
