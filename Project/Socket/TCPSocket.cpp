@@ -16,12 +16,7 @@ CTCPSocket::CTCPSocket()
 
 CTCPSocket::~CTCPSocket()
 {
-    if (!m_IsValid)
-        return;
-
-    close(m_Socket);
-    m_Socket = -1;
-    m_IsValid = false;
+    Close();
 }
 
 bool CTCPSocket::Bind(std::string IP, ushort Port)
@@ -102,4 +97,16 @@ int CTCPSocket::Accpet()
 int CTCPSocket::GetSocket()
 {
     return m_IsValid ? m_Socket : -1;
+}
+
+bool CTCPSocket::Close() {
+    if (!m_IsValid)
+        return false;
+
+    close(m_Socket);
+
+    m_Socket = -1;
+    m_IsValid = false;
+
+    return true;
 }

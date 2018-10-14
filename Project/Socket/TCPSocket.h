@@ -23,6 +23,7 @@ public:
     ssize_t Send(const char * Buffer, size_t Length, int Flag) override;
     bool Connect(std::string IP, ushort Port) override;
     int Accpet() override;
+    bool Close() override;
 
 private:
     int m_Socket;

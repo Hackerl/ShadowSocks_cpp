@@ -7,6 +7,7 @@
 
 #include "EventLoop/IEventLoop.h"
 #include "Socket/ISocket.h"
+#include <map>
 
 class CEventLoop : public IEventLoop
 {
@@ -18,10 +19,13 @@ public:
     bool AddServer (int fd, ISocketAcceptCallback * ServerHandler) override;
     bool AddClient (int fd, ISocketEventCallback * ClientHandler) override;
     bool Remove(int fd) override;
+    bool SetEvent(int fd, short Mode, event_callback_fn OnEvent, void * arg) override;
     void Loop() override;
+    void Destroy();
 
 private:
     event_base * m_EventBase;
+    std::map<int, event*> m_SocketEventMap;
 };
 
 #endif //SHADOWSOCKSR_CPP_EVENTLOOP_H
