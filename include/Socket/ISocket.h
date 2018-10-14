@@ -35,9 +35,9 @@ public:
 class ISocketEventCallback
 {
 public:
-    virtual void OnRead(bufferevent* BufEvent) = 0;
-    virtual void OnWrite(bufferevent* BufEvent) = 0;
-    virtual void OnError(bufferevent* BufEvent, short Event) = 0;
+    virtual void OnRead(int fd ,short Event) = 0;
+    virtual void OnWrite(int fd ,short Event) = 0;
+    virtual void OnClose(int fd ,short Event) = 0;
 };
 
 class ISocketAcceptCallback

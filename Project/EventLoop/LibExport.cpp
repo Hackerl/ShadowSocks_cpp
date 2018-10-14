@@ -11,6 +11,6 @@ extern "C" IEventLoop * NewEventLoop()
 
 extern "C" void DeleteEventLoop(IEventLoop * EventLoop)
 {
-    auto * Loop = dynamic_cast<CEventLoop *>(EventLoop);
+    auto Loop = dynamic_cast<CEventLoop *>(EventLoop);
     delete Loop;
 }

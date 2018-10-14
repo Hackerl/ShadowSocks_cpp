@@ -17,7 +17,6 @@ CEventLoop::~CEventLoop()
 
 bool CEventLoop::AddServer(int fd, ISocketAcceptCallback * ServerHandler)
 {
-
     struct Stub
     {
         static void OnAceept(int fd ,short Event, void* arg)
@@ -36,35 +35,36 @@ bool CEventLoop::AddServer(int fd, ISocketAcceptCallback * ServerHandler)
     return true;
 }
 
-bool CEventLoop::AddClient(int fd, ISocketEventCallback *ClientHandler)
+bool CEventLoop::AddClient(int fd, ISocketEventCallback * ClientHandler)
 {
-
     struct Stub
     {
-        static void OnRead(bufferevent* BufEvent,void* arg)
-        {
-            auto ClientHandler = (ISocketEventCallback*) arg;
-            ClientHandler->OnRead(BufEvent);
-        }
 
-        static void OnWrite(bufferevent* BufEvent,void* arg)
+        static void OnEvent(int fd ,short Event, void* arg)
         {
-            auto ClientHandler = (ISocketEventCallback*) arg;
-            ClientHandler->OnWrite(BufEvent);
-        }
+            auto ClientHandler = (ISocketEventCallback *) arg;
 
-        static void OnError(bufferevent* BufEvent, short event, void* arg)
-        {
-            auto ClientHandler = (ISocketEventCallback*) arg;
-            ClientHandler->OnError(BufEvent, event);
+            do
+            {
+                if (Event & EV_READ)
+                    ClientHandler->OnRead(fd, Event);
+
+                if (Event & EV_WRITE)
+                    ClientHandler->OnWrite(fd, Event);
+
+                if (Event & EV_CLOSED)
+                    ClientHandler->OnClose(fd, Event);
+
+            } while (false);
+
         }
     };
 
-    bufferevent* buffer_ev = bufferevent_socket_new(m_EventBase, fd, BEV_OPT_CLOSE_ON_FREE);
+    event* Event = event_new(m_EventBase, fd, EV_READ | EV_CLOSED |EV_PERSIST, Stub::OnEvent , ClientHandler);
 
-    bufferevent_setcb(buffer_ev, Stub::OnRead , Stub::OnWrite, Stub::OnError, ClientHandler);
+    event_add(Event, nullptr);
 
-    bufferevent_enable(buffer_ev, EV_READ | EV_PERSIST);
+    m_SocketEventMap.insert(std::pair<int, event*>(1, Event));
 
     return false;
 }
@@ -88,6 +88,18 @@ bool CEventLoop::SetEvent(int fd, short Mode, event_callback_fn OnEvent, void * 
 }
 
 bool CEventLoop::Remove(int fd)
+{
+    auto Iterator = m_SocketEventMap.find(fd);
+
+    if(Iterator == m_SocketEventMap.end())
+        return false;
+
+    m_SocketEventMap.erase(fd);
+
+    return true;
+}
+
+bool CEventLoop::RemoveEvent(int fd)
 {
     auto Iterator = m_SocketEventMap.find(fd);
 

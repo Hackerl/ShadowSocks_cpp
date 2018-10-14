@@ -2,24 +2,19 @@
 // Created by hackerl on 10/14/18.
 //
 
-#include "SocketPipe.h"
+#include "Pipe/Pipe.h"
 
-CSocketPipe::CSocketPipe() {
+CPipe::CPipe() {
     m_PipePort = nullptr;
     m_PipeClosed = true;
 }
 
-CSocketPipe::CSocketPipe(ISocketPipe * PipePort) {
+void CPipe::PipeConnect(IPipe * PipePort) {
     m_PipePort = PipePort;
     m_PipeClosed = false;
 }
 
-void CSocketPipe::SetPipePort(ISocketPipe *PipePort) {
-    m_PipePort = PipePort;
-    m_PipeClosed = false;
-}
-
-bool CSocketPipe::PipeIn(const char *Buffer, size_t Length) {
+bool CPipe::PipeIn(const char *Buffer, size_t Length) {
     if (m_PipePort == nullptr || m_PipeClosed)
         return false;
 
@@ -28,7 +23,7 @@ bool CSocketPipe::PipeIn(const char *Buffer, size_t Length) {
     return true;
 }
 
-void CSocketPipe::PipeClose() {
+void CPipe::PipeClose() {
     if (m_PipeClosed)
         return;
 
@@ -41,4 +36,8 @@ void CSocketPipe::PipeClose() {
     }
 
     OnPipeClose();
+}
+
+IPipe *CPipe::GetPipePort() {
+    return m_PipePort;
 }

@@ -1,11 +1,11 @@
 //
 // Created by hackerl on 10/13/18.
 //
-#include "Socket/ISocket.h"
+
 #include "TCPSocket.h"
+#include "Socket/ISocket.h"
 #include "Socket/LibSocketExport.h"
 #include "EventLoop/LibEventExport.h"
-
 
 class CServer : public CTCPSocket , public ISocketAcceptCallback
 {
@@ -56,9 +56,64 @@ void TestClient()
     DeleteTCPSocket(Client);
 }
 
+class CClient : public CTCPSocket , public ISocketEventCallback
+{
+    void OnRead(int fd ,short Event) override
+    {
+        std::cout << "Can Read" << std::endl;
+
+        char Buffer[1024];
+
+        int len = Recv(Buffer, 1024, 0);
+    }
+
+    void OnWrite(int fd ,short Event) override
+    {
+        std::cout << "Can Write" << std::endl;
+    }
+
+    void OnClose(int fd ,short Event) override
+    {
+        std::cout << "Closed" << std::endl;
+        m_Loop->RemoveEvent(fd);
+    }
+
+public:
+    IEventLoop * m_Loop;
+};
+
+void TestEventCallback()
+{
+    CClient Client;
+
+    do
+    {
+        if (!Client.Connect("127.0.0.1", 3333))
+        {
+            std::cout << "Connect Faild" << std::endl;
+            break;
+        }
+
+        std::string data= "Hello";
+
+        Client.Send(data.data(), data.length(), 0);
+
+        IEventLoop * Loop = NewEventLoop();
+
+        Client.m_Loop = Loop;
+
+        Loop->AddClient(Client.GetSocket(), &Client);
+
+        //Loop->AddServer(Server.GetSocket(), &Server);
+
+        Loop->Loop();
+
+        DeleteEventLoop(Loop);
+    } while (false);
+}
+
 int main()
 {
-    TestServer();
-
+    TestEventCallback();
     return 0;
 }
