@@ -41,10 +41,9 @@ void TestPipe()
     int ID1 = 1;
     Pipe1->SetArg(&ID1);
 
-    auto Pipe2 = new CPipeDelay<CTestPipe>;
-    int ID2 = 2;
+    auto Pipe2 = new CTestPipe;
 
-    Pipe2->SetArg(&ID2);
+    Pipe2->m_ID = 2;
 
     Pipe2->PipeConnect(Pipe1);
     Pipe1->PipeConnect(Pipe2);
@@ -53,7 +52,7 @@ void TestPipe()
 
     Pipe2->PipeIn(msg.c_str(), msg.length());
 
-    delete Pipe2->GetPipePort();
+    Pipe2->PipeClose();
     delete Pipe2;
 }
 

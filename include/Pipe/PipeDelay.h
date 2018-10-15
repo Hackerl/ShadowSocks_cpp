@@ -78,8 +78,6 @@ private:
             m_PipePort->PipeClose();
 
         delete this;
-
-        int i =1;
     }
 
 private:

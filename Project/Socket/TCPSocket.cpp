@@ -81,7 +81,7 @@ bool CTCPSocket::Connect(std::string IP, ushort Port)
     return m_IsConnected;
 }
 
-int CTCPSocket::Accpet()
+int CTCPSocket::Accept()
 {
     if (!m_IsValid)
         return false;
