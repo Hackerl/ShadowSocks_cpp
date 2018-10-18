@@ -7,13 +7,13 @@
 
 #include "Pipe.h"
 
-template <class T>
+template <class T, class ArgType>
 class CPipeDelay : public CPipe
 {
 public:
     CPipeDelay()
     {
-        m_arg = nullptr;
+        m_PipePort = nullptr;
     }
 
 public:
@@ -26,7 +26,7 @@ public:
 
         do
         {
-            auto DelayInstance = dynamic_cast<IDelayInstance *>(Instance);
+            auto DelayInstance = dynamic_cast<IDelayInstance<ArgType> *>(Instance);
 
             if (DelayInstance == nullptr)
                 break;
@@ -66,7 +66,7 @@ public:
     }
 
 public:
-    void SetArg(void * arg)
+    void SetArg(ArgType arg)
     {
         m_arg = arg;
     }
@@ -81,7 +81,7 @@ private:
     }
 
 private:
-    void * m_arg;
+    ArgType m_arg;
 };
 
 #endif //SHADOWSOCKSR_CPP_PIPEDELAY_H

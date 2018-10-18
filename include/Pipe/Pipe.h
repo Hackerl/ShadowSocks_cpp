@@ -21,7 +21,6 @@ public:
 public:
     virtual void OnPipeClose() = 0;
 
-
 public:
     IPipe * GetPipePort();
 

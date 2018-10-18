@@ -4,12 +4,17 @@
 #include "Pipe/Pipe.h"
 #include "Pipe/PipeDelay.h"
 
-class CTestPipe : public CPipe, public IDelayInstance
+class CTestPipe : public CPipe, public IDelayInstance<int>
 {
 public:
     CTestPipe()
     {
         m_ID = -1;
+    }
+
+    ~CTestPipe() override
+    {
+        std::cout << m_ID << "Delete Pipe" << std::endl;
     }
 
 public:
@@ -24,9 +29,9 @@ public:
     };
 
 public:
-    bool InitDelay(void * arg) override
+    bool InitDelay(int & ID) override
     {
-        m_ID = * (int *)arg;
+        m_ID = ID;
         return true;
     }
 
@@ -36,10 +41,10 @@ public:
 
 void TestPipe()
 {
-    auto Pipe1 = new CPipeDelay<CTestPipe>;
+    auto Pipe1 = new CPipeDelay<CTestPipe, int>;
 
     int ID1 = 1;
-    Pipe1->SetArg(&ID1);
+    Pipe1->SetArg(ID1);
 
     auto Pipe2 = new CTestPipe;
 
@@ -52,8 +57,11 @@ void TestPipe()
 
     Pipe2->PipeIn(msg.c_str(), msg.length());
 
+    IPipe * Pipe_1 =  Pipe2->GetPipePort();
+
     Pipe2->PipeClose();
     delete Pipe2;
+    delete Pipe_1;
 }
 
 int main()

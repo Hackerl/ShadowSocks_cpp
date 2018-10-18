@@ -17,10 +17,11 @@ public:
     virtual void PipeClose() = 0;
 };
 
+template <class T>
 class IDelayInstance : public Interface
 {
 public:
-    virtual bool InitDelay(void * arg) = 0;
+    virtual bool InitDelay(T & arg) = 0;
 };
 
 #endif //SHADOWSOCKSR_CPP_IPIPE_H
