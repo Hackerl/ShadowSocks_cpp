@@ -6,8 +6,9 @@
 #define SHADOWSOCKSR_CPP_IPIPE_H
 
 #include <iostream>
+#include "Common/Interface.h"
 
-class IPipe
+class IPipe : public Interface
 {
 public:
     virtual bool PipeIn(const char * Buffer, size_t Length) = 0;
@@ -16,7 +17,7 @@ public:
     virtual void PipeClose() = 0;
 };
 
-class IDelayInstance
+class IDelayInstance : public Interface
 {
 public:
     virtual bool InitDelay(void * arg) = 0;

@@ -7,8 +7,9 @@
 
 #include <event.h>
 #include <iostream>
+#include "Common/Interface.h"
 
-class IIOSocket
+class IIOSocket : public Interface
 {
 public:
     virtual ssize_t Recv(char * Buffer, size_t Length, int Flag = 0) = 0;
@@ -32,7 +33,7 @@ public:
     virtual bool Bind(std::string IP, ushort Port) = 0;
 };
 
-class ISocketEventCallback
+class ISocketEventCallback : public Interface
 {
 public:
     virtual void OnRead(int fd ,short Event) = 0;
@@ -40,7 +41,7 @@ public:
     virtual void OnClose(int fd ,short Event) = 0;
 };
 
-class ISocketAcceptCallback
+class ISocketAcceptCallback : public Interface
 {
 public:
     virtual void OnAccpet(int fd ,short Event) = 0;

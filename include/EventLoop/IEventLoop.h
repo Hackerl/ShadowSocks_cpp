@@ -5,9 +5,10 @@
 #ifndef SHADOWSOCKSR_CPP_IEVENTLOOP_H
 #define SHADOWSOCKSR_CPP_IEVENTLOOP_H
 
+#include "Common/Interface.h"
 #include "Socket/ISocket.h"
 
-class IEventLoop
+class IEventLoop : public Interface
 {
 public:
     virtual bool AddServer(int fd, ISocketAcceptCallback * ServerHandler) = 0;
