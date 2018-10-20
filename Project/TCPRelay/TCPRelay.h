@@ -10,11 +10,8 @@
 #include "Pipe/Pipe.h"
 #include "Pipe/PipeDelay.h"
 
-class CTCPRelay : public IDelayInstance<int>, public CPipe, public ISocketEventCallback
+class CTCPRelay :public CPipe, public ISocketEventCallback
 {
-public:
-    bool InitDelay(int & arg) override;
-
 public:
     bool PipeOut(const char * Buffer, size_t Length) override;
     void OnPipeClose() override;

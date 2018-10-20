@@ -116,6 +116,7 @@ void TestEventCallback()
         Loop->Loop();
 
         DeleteEventLoop(Loop);
+
     } while (false);
 }
 

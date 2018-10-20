@@ -2,9 +2,9 @@
 // Created by hackerl on 10/14/18.
 //
 #include "Pipe/Pipe.h"
-#include "Pipe/PipeDelay.h"
+#include "Common/InstanceManager.h"
 
-class CTestPipe : public CPipe, public IDelayInstance<int>
+class CTestPipe : public CPipe
 {
 public:
     CTestPipe()
@@ -29,24 +29,18 @@ public:
     };
 
 public:
-    bool InitDelay(int & ID) override
-    {
-        m_ID = ID;
-        return true;
-    }
-
-public:
     int m_ID;
 };
 
 void TestPipe()
 {
-    auto Pipe1 = new CPipeDelay<CTestPipe, int>;
+    auto Pipe1 = new InstanceManager<CTestPipe>;
+    AddRef(Pipe1);
 
-    int ID1 = 1;
-    Pipe1->SetArg(ID1);
+    Pipe1->m_ID = 1;
 
-    auto Pipe2 = new CTestPipe;
+    auto Pipe2 = new InstanceManager<CTestPipe>;
+    AddRef(Pipe2);
 
     Pipe2->m_ID = 2;
 
@@ -56,12 +50,10 @@ void TestPipe()
     std::string msg = "hello";
 
     Pipe2->PipeIn(msg.c_str(), msg.length());
-
-    IPipe * Pipe_1 =  Pipe2->GetPipePort();
-
     Pipe2->PipeClose();
-    delete Pipe2;
-    delete Pipe_1;
+
+    Release(Pipe1);
+    Release(Pipe2);
 }
 
 int main()

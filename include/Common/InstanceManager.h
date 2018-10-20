@@ -8,14 +8,29 @@
 #include "IInstanceManager.h"
 #include "Mutex.h"
 
-class InstanceManager : public IInstanceManager
+template <class T>
+class InstanceManager : public IInstanceManager , public T
 {
 public:
-    InstanceManager();
+    InstanceManager()
+    {
+        m_Ref = 0;
+    }
 
 public:
-    void AddRef() override;
-    void Release() override;
+    void AddRef() override
+    {
+        AutoMutex _0_(m_Mutex);
+        m_Ref ++;
+    }
+
+    void Release() override
+    {
+        AutoMutex _0_(m_Mutex);
+
+        if (-- m_Ref == 0)
+            delete this;
+    }
 
 private:
     Mutex m_Mutex;

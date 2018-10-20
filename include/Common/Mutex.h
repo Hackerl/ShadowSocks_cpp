@@ -9,10 +9,25 @@
 
 class Mutex {
 public:
-    Mutex();
-    ~Mutex();
-    void Lock();
-    void UnLock();
+    Mutex()
+    {
+        pthread_mutex_init(&m_lock, nullptr);
+    }
+
+    ~Mutex()
+    {
+        pthread_mutex_destroy(&m_lock);
+    }
+
+    void Lock()
+    {
+        pthread_mutex_lock(&m_lock);
+    }
+
+    void UnLock()
+    {
+        pthread_mutex_unlock(&m_lock);
+    }
 
 private:
     pthread_mutex_t m_lock;

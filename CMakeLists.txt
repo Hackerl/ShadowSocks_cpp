@@ -11,7 +11,6 @@ link_directories(${PROJECT_SOURCE_DIR}/lib ${PROJECT_SOURCE_DIR}/bin)
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
-add_subdirectory(Project/Common)
 add_subdirectory(Project/Pipe)
 add_subdirectory(Project/Socket)
 add_subdirectory(Project/EventLoop)
