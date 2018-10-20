@@ -71,7 +71,7 @@ void TestServer()
 {
     ITCPSocket * Socket = NewTCPSocket();
 
-    if (!Socket->Bind("0.0.0.0", 4444))
+    if (!Socket->Bind("0.0.0.0", 3333))
     {
         std::cout << "Bind Faild" << std::endl;
         return;

@@ -4,6 +4,8 @@
 
 #include "TCPRelay.h"
 
+#define SOCKET_PACKET_LEN 1024
+
 CTCPRelay::CTCPRelay()
 {
     m_Socket = nullptr;
@@ -53,12 +55,12 @@ void CTCPRelay::OnRead(int fd, short Event)
     if (m_Socket == nullptr)
         return;
 
-    char Buffer[1024] = {};
+    char Buffer[SOCKET_PACKET_LEN] = {};
 
-    ssize_t len = m_Socket->Recv(Buffer, 1024, 0);
+    ssize_t ReadLen = m_Socket->Recv(Buffer, SOCKET_PACKET_LEN, 0);
 
-    if (len > 0)
-        PipeIn(Buffer, len);
+    if (ReadLen > 0)
+        PipeIn(Buffer, ReadLen);
 }
 
 void CTCPRelay::OnWrite(int fd, short Event)
@@ -69,17 +71,15 @@ void CTCPRelay::OnWrite(int fd, short Event)
     if (m_WriteBuffer.empty())
         return;
 
-    ssize_t len = m_Socket->Send(&m_WriteBuffer[0], m_WriteBuffer.size());
+    size_t BufferSize = m_WriteBuffer.size();
 
-    if (len > 0)
-    {
-        m_WriteBuffer.erase(m_WriteBuffer.begin(), m_WriteBuffer.begin() + len);
-    }
+    ssize_t WriteLen = m_Socket->Send(&m_WriteBuffer[0], BufferSize < SOCKET_PACKET_LEN ? BufferSize : SOCKET_PACKET_LEN);
+
+    if (WriteLen > 0)
+        m_WriteBuffer.erase(m_WriteBuffer.begin(), m_WriteBuffer.begin() + WriteLen);
 
     if (m_WriteBuffer.empty())
-    {
         m_Loop->SetEvent(m_Socket->GetSocket(), EV_READ | EV_CLOSED | EV_PERSIST);
-    }
 }
 
 void CTCPRelay::OnClose(int fd, short Event)
