@@ -6,12 +6,19 @@
 #define SHADOWSOCKSR_CPP_TCPRELAY_H
 
 #include "Socket/ISocket.h"
-#include "Pipe/IPipe.h"
+#include "EventLoop/IEventLoop.h"
 #include "Pipe/Pipe.h"
-#include "Pipe/PipeDelay.h"
+#include <vector>
 
-class CTCPRelay :public CPipe, public ISocketEventCallback
+class CTCPRelay :public CPipe, public ISocketClientCallback
 {
+public:
+    CTCPRelay();
+    ~CTCPRelay();
+
+public:
+    void Init(IIOSocket * Socket, IEventLoop * Loop);
+
 public:
     bool PipeOut(const char * Buffer, size_t Length) override;
     void OnPipeClose() override;
@@ -20,6 +27,11 @@ public:
     void OnRead(int fd, short Event) override ;
     void OnWrite(int fd, short Event) override;
     void OnClose(int fd, short Event) override;
+
+private:
+    IIOSocket * m_Socket;
+    std::vector<char> m_WriteBuffer;
+    IEventLoop * m_Loop;
 };
 
 

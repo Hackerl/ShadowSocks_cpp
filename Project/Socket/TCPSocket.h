@@ -14,7 +14,8 @@ public:
     ~CTCPSocket();
 
 public:
-    int GetSocket();
+    int GetSocket() override;
+    void SetSocket(int fd, bool IsConnected) override;
 
 public:
     bool Bind(std::string IP, ushort Port) override;

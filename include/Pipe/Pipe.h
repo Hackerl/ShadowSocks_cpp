@@ -23,12 +23,10 @@ public:
         if (m_PipePort == nullptr || m_PipeClosed)
             return false;
 
-        m_PipePort->PipeOut(Buffer, Length);
-
-        return true;
+        return m_PipePort->PipeOut(Buffer, Length);;
     }
 
-    virtual bool PipeOut(const char * Buffer, size_t Length) = 0;
+    bool PipeOut(const char * Buffer, size_t Length) override = 0;
 
     void PipeConnect(IPipe * PipePort) override
     {

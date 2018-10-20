@@ -7,12 +7,17 @@
 #include "Socket/LibSocketExport.h"
 #include "EventLoop/LibEventExport.h"
 
-class CServer : public CTCPSocket , public ISocketAcceptCallback
+class CServer : public CTCPSocket , public ISocketServerCallback
 {
     void OnAccpet(int fd ,short Event) override
     {
         int client = Accept();
         std::cout << "Accept" << std::endl;
+    }
+
+    void OnClose(int fd ,short Event) override
+    {
+
     }
 };
 
@@ -20,7 +25,7 @@ void TestServer()
 {
     CServer Server;
 
-    if (!Server.Bind("192.168.1.102", 3333))
+    if (!Server.Bind("0.0.0.0", 3333))
         std::cout << "Bind Faild" << std::endl;
 
     if (!Server.Listen(255))
@@ -56,7 +61,7 @@ void TestClient()
     DeleteTCPSocket(Client);
 }
 
-class CClient : public CTCPSocket , public ISocketEventCallback
+class CClient : public CTCPSocket , public ISocketClientCallback
 {
 public:
     CClient()

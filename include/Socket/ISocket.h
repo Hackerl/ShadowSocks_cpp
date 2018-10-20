@@ -12,6 +12,7 @@
 class IIOSocket : public Interface
 {
 public:
+    virtual int GetSocket() = 0;
     virtual ssize_t Recv(char * Buffer, size_t Length, int Flag = 0) = 0;
     virtual ssize_t Send(const char * Buffer, size_t Length, int Flag = 0) = 0;
     virtual bool Close() = 0;
@@ -20,11 +21,11 @@ public:
 class ITCPSocket : public IIOSocket
 {
 public:
+    virtual void SetSocket(int fd, bool IsConnected = true) = 0;
     virtual bool Bind(std::string IP, ushort Port) = 0;
     virtual bool Listen(int backlog = 255) = 0;
     virtual bool Connect(std::string IP, ushort Port) = 0;
     virtual int Accept() = 0;
-
 };
 
 class IUDPSocket : public IIOSocket
@@ -33,18 +34,25 @@ public:
     virtual bool Bind(std::string IP, ushort Port) = 0;
 };
 
-class ISocketEventCallback : public Interface
+class ISocketCloseCallback : public Interface
+{
+public:
+    virtual void OnClose(int fd ,short Event) = 0;
+};
+
+class ISocketClientCallback : public ISocketCloseCallback
 {
 public:
     virtual void OnRead(int fd ,short Event) = 0;
     virtual void OnWrite(int fd ,short Event) = 0;
-    virtual void OnClose(int fd ,short Event) = 0;
+    void OnClose(int fd ,short Event) override = 0;
 };
 
-class ISocketAcceptCallback : public Interface
+class ISocketServerCallback : public ISocketCloseCallback
 {
 public:
     virtual void OnAccpet(int fd ,short Event) = 0;
+    void OnClose(int fd ,short Event) override = 0;
 };
 
 #endif //SHADOWSOCKSR_CPP_ISOCKET_H

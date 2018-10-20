@@ -3,6 +3,7 @@
 //
 
 #include "EventLoop.h"
+#include "Common/IInstanceManager.h"
 
 CEventLoop::CEventLoop()
 {
@@ -15,13 +16,13 @@ CEventLoop::~CEventLoop()
     m_EventBase = nullptr;
 }
 
-bool CEventLoop::AddServer(int fd, ISocketAcceptCallback * ServerHandler)
+bool CEventLoop::AddServer(int fd, ISocketServerCallback * ServerHandler)
 {
     struct Stub
     {
         static void OnAceept(int fd ,short Event, void* arg)
         {
-            auto ServerHandler = (ISocketAcceptCallback*) arg;
+            auto ServerHandler = (ISocketServerCallback*) arg;
             ServerHandler->OnAccpet(fd, Event);
         }
     };
@@ -30,19 +31,27 @@ bool CEventLoop::AddServer(int fd, ISocketAcceptCallback * ServerHandler)
 
     event_add(Event, nullptr);
 
-    m_SocketEventMap.insert(std::pair<int, event*>(fd, Event));
+    EventSession Session = {};
+
+    Session.Event = Event;
+    Session.CloseHandler = (ISocketCloseCallback *) ServerHandler;
+
+    AutoMutex _0_(m_Mutex);
+    m_SocketEventMap.insert(std::pair<int, EventSession>(fd, Session));
+
+    AddRef(ServerHandler);
 
     return true;
 }
 
-bool CEventLoop::AddClient(int fd, ISocketEventCallback * ClientHandler)
+bool CEventLoop::AddClient(int fd, ISocketClientCallback * ClientHandler)
 {
     struct Stub
     {
 
         static void OnEvent(int fd ,short Event, void* arg)
         {
-            auto ClientHandler = (ISocketEventCallback *) arg;
+            auto ClientHandler = (ISocketClientCallback *) arg;
 
             do
             {
@@ -60,46 +69,61 @@ bool CEventLoop::AddClient(int fd, ISocketEventCallback * ClientHandler)
         }
     };
 
-    event* Event = event_new(m_EventBase, fd, EV_READ | EV_CLOSED |EV_PERSIST, Stub::OnEvent , ClientHandler);
+    event* Event = event_new(m_EventBase, fd, EV_READ | EV_CLOSED | EV_PERSIST, Stub::OnEvent , ClientHandler);
 
     event_add(Event, nullptr);
 
-    m_SocketEventMap.insert(std::pair<int, event*>(fd, Event));
+    EventSession Session = {};
+
+    Session.Event = Event;
+    Session.CloseHandler = (ISocketCloseCallback *) ClientHandler;
+
+    AutoMutex _0_(m_Mutex);
+
+    m_SocketEventMap.insert(std::pair<int, EventSession>(fd, Session));
+
+    AddRef(ClientHandler);
 
     return false;
 }
 
-bool CEventLoop::SetEvent(int fd, short Mode, event_callback_fn OnEvent, void * arg)
+bool CEventLoop::SetEvent(int fd, short Mode)
 {
+    AutoMutex _0_(m_Mutex);
+
     auto Iterator = m_SocketEventMap.find(fd);
 
     if(Iterator == m_SocketEventMap.end())
         return false;
 
-    event * Event = Iterator->second;
+    EventSession& Session = Iterator->second;
 
-    event_set(
-            Event,
-            fd,
-            Mode,
-            OnEvent == nullptr ? event_get_callback(Event) : OnEvent,
-            arg == nullptr ? event_get_callback_arg(Event) : arg
-            );
+    event_del(Session.Event);
+
+    Session.Event->ev_events = Mode;
+
+    event_add(Session.Event, nullptr);
+
+    return true;
 }
 
 bool CEventLoop::Remove(int fd)
 {
+    AutoMutex _0_(m_Mutex);
+
     auto Iterator = m_SocketEventMap.find(fd);
 
     if(Iterator == m_SocketEventMap.end())
         return false;
 
-    event * Event = Iterator->second;
+    EventSession & Session = Iterator->second;
 
-    event_del(Event);
-    event_free(Event);
+    event_del(Session.Event);
+    event_free(Session.Event);
 
-    m_SocketEventMap.erase(fd);
+    Release(Session.CloseHandler);
+
+    m_SocketEventMap.erase(Iterator);
 
     return true;
 }
@@ -111,10 +135,18 @@ void CEventLoop::Loop()
 
 void CEventLoop::Destroy()
 {
+    AutoMutex _0_(m_Mutex);
+
     for (auto const& Iterator : m_SocketEventMap)
     {
-        event_del(Iterator.second);
-        event_free(Iterator.second);
+        const EventSession& Session = Iterator.second;
+
+        event_del(Session.Event);
+        event_free(Session.Event);
+
+        Session.CloseHandler->OnClose(Iterator.first, EV_CLOSED);
+
+        Release(Session.CloseHandler);
     }
 
     m_SocketEventMap.clear();
