@@ -18,16 +18,25 @@ public:
     }
 
 public:
+    void PipeInit(void * args) override = 0;
+
+    void PipePortInit(void * args) override
+    {
+        m_PipePort->PipeInit(args);
+    }
+
+public:
     bool PipeIn(const void *Buffer, size_t Length) override
     {
         if (m_PipePort == nullptr || m_PipeClosed)
             return false;
 
-        return m_PipePort->PipeOut(Buffer, Length);;
+        return m_PipePort->OnPipeIn(Buffer, Length);
     }
 
     bool PipeOut(const void *Buffer, size_t Length) override = 0;
 
+public:
     void PipeConnect(IPipe * PipePort) override
     {
         m_PipePort = PipePort;
@@ -54,6 +63,11 @@ public:
 
 public:
     virtual void OnPipeClose() = 0;
+
+    bool OnPipeIn(const void *Buffer, size_t Length) override
+    {
+        return PipeOut(Buffer, Length);
+    }
 
 public:
     IPipe * GetPipePort()

@@ -18,6 +18,7 @@ public:
 
 public:
     void Init(IIOSocket * Socket, IEventLoop * Loop);
+    void PipeInit(void * args) override;
 
 public:
     bool PipeOut(const void *Buffer, size_t Length) override;

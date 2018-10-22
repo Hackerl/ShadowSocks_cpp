@@ -67,14 +67,14 @@ bool CTCPSocket::Connect(std::string IP, ushort Port)
     if (!m_IsValid || m_IsConnected)
         return false;
 
-    sockaddr_in Addr = {};
+    sockaddr_in Address = {};
 
-    Addr.sin_family = AF_INET;
-    Addr.sin_port = htons(Port);
+    Address.sin_family = AF_INET;
+    Address.sin_port = htons(Port);
 
-    inet_pton(AF_INET, IP.c_str() , &Addr.sin_addr);
+    inet_pton(AF_INET, IP.c_str() , &Address.sin_addr);
 
-    int res = connect(m_Socket, (sockaddr *)&Addr, sizeof(Addr));
+    int res = connect(m_Socket, (sockaddr *)&Address, sizeof(Address));
 
     m_IsConnected = res != -1;
 
@@ -86,10 +86,10 @@ int CTCPSocket::Accept()
     if (!m_IsValid)
         return -1;
 
-    sockaddr_in Addr = {};
-    socklen_t AddrLen = 0;
+    sockaddr_in Address = {};
+    socklen_t AddressLen = 0;
 
-    int fd = accept(m_Socket, (sockaddr *)&Addr, &AddrLen);
+    int fd = accept(m_Socket, (sockaddr *)&Address, &AddressLen);
 
     return fd;
 }

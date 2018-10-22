@@ -18,6 +18,11 @@ public:
     }
 
 public:
+    void PipeInit(void * args) override
+    {
+
+    }
+
     bool PipeOut(const void *Buffer, size_t Length) override
     {
         std::cout << m_ID << "Pipe Out" << std::endl;

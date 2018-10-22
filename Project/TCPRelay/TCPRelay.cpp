@@ -12,6 +12,14 @@ CTCPRelay::CTCPRelay()
     m_Loop = nullptr;
 }
 
+void CTCPRelay::PipeInit(void *args)
+{
+    m_Socket = static_cast<IIOSocket *>(args);
+
+    if (m_Loop != nullptr && m_Socket != nullptr)
+        m_Loop->AddClient(m_Socket->GetSocket(), this);
+}
+
 void CTCPRelay::Init(IIOSocket *Socket, IEventLoop *Loop)
 {
     m_Socket = Socket;
@@ -34,12 +42,20 @@ CTCPRelay::~CTCPRelay()
 
 bool CTCPRelay::PipeOut(const void *Buffer, size_t Length)
 {
-    if (m_Loop == nullptr)
+    if (m_Loop == nullptr || m_Socket == nullptr)
         return false;
 
-    m_WriteBuffer.insert(m_WriteBuffer.end(), (u_char *)Buffer, (u_char *)Buffer + Length);
+    ssize_t WriteLen = m_Socket->Send(Buffer, Length);
 
-    m_Loop->SetEvent(m_Socket->GetSocket(), EV_READ | EV_WRITE | EV_CLOSED | EV_PERSIST);
+    if (WriteLen < 0)
+        return false;
+
+    if (WriteLen < Length)
+    {
+        m_WriteBuffer.insert(m_WriteBuffer.end(), (u_char *)Buffer + WriteLen, (u_char *)Buffer + Length);
+
+        m_Loop->SetEvent(m_Socket->GetSocket(), EV_READ | EV_WRITE | EV_CLOSED | EV_PERSIST);
+    }
 
     return true;
 }
