@@ -46,18 +46,18 @@ bool CTCPSocket::Listen(int backlog)
     return res != -1;
 }
 
-ssize_t CTCPSocket::Recv(char *Buffer, size_t Length, int Flag)
+ssize_t CTCPSocket::Recv(void *Buffer, size_t Length, int Flag)
 {
     if (!m_IsValid || !m_IsConnected)
-        return false;
+        return -1;
 
     return recv(m_Socket, Buffer, Length, Flag);
 }
 
-ssize_t CTCPSocket::Send(const char *Buffer, size_t Length, int Flag)
+ssize_t CTCPSocket::Send(const void *Buffer, size_t Length, int Flag)
 {
     if (!m_IsValid || !m_IsConnected)
-        return false;
+        return -1;
 
     return send(m_Socket, Buffer, Length, Flag);
 }
@@ -84,7 +84,7 @@ bool CTCPSocket::Connect(std::string IP, ushort Port)
 int CTCPSocket::Accept()
 {
     if (!m_IsValid)
-        return false;
+        return -1;
 
     sockaddr_in Addr = {};
     socklen_t AddrLen = 0;

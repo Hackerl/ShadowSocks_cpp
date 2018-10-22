@@ -4,7 +4,7 @@
 
 #include "TCPRelay.h"
 
-#define SOCKET_PACKET_LEN 1024
+#define TCP_MSS 1460
 
 CTCPRelay::CTCPRelay()
 {
@@ -32,12 +32,12 @@ CTCPRelay::~CTCPRelay()
     m_WriteBuffer.clear();
 }
 
-bool CTCPRelay::PipeOut(const char *Buffer, size_t Length)
+bool CTCPRelay::PipeOut(const void *Buffer, size_t Length)
 {
     if (m_Loop == nullptr)
         return false;
 
-    m_WriteBuffer.insert(m_WriteBuffer.end(), Buffer, Buffer + Length);
+    m_WriteBuffer.insert(m_WriteBuffer.end(), (u_char *)Buffer, (u_char *)Buffer + Length);
 
     m_Loop->SetEvent(m_Socket->GetSocket(), EV_READ | EV_WRITE | EV_CLOSED | EV_PERSIST);
 
@@ -55,9 +55,9 @@ void CTCPRelay::OnRead(int fd, short Event)
     if (m_Socket == nullptr)
         return;
 
-    char Buffer[SOCKET_PACKET_LEN] = {};
+    u_char Buffer[TCP_MSS] = {};
 
-    ssize_t ReadLen = m_Socket->Recv(Buffer, SOCKET_PACKET_LEN, 0);
+    ssize_t ReadLen = m_Socket->Recv(Buffer, TCP_MSS, 0);
 
     if (ReadLen > 0)
         PipeIn(Buffer, ReadLen);
@@ -73,7 +73,7 @@ void CTCPRelay::OnWrite(int fd, short Event)
 
     size_t BufferSize = m_WriteBuffer.size();
 
-    ssize_t WriteLen = m_Socket->Send(&m_WriteBuffer[0], BufferSize < SOCKET_PACKET_LEN ? BufferSize : SOCKET_PACKET_LEN);
+    ssize_t WriteLen = m_Socket->Send(m_WriteBuffer.data(), BufferSize < TCP_MSS ? BufferSize : TCP_MSS);
 
     if (WriteLen > 0)
         m_WriteBuffer.erase(m_WriteBuffer.begin(), m_WriteBuffer.begin() + WriteLen);

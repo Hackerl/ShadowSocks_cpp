@@ -11,8 +11,8 @@
 class IPipe : public Interface
 {
 public:
-    virtual bool PipeIn(const char * Buffer, size_t Length) = 0;
-    virtual bool PipeOut(const char * Buffer, size_t Length) = 0;
+    virtual bool PipeIn(const void *Buffer, size_t Length) = 0;
+    virtual bool PipeOut(const void *Buffer, size_t Length) = 0;
     virtual void PipeConnect(IPipe * Pipe) = 0;
     virtual void PipeClose() = 0;
 };

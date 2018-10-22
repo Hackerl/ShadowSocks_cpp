@@ -18,7 +18,7 @@ public:
     }
 
 public:
-    bool PipeOut(const char * Buffer, size_t Length) override
+    bool PipeOut(const void *Buffer, size_t Length) override
     {
         std::cout << m_ID << "Pipe Out" << std::endl;
     };

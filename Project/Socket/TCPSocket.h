@@ -20,8 +20,8 @@ public:
 public:
     bool Bind(std::string IP, ushort Port) override;
     bool Listen(int backlog) override;
-    ssize_t Recv(char * Buffer, size_t Length, int Flag) override;
-    ssize_t Send(const char * Buffer, size_t Length, int Flag) override;
+    ssize_t Recv(void *Buffer, size_t Length, int Flag) override;
+    ssize_t Send(const void *Buffer, size_t Length, int Flag) override;
     bool Connect(std::string IP, ushort Port) override;
     int Accept() override;
     bool Close() override;

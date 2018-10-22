@@ -20,7 +20,7 @@ public:
     void Init(IIOSocket * Socket, IEventLoop * Loop);
 
 public:
-    bool PipeOut(const char * Buffer, size_t Length) override;
+    bool PipeOut(const void *Buffer, size_t Length) override;
     void OnPipeClose() override;
 
 public:
@@ -30,7 +30,7 @@ public:
 
 private:
     IIOSocket * m_Socket;
-    std::vector<char> m_WriteBuffer;
+    std::vector<u_char> m_WriteBuffer;
     IEventLoop * m_Loop;
 };
 

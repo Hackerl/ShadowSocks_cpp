@@ -18,7 +18,7 @@ public:
     }
 
 public:
-    bool PipeIn(const char * Buffer, size_t Length) override
+    bool PipeIn(const void *Buffer, size_t Length) override
     {
         if (m_PipePort == nullptr || m_PipeClosed)
             return false;
@@ -26,7 +26,7 @@ public:
         return m_PipePort->PipeOut(Buffer, Length);;
     }
 
-    bool PipeOut(const char * Buffer, size_t Length) override = 0;
+    bool PipeOut(const void *Buffer, size_t Length) override = 0;
 
     void PipeConnect(IPipe * PipePort) override
     {
