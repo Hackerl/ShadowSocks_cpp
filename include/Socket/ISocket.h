@@ -51,7 +51,7 @@ public:
 class ISocketServerCallback : public ISocketCloseCallback
 {
 public:
-    virtual void OnAccpet(int fd ,short Event) = 0;
+    virtual void OnAccept(int fd, short Event) = 0;
     void OnClose(int fd ,short Event) override = 0;
 };
 

@@ -9,7 +9,7 @@
 
 class CServer : public CTCPSocket , public ISocketServerCallback
 {
-    void OnAccpet(int fd ,short Event) override
+    void OnAccept(int fd, short Event) override
     {
         int client = Accept();
         std::cout << "Accept" << std::endl;

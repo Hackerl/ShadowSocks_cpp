@@ -23,7 +23,7 @@ bool CEventLoop::AddServer(int fd, ISocketServerCallback * ServerHandler)
         static void OnAceept(int fd ,short Event, void* arg)
         {
             auto ServerHandler = (ISocketServerCallback*) arg;
-            ServerHandler->OnAccpet(fd, Event);
+            ServerHandler->OnAccept(fd, Event);
         }
     };
 

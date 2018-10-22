@@ -23,7 +23,7 @@ public:
     }
 
 public:
-    void OnAccpet(int fd ,short Event) override
+    void OnAccept(int fd, short Event) override
     {
         int Client = m_Socket->Accept();
         std::cout << "Accept" << std::endl;
