@@ -36,4 +36,10 @@ public:
     virtual bool InitDelay(T & arg) = 0;
 };
 
+inline void PairPipeConnect(IPipe * X, IPipe * Y)
+{
+    X->PipeConnect(Y);
+    Y->PipeConnect(X);
+};
+
 #endif //SHADOWSOCKSR_CPP_IPIPE_H

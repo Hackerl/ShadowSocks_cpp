@@ -86,6 +86,20 @@ public:
 
         return jv[Name].asInt();
     }
+
+    unsigned int GetUInt(const Json::Value &jv, const char *Name, int Default = 0)
+    {
+        if (!jv.isObject())
+            return Default;
+
+        if (!jv.isMember(Name))
+            return Default;
+
+        if (!jv[Name].isUInt())
+            return Default;
+
+        return jv[Name].asUInt();
+    }
 };
 
 #endif //SHADOWSOCKSR_CPP_JSONHELPER_H

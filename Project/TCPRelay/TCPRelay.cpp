@@ -29,6 +29,12 @@ void CTCPRelay::Init(IIOSocket *Socket, IEventLoop *Loop)
     m_Loop = Loop;
 }
 
+void CTCPRelay::Init(IEventLoop *Loop)
+{
+    m_Loop = Loop;
+}
+
+
 CTCPRelay::~CTCPRelay()
 {
     if (m_Socket != nullptr)
@@ -65,7 +71,7 @@ bool CTCPRelay::PipeOut(const void *Buffer, size_t Length)
 
 void CTCPRelay::OnPipeClose()
 {
-    if (m_Loop != nullptr)
+    if (m_Loop != nullptr && m_Socket != nullptr)
         m_Loop->Remove(m_Socket->GetSocket());
 }
 

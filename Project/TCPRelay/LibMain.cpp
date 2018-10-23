@@ -7,6 +7,8 @@
 #include "EventLoop/LibEventExport.h"
 #include "TCPRelay.h"
 #include "Common/InstanceManager.h"
+#include "Plugin/LibPluginExport.h"
+#include "Common/JSONHelper.h"
 
 class CServer : public ISocketServerCallback
 {
@@ -44,14 +46,23 @@ public:
             return;
         }
 
+        Json::Value Config;
+
+        Config["TargetIP"] = "127.0.0.1";
+        Config["TargetPort"] = 2222;
+
+        IPlugin * PortTunnel = NewPortTunnel();
+
+        PortTunnel->SetConfig(Config);
+
         CTCPRelay * TCPRelay1 = new InstanceManager<CTCPRelay>;
         TCPRelay1->Init(Local, m_Loop);
 
-        CTCPRelay * TCPRelay2 = new InstanceManager<CTCPRelay>;
-        TCPRelay2->Init(Remote, m_Loop);
+        CPluginRelay * TCPRelay2 = new InstanceManager<CPluginRelay>;
+        TCPRelay2->Init(m_Loop);
+        TCPRelay2->SetPlugin(PortTunnel);
 
-        TCPRelay1->PipeConnect(TCPRelay2);
-        TCPRelay2->PipeConnect(TCPRelay1);
+        PairPipeConnect(TCPRelay1, TCPRelay2);
 
         m_Loop->AddClient(Local->GetSocket(), TCPRelay1);
         m_Loop->AddClient(Remote->GetSocket(), TCPRelay2);
