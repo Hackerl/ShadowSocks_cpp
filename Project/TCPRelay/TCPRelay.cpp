@@ -14,6 +14,9 @@ CTCPRelay::CTCPRelay()
 
 void CTCPRelay::PipeInit(void *args)
 {
+    if (m_Socket != nullptr)
+        return;
+
     m_Socket = static_cast<IIOSocket *>(args);
 
     if (m_Loop != nullptr && m_Socket != nullptr)
@@ -76,7 +79,7 @@ void CTCPRelay::OnRead(int fd, short Event)
     ssize_t ReadLen = m_Socket->Recv(Buffer, TCP_MSS, 0);
 
     if (ReadLen > 0)
-        PipeIn(Buffer, ReadLen);
+        OnDataIn(Buffer, ReadLen);
 }
 
 void CTCPRelay::OnWrite(int fd, short Event)
