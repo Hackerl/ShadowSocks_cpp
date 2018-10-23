@@ -30,8 +30,7 @@ public:
         int Client = m_Socket->Accept();
         std::cout << "Accept" << std::endl;
 
-        ITCPSocket * Local = NewTCPSocket();
-        Local->SetSocket(Client);
+        ITCPSocket * Local = GetTCPSocket(Client);
 
         Json::Value Config;
 

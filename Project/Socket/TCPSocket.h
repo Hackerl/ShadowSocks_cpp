@@ -11,11 +11,11 @@ class CTCPSocket : public ITCPSocket
 {
 public:
     CTCPSocket();
+    CTCPSocket(int fd, bool IsConnected);
     ~CTCPSocket();
 
 public:
     int GetSocket() override;
-    void SetSocket(int fd, bool IsConnected) override;
 
 public:
     bool Bind(std::string IP, ushort Port) override;

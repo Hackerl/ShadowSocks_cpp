@@ -14,6 +14,14 @@ CTCPSocket::CTCPSocket()
     m_IsConnected = false;
 }
 
+CTCPSocket::CTCPSocket(int fd, bool IsConnected)
+{
+    m_Socket = fd;
+
+    m_IsValid = m_Socket != -1;
+    m_IsConnected = IsConnected;
+}
+
 CTCPSocket::~CTCPSocket()
 {
     Close();
@@ -97,13 +105,6 @@ int CTCPSocket::Accept()
 int CTCPSocket::GetSocket()
 {
     return m_IsValid ? m_Socket : -1;
-}
-
-void CTCPSocket::SetSocket(int fd, bool IsConnected)
-{
-    m_Socket = fd;
-    m_IsValid = m_Socket != -1;
-    m_IsConnected = IsConnected;
 }
 
 bool CTCPSocket::Close() {

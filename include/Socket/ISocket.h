@@ -21,7 +21,6 @@ public:
 class ITCPSocket : public IIOSocket
 {
 public:
-    virtual void SetSocket(int fd, bool IsConnected = true) = 0;
     virtual bool Bind(std::string IP, ushort Port) = 0;
     virtual bool Listen(int backlog = 255) = 0;
     virtual bool Connect(std::string IP, ushort Port) = 0;

@@ -8,6 +8,7 @@
 #include "ISocket.h"
 
 extern "C" ITCPSocket * NewTCPSocket();
+extern "C" ITCPSocket * GetTCPSocket(int fd, bool IsConnected = true);
 extern "C" void DeleteTCPSocket(ITCPSocket * EventLoop);
 
 #endif //SHADOWSOCKSR_CPP_LIBSOCKETEXPORT_H
