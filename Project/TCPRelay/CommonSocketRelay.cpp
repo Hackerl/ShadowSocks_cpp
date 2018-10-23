@@ -1,18 +1,18 @@
 //
-// Created by hackerl on 10/14/18.
+// Created by patteliu on 2018/10/23.
 //
 
-#include "TCPRelay.h"
+#include "CommonSocketRelay.h"
 
 #define TCP_MSS 1460
 
-CTCPRelay::CTCPRelay()
+CCommonSocketRelay::CCommonSocketRelay()
 {
     m_Socket = nullptr;
     m_Loop = nullptr;
 }
 
-void CTCPRelay::PipeInit(void *args)
+void CCommonSocketRelay::PipeInit(void *args)
 {
     if (m_Socket != nullptr)
         return;
@@ -23,19 +23,19 @@ void CTCPRelay::PipeInit(void *args)
         m_Loop->AddClient(m_Socket->GetSocket(), this);
 }
 
-void CTCPRelay::Init(IIOSocket *Socket, IEventLoop *Loop)
+void CCommonSocketRelay::Init(IIOSocket *Socket, IEventLoop *Loop)
 {
     m_Socket = Socket;
     m_Loop = Loop;
 }
 
-void CTCPRelay::Init(IEventLoop *Loop)
+void CCommonSocketRelay::Init(IEventLoop *Loop)
 {
     m_Loop = Loop;
 }
 
 
-CTCPRelay::~CTCPRelay()
+CCommonSocketRelay::~CCommonSocketRelay()
 {
     if (m_Socket != nullptr)
     {
@@ -49,7 +49,7 @@ CTCPRelay::~CTCPRelay()
     m_WriteBuffer.clear();
 }
 
-bool CTCPRelay::PipeOut(const void *Buffer, size_t Length)
+bool CCommonSocketRelay::PipeOut(const void *Buffer, size_t Length)
 {
     if (m_Loop == nullptr || m_Socket == nullptr)
         return false;
@@ -69,13 +69,13 @@ bool CTCPRelay::PipeOut(const void *Buffer, size_t Length)
     return true;
 }
 
-void CTCPRelay::OnPipeClose()
+void CCommonSocketRelay::OnPipeClose()
 {
     if (m_Loop != nullptr && m_Socket != nullptr)
         m_Loop->Remove(m_Socket->GetSocket());
 }
 
-void CTCPRelay::OnRead(int fd, short Event)
+void CCommonSocketRelay::OnRead(int fd, short Event)
 {
     if (m_Socket == nullptr)
         return;
@@ -88,7 +88,7 @@ void CTCPRelay::OnRead(int fd, short Event)
         OnDataIn(Buffer, ReadLen);
 }
 
-void CTCPRelay::OnWrite(int fd, short Event)
+void CCommonSocketRelay::OnWrite(int fd, short Event)
 {
     if (m_Socket == nullptr)
         return;
@@ -107,7 +107,7 @@ void CTCPRelay::OnWrite(int fd, short Event)
         m_Loop->SetEvent(m_Socket->GetSocket(), EV_READ | EV_CLOSED | EV_PERSIST);
 }
 
-void CTCPRelay::OnClose(int fd, short Event)
+void CCommonSocketRelay::OnClose(int fd, short Event)
 {
     PipeClose();
 }

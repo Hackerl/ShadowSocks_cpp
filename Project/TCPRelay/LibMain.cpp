@@ -5,7 +5,7 @@
 #include "Socket/ISocket.h"
 #include "Socket/LibSocketExport.h"
 #include "EventLoop/LibEventExport.h"
-#include "TCPRelay.h"
+#include "SocketRelay.h"
 #include "Common/InstanceManager.h"
 #include "Plugin/LibPluginExport.h"
 #include "Common/JSONHelper.h"
@@ -33,39 +33,25 @@ public:
         ITCPSocket * Local = NewTCPSocket();
         Local->SetSocket(Client);
 
-        ITCPSocket * Remote = NewTCPSocket();
-
-        if (!Remote->Connect("127.0.0.1", 2222))
-        {
-            std::cout << "Connect Faild" << std::endl;
-            Local->Close();
-            Remote->Close();
-
-            delete Local;
-            delete Remote;
-            return;
-        }
-
         Json::Value Config;
 
         Config["TargetIP"] = "127.0.0.1";
-        Config["TargetPort"] = 2222;
+        Config["TargetPort"] = 4444;
 
         IPlugin * PortTunnel = NewPortTunnel();
 
         PortTunnel->SetConfig(Config);
 
-        CTCPRelay * TCPRelay1 = new InstanceManager<CTCPRelay>;
+        CCommonSocketRelay * TCPRelay1 = new InstanceManager<CCommonSocketRelay>;
         TCPRelay1->Init(Local, m_Loop);
 
-        CPluginRelay * TCPRelay2 = new InstanceManager<CPluginRelay>;
+        CSocketRelay * TCPRelay2 = new InstanceManager<CSocketRelay>;
         TCPRelay2->Init(m_Loop);
         TCPRelay2->SetPlugin(PortTunnel);
 
         PairPipeConnect(TCPRelay1, TCPRelay2);
 
         m_Loop->AddClient(Local->GetSocket(), TCPRelay1);
-        m_Loop->AddClient(Remote->GetSocket(), TCPRelay2);
     }
 
     void OnClose(int fd ,short Event) override
