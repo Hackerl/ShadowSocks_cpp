@@ -26,10 +26,16 @@ void CSocketRelay::SetPlugin(IPlugin * Plugin)
 
 bool CSocketRelay::OnDataIn(const void *Buffer, size_t Length)
 {
+    if (m_Plugin == nullptr)
+        return false;
+
     return m_Plugin->OnDataIn(Buffer, Length);
 }
 
 bool CSocketRelay::OnPipeIn(const void *Buffer, size_t Length)
 {
+    if (m_Plugin == nullptr)
+        return false;
+
     return m_Plugin->OnPipeIn(Buffer, Length);
 }
