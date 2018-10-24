@@ -47,8 +47,6 @@ public:
         TCPRelay2->SetPlugin(PortTunnel);
 
         PairPipeConnect(TCPRelay1, TCPRelay2);
-
-        m_Loop->AddClient(Local->GetSocket(), TCPRelay1);
     }
 
     void OnClose(int fd ,short Event) override

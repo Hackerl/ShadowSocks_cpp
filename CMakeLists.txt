@@ -18,3 +18,5 @@ add_subdirectory(Project/SocketRelay)
 add_subdirectory(Project/ShadowSocksr)
 
 add_subdirectory(Project/Plugin/PortTunnel)
+add_subdirectory(Project/Plugin/Socks5)
+add_subdirectory(Project/Plugin/CommonProxy)

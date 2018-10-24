@@ -18,6 +18,14 @@ public:
 public:
     bool SetConfig(Json::Value &Config) override = 0;
 
+    bool NodeInit(void * args)
+    {
+        if (m_PipeNode == nullptr)
+            return false;
+
+        m_PipeNode->PipeInit(args);
+    }
+
     bool SetPipe(IPipeNode *PipeNode) override
     {
         m_PipeNode = PipeNode;
@@ -39,6 +47,29 @@ public:
         return m_PipeNode->PipeIn(Buffer, Length);
     }
 
+    bool Destroy()
+    {
+        if (m_PipeNode == nullptr)
+            return false;
+
+        m_PipeNode->PipeClose();
+    }
+
+    bool Reply(const void *Buffer, size_t Length)
+    {
+        if (m_PipeNode == nullptr)
+            return false;
+
+        return m_PipeNode->PipeOut(Buffer, Length);
+    }
+
+    bool Transmit(const void *Buffer, size_t Length)
+    {
+        if (m_PipeNode == nullptr)
+            return false;
+
+        return m_PipeNode->PipeIn(Buffer, Length);
+    }
 
 protected:
     IPipeNode * m_PipeNode;

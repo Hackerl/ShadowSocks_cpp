@@ -27,13 +27,15 @@ void CCommonSocketRelay::Init(IIOSocket *Socket, IEventLoop *Loop)
 {
     m_Socket = Socket;
     m_Loop = Loop;
+
+    if (m_Loop != nullptr && m_Socket != nullptr)
+        m_Loop->AddClient(m_Socket->GetSocket(), this);
 }
 
 void CCommonSocketRelay::Init(IEventLoop *Loop)
 {
     m_Loop = Loop;
 }
-
 
 CCommonSocketRelay::~CCommonSocketRelay()
 {

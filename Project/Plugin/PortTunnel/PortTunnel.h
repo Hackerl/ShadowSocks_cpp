@@ -45,7 +45,7 @@ public:
     {
         if (!m_IsValid)
         {
-            m_PipeNode->PipeClose();
+            Destroy();
             return false;
         }
 
@@ -61,15 +61,15 @@ public:
 
                 delete Socket;
 
-                m_PipeNode->PipeClose();
+                Destroy();
 
                 return false;
             }
 
-            m_PipeNode->PipeInit(Socket);
+            NodeInit(Socket);
         }
 
-        return m_PipeNode->PipeOut(Buffer, Length);
+        return CPlugin::OnPipeIn(Buffer, Length);
     }
 
 
