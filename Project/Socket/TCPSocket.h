@@ -11,7 +11,7 @@ class CTCPSocket : public ITCPSocket
 {
 public:
     CTCPSocket();
-    CTCPSocket(int fd, bool IsConnected = true);
+    explicit CTCPSocket(int fd, bool IsConnected = true);
     ~CTCPSocket();
 
 public:
@@ -20,17 +20,19 @@ public:
 public:
     bool Bind(std::string IP, ushort Port) override;
     bool Listen(int backlog) override;
+    bool Connect(std::string IP, ushort Port) override;
+    bool Connect(in_addr_t IP, in_port_t Port) override;
+    ITCPSocket * Accept() override;
+
+public:
+    bool Close() override;
     ssize_t Recv(void *Buffer, size_t Length, int Flag) override;
     ssize_t Send(const void *Buffer, size_t Length, int Flag) override;
-    bool Connect(std::string IP, ushort Port) override;
-    ITCPSocket * Accept() override;
-    bool Close() override;
 
 private:
     int m_Socket;
     bool m_IsValid;
     bool m_IsConnected;
 };
-
 
 #endif //SHADOWSOCKSR_CPP_TCPSOCKET_H

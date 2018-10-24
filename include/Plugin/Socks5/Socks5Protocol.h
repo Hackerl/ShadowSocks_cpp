@@ -30,34 +30,36 @@ struct Socks5_Method_Response {
     uint8_t Method;
 };
 
-union Socks5_Address
-{
-    struct
-    {
-        uint8_t Length;
-        uint8_t HostName[0];
-        uint16_t Port;
-    } Host;
-
-    struct
-    {
-        uint32_t IP;
-        uint16_t Port;
-    } IPv4;
-
-    struct
-    {
-        in6_addr IP;
-        uint16_t Port;
-    } IPv6;
-};
-
 struct Socks5_Connect_Request {
-    uint8_t Version;
-    uint8_t Command;
-    uint8_t Reserved;
-    uint8_t AddressType;
-    uint8_t Address[0];
+    struct
+    {
+        uint8_t Version;
+        uint8_t Command;
+        uint8_t Reserved;
+        uint8_t AddressType;
+    } Header;
+
+    union
+    {
+        struct
+        {
+            uint8_t Length;
+            uint8_t HostName[0];
+            uint16_t Port;
+        } Host;
+
+        struct
+        {
+            uint32_t IP;
+            uint16_t Port;
+        } IPv4;
+
+        struct
+        {
+            in6_addr IP;
+            uint16_t Port;
+        } IPv6;
+    } Address;
 };
 
 struct Socks5_Connect_Response {

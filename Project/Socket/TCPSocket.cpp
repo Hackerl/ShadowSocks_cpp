@@ -75,12 +75,21 @@ bool CTCPSocket::Connect(std::string IP, ushort Port)
     if (!m_IsValid || m_IsConnected)
         return false;
 
+    in_addr Address = {};
+    inet_pton(AF_INET, IP.c_str(), &Address);
+
+    return Connect(Address.s_addr, htons(Port));
+}
+
+bool CTCPSocket::Connect(in_addr_t IP, in_port_t Port)
+{
+    if (!m_IsValid || m_IsConnected)
+        return false;
+
     sockaddr_in Address = {};
 
-    Address.sin_family = AF_INET;
-    Address.sin_port = htons(Port);
-
-    inet_pton(AF_INET, IP.c_str() , &Address.sin_addr);
+    Address.sin_addr.s_addr = IP;
+    Address.sin_port = Port;
 
     int res = connect(m_Socket, (sockaddr *)&Address, sizeof(Address));
 

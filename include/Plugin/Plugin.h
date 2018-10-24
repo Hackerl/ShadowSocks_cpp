@@ -16,7 +16,10 @@ public:
     }
 
 public:
-    bool SetConfig(Json::Value &Config) override = 0;
+    bool SetConfig(Json::Value &Config) override
+    {
+        return true;
+    }
 
     bool NodeInit(void * args)
     {

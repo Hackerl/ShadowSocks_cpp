@@ -20,9 +20,6 @@ public:
     CSocks5Proxy();
 
 public:
-    bool SetConfig(Json::Value &Config) override;
-
-public:
     bool OnDataIn(const void *Buffer, size_t Length) override;
 
 public:

@@ -10,11 +10,6 @@ CSocks5Proxy::CSocks5Proxy()
     m_Status = MethodRequestStage;
 }
 
-bool CSocks5Proxy::SetConfig(Json::Value &Config)
-{
-    return true;
-}
-
 bool CSocks5Proxy::OnDataIn(const void *Buffer, size_t Length)
 {
     bool Res = false;
@@ -70,22 +65,17 @@ bool CSocks5Proxy::MethodRequestHandler(const void *Buffer, size_t Length)
 bool CSocks5Proxy::ConnectRequestHandler(const void *Buffer, size_t Length) {
     do
     {
-        if (Length < sizeof(Socks5_Connect_Request))
-            break;
-
         auto ConnectRequest = (Socks5_Connect_Request *)Buffer;
 
-        if (ConnectRequest->Command != SOCKS5_CONNECT_COMMAND)
+        if (Length < sizeof(ConnectRequest->Header))
             break;
 
-        if (ConnectRequest->AddressType != SocksIPv4Type &&
-            ConnectRequest->AddressType != SocksIPv6Type &&
-            ConnectRequest->AddressType != SocksHostNameType)
+        if (ConnectRequest->Header.Command != SOCKS5_CONNECT_COMMAND)
             break;
 
         CCommonProxyRequest ProxyRequest = ParseSocks5Address(ConnectRequest, Length);
 
-        if (ProxyRequest.AddressType == UnknownType)
+        if (ProxyRequest.Header.AddressType == UnknownType)
             break;
 
         m_Status = ConnectSuccessStage;

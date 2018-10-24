@@ -6,8 +6,6 @@
 #define SHADOWSOCKSR_CPP_COMMONPROTOCOL_H
 
 #include <cstdint>
-#include <netinet/in.h>
-#include <Plugin/Socks5/Socks5Protocol.h>
 #include <cstring>
 #include "Plugin/Socks5/Socks5Protocol.h"
 
@@ -27,11 +25,17 @@ enum CCommonAddressType
     UnknownType
 };
 
+#pragma pack(push, 1)
 struct CCommonProxyRequest
 {
-    CCommonProxyType ProxyType;
-    CCommonAddressType AddressType;
+    struct
+    {
+        CCommonProxyType ProxyType;
+        CCommonAddressType AddressType;
+    } Header;
+
     uint16_t Port;
+
     union
     {
         uint32_t IPv4Address;
@@ -39,42 +43,45 @@ struct CCommonProxyRequest
         uint8_t HostName[MAX_HOST_LENGTH];
     };
 };
+#pragma pack(pop)
 
 inline CCommonProxyRequest ParseSocks5Address(Socks5_Connect_Request * Request, size_t Length)
 {
     CCommonProxyRequest ProxyRequest = {};
 
-    ProxyRequest.ProxyType = Socks5ProxyType;
-    ProxyRequest.AddressType = UnknownType;
+    ProxyRequest.Header.ProxyType = Socks5ProxyType;
+    ProxyRequest.Header.AddressType = UnknownType;
 
-    if (Request->AddressType != SocksIPv4Type && Request->AddressType != SocksIPv6Type && Request->AddressType != SocksHostNameType)
+    if (Request->Header.AddressType != SocksIPv4Type &&
+        Request->Header.AddressType != SocksIPv6Type &&
+        Request->Header.AddressType != SocksHostNameType)
         return ProxyRequest;
 
-    auto Address = (Socks5_Address *) Request->Address;
+    auto & Address = Request->Address;
 
-    switch (Request->AddressType)
+    switch (Request->Header.AddressType)
     {
         case SocksIPv4Type:
-            if (Length < sizeof(Socks5_Connect_Request) + sizeof(Address->IPv4))
+            if (Length < sizeof(Request->Header) + sizeof(Address.IPv4))
                 break;
 
-            ProxyRequest.AddressType =  IPv4Type;
-            ProxyRequest.IPv4Address = Address->IPv4.IP;
-            ProxyRequest.Port = Address->IPv4.Port;
+            ProxyRequest.Header.AddressType =  IPv4Type;
+            ProxyRequest.IPv4Address = Address.IPv4.IP;
+            ProxyRequest.Port = Address.IPv4.Port;
 
             break;
 
         case SocksHostNameType:
-            if (Address->Host.Length >= MAX_HOST_LENGTH)
+            if (Address.Host.Length >= MAX_HOST_LENGTH)
                 break;
 
-            if (Length < sizeof(Socks5_Connect_Request) + Address->Host.Length + sizeof(Address->Host))
+            if (Length < sizeof(Request->Header) + Address.Host.Length + sizeof(Address.Host))
                 break;
 
-            ProxyRequest.AddressType =  HostType;
+            ProxyRequest.Header.AddressType = HostType;
 
-            memcpy(ProxyRequest.HostName, Address->Host.HostName, Address->Host.Length);
-            ProxyRequest.Port = * (uint16_t *)(Address->Host.HostName + Address->Host.Length);
+            memcpy(ProxyRequest.HostName, Address.Host.HostName, Address.Host.Length);
+            ProxyRequest.Port = * (uint16_t *)(Address.Host.HostName + Address.Host.Length);
 
             break;
     }
