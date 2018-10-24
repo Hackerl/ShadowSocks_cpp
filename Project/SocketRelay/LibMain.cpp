@@ -30,6 +30,12 @@ public:
         ITCPSocket * Local = m_Socket->Accept();
         std::cout << "Accept" << std::endl;
 
+        IPlugin * Socks5Proxy = NewSocks5Proxy();
+
+        CSocketRelay * TCPRelay1 = new InstanceManager<CSocketRelay>;
+        TCPRelay1->Init(Local, m_Loop);
+        TCPRelay1->SetPlugin(Socks5Proxy);
+
         Json::Value Config;
 
         Config["TargetIP"] = "127.0.0.1";
@@ -38,9 +44,6 @@ public:
         IPlugin * PortTunnel = NewPortTunnel();
 
         PortTunnel->SetConfig(Config);
-
-        CCommonSocketRelay * TCPRelay1 = new InstanceManager<CCommonSocketRelay>;
-        TCPRelay1->Init(Local, m_Loop);
 
         CSocketRelay * TCPRelay2 = new InstanceManager<CSocketRelay>;
         TCPRelay2->Init(m_Loop);

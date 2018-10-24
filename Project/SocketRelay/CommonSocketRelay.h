@@ -10,8 +10,9 @@
 #include "Pipe/Pipe.h"
 #include "Plugin/IPlugin.h"
 #include <vector>
+#include <SocketRelay/ISocketRelay.h>
 
-class CCommonSocketRelay :public CPipe, public ISocketClientCallback
+class CCommonSocketRelay :public ISocketRelay
 {
 public:
     CCommonSocketRelay();

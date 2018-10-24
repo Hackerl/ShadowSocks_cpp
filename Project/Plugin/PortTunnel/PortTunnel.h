@@ -69,9 +69,8 @@ public:
             NodeInit(Socket);
         }
 
-        return CPlugin::OnPipeIn(Buffer, Length);
+        return m_PipeNode->PipeOut(Buffer, Length);
     }
-
 
 private:
     bool m_IsValid;

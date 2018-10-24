@@ -55,22 +55,6 @@ public:
         m_PipeNode->PipeClose();
     }
 
-    bool Reply(const void *Buffer, size_t Length)
-    {
-        if (m_PipeNode == nullptr)
-            return false;
-
-        return m_PipeNode->PipeOut(Buffer, Length);
-    }
-
-    bool Transmit(const void *Buffer, size_t Length)
-    {
-        if (m_PipeNode == nullptr)
-            return false;
-
-        return m_PipeNode->PipeIn(Buffer, Length);
-    }
-
 protected:
     IPipeNode * m_PipeNode;
 };

@@ -5,31 +5,39 @@
 #include "Socks5.h"
 #include "Plugin/CommonProxy/CommonProtocol.h"
 
-CSocks5::CSocks5() {
+CSocks5Proxy::CSocks5Proxy()
+{
     m_Status = MethodRequestStage;
 }
 
-bool CSocks5::OnPipeIn(const void *Buffer, size_t Length) {
+bool CSocks5Proxy::SetConfig(Json::Value &Config)
+{
+    return true;
+}
 
+bool CSocks5Proxy::OnDataIn(const void *Buffer, size_t Length)
+{
     bool Res = false;
 
     switch (m_Status)
     {
         case MethodRequestStage:
+            MethodRequestHandler(Buffer, Length);
             break;
 
         case ConnectRequestStage:
+            ConnectRequestHandler(Buffer, Length);
             break;
 
         case ConnectSuccessStage:
-            Res = CPlugin::OnPipeIn(Buffer, Length);
+            Res = m_PipeNode->PipeIn(Buffer, Length);
             break;
     }
 
     return Res;
 }
 
-bool CSocks5::MethodRequestHandler(const void *Buffer, size_t Length)
+bool CSocks5Proxy::MethodRequestHandler(const void *Buffer, size_t Length)
 {
     do
     {
@@ -50,7 +58,7 @@ bool CSocks5::MethodRequestHandler(const void *Buffer, size_t Length)
 
         m_Status = ConnectRequestStage;
 
-        return Reply(&MethodResponse, sizeof(MethodResponse));
+        return m_PipeNode->PipeOut(&MethodResponse, sizeof(MethodResponse));
 
     } while (false);
 
@@ -59,7 +67,7 @@ bool CSocks5::MethodRequestHandler(const void *Buffer, size_t Length)
     return false;
 }
 
-bool CSocks5::ConnectRequestHandler(const void *Buffer, size_t Length) {
+bool CSocks5Proxy::ConnectRequestHandler(const void *Buffer, size_t Length) {
     do
     {
         if (Length < sizeof(Socks5_Connect_Request))
@@ -75,8 +83,14 @@ bool CSocks5::ConnectRequestHandler(const void *Buffer, size_t Length) {
             ConnectRequest->AddressType != SocksHostNameType)
             break;
 
-        //auto * Address = (Socks5_Address *)ConnectRequest->Address;
+        CCommonProxyRequest ProxyRequest = ParseSocks5Address(ConnectRequest, Length);
 
+        if (ProxyRequest.AddressType == UnknownType)
+            break;
+
+        m_Status = ConnectSuccessStage;
+
+        return m_PipeNode->PipeIn(&ProxyRequest, sizeof(CCommonProxyRequest));
 
     } while (false);
 

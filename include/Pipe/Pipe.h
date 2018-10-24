@@ -57,7 +57,7 @@ public:
     }
 
 public:
-    virtual void OnPipeClose() = 0;
+    void OnPipeClose() override = 0;
 
     bool OnDataIn(const void *Buffer, size_t Length) override
     {

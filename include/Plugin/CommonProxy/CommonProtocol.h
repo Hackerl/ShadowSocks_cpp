@@ -17,7 +17,6 @@ enum CCommonProxyType
 {
     Socks5ProxyType = 0,
     HTTPTunnelType,
-    UnknownType
 };
 
 enum CCommonAddressType
@@ -25,6 +24,7 @@ enum CCommonAddressType
     HostType = 0,
     IPv4Type,
     IPv6Type,
+    UnknownType
 };
 
 struct CCommonProxyRequest
@@ -40,12 +40,12 @@ struct CCommonProxyRequest
     };
 };
 
-
 inline CCommonProxyRequest ParseSocks5Address(Socks5_Connect_Request * Request, size_t Length)
 {
     CCommonProxyRequest ProxyRequest = {};
 
-    ProxyRequest.ProxyType = UnknownType;
+    ProxyRequest.ProxyType = Socks5ProxyType;
+    ProxyRequest.AddressType = UnknownType;
 
     if (Request->AddressType != SocksIPv4Type && Request->AddressType != SocksIPv6Type && Request->AddressType != SocksHostNameType)
         return ProxyRequest;
@@ -58,7 +58,6 @@ inline CCommonProxyRequest ParseSocks5Address(Socks5_Connect_Request * Request, 
             if (Length < sizeof(Socks5_Connect_Request) + sizeof(Address->IPv4))
                 break;
 
-            ProxyRequest.ProxyType = Socks5ProxyType;
             ProxyRequest.AddressType =  IPv4Type;
             ProxyRequest.IPv4Address = Address->IPv4.IP;
             ProxyRequest.Port = Address->IPv4.Port;
@@ -66,10 +65,12 @@ inline CCommonProxyRequest ParseSocks5Address(Socks5_Connect_Request * Request, 
             break;
 
         case SocksHostNameType:
+            if (Address->Host.Length >= MAX_HOST_LENGTH)
+                break;
+
             if (Length < sizeof(Socks5_Connect_Request) + Address->Host.Length + sizeof(Address->Host))
                 break;
 
-            ProxyRequest.ProxyType = Socks5ProxyType;
             ProxyRequest.AddressType =  HostType;
 
             memcpy(ProxyRequest.HostName, Address->Host.HostName, Address->Host.Length);
@@ -79,7 +80,6 @@ inline CCommonProxyRequest ParseSocks5Address(Socks5_Connect_Request * Request, 
     }
 
     return ProxyRequest;
-
 }
 
 #endif //SHADOWSOCKSR_CPP_COMMONPROTOCOL_H

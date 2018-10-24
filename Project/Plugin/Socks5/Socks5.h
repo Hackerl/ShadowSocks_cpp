@@ -14,13 +14,16 @@ enum CSock5Status
     ConnectSuccessStage
 };
 
-class CSocks5 : public CPlugin
+class CSocks5Proxy : public CPlugin
 {
 public:
-    CSocks5();
+    CSocks5Proxy();
 
 public:
-    bool OnPipeIn(const void *Buffer, size_t Length) override;
+    bool SetConfig(Json::Value &Config) override;
+
+public:
+    bool OnDataIn(const void *Buffer, size_t Length) override;
 
 public:
     bool MethodRequestHandler(const void *Buffer, size_t Length);

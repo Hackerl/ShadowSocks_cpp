@@ -24,6 +24,7 @@ public:
     bool PipeIn(const void *Buffer, size_t Length) override = 0;
     bool PipeOut(const void *Buffer, size_t Length) override = 0;
     void PipeClose() override = 0;
+    virtual void OnPipeClose() = 0;
     virtual bool OnDataIn(const void *Buffer, size_t Length) = 0;
     virtual bool OnPipeIn(const void *Buffer, size_t Length) = 0;
     virtual void PipeConnect(IPipe * Pipe) = 0;
