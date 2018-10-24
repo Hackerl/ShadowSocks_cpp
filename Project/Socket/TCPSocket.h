@@ -11,7 +11,7 @@ class CTCPSocket : public ITCPSocket
 {
 public:
     CTCPSocket();
-    CTCPSocket(int fd, bool IsConnected);
+    CTCPSocket(int fd, bool IsConnected = true);
     ~CTCPSocket();
 
 public:
@@ -23,7 +23,7 @@ public:
     ssize_t Recv(void *Buffer, size_t Length, int Flag) override;
     ssize_t Send(const void *Buffer, size_t Length, int Flag) override;
     bool Connect(std::string IP, ushort Port) override;
-    int Accept() override;
+    ITCPSocket * Accept() override;
     bool Close() override;
 
 private:

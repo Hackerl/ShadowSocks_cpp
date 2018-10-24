@@ -89,17 +89,17 @@ bool CTCPSocket::Connect(std::string IP, ushort Port)
     return m_IsConnected;
 }
 
-int CTCPSocket::Accept()
+ITCPSocket * CTCPSocket::Accept()
 {
     if (!m_IsValid)
-        return -1;
+        return nullptr;
 
     sockaddr_in Address = {};
     socklen_t AddressLen = 0;
 
     int fd = accept(m_Socket, (sockaddr *)&Address, &AddressLen);
 
-    return fd;
+    return new CTCPSocket(fd);
 }
 
 int CTCPSocket::GetSocket()

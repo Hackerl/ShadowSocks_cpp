@@ -27,10 +27,8 @@ public:
 public:
     void OnAccept(int fd, short Event) override
     {
-        int Client = m_Socket->Accept();
+        ITCPSocket * Local = m_Socket->Accept();
         std::cout << "Accept" << std::endl;
-
-        ITCPSocket * Local = GetTCPSocket(Client);
 
         Json::Value Config;
 

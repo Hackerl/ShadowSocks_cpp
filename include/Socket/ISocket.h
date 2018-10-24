@@ -24,7 +24,7 @@ public:
     virtual bool Bind(std::string IP, ushort Port) = 0;
     virtual bool Listen(int backlog = 255) = 0;
     virtual bool Connect(std::string IP, ushort Port) = 0;
-    virtual int Accept() = 0;
+    virtual ITCPSocket * Accept() = 0;
 };
 
 class IUDPSocket : public IIOSocket
