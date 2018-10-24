@@ -14,7 +14,7 @@ public:
     ~CSocketRelay();
 
 public:
-    void SetPlugin(IPlugin * Plugin);
+    void SetPlugin(IPlugin * Plugin) override;
 
 public:
     bool OnDataIn(const void *Buffer, size_t Length) override;

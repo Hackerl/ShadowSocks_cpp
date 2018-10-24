@@ -5,25 +5,22 @@
 #ifndef SHADOWSOCKSR_CPP_COMMONSOCKETRELAY_H
 #define SHADOWSOCKSR_CPP_COMMONSOCKETRELAY_H
 
-#include "Socket/ISocket.h"
-#include "EventLoop/IEventLoop.h"
 #include "Pipe/Pipe.h"
-#include "Plugin/IPlugin.h"
+#include "SocketRelay/ISocketRelay.h"
 #include <vector>
-#include <SocketRelay/ISocketRelay.h>
 
-class CCommonSocketRelay :public ISocketRelay
+class CCommonSocketRelay : public CPipe, public ISocketClientCallback, public ISocketRelay
 {
 public:
     CCommonSocketRelay();
     ~CCommonSocketRelay();
 
 public:
-    void Init(IIOSocket * Socket, IEventLoop * Loop);
-    void Init(IEventLoop * Loop);
-    void PipeInit(void * args) override;
+    void Init(IEventLoop * Loop, IIOSocket * Socket);
+    void SetPlugin(IPlugin * Plugin) override;
 
 public:
+    void PipeInit(void * args) override;
     bool PipeOut(const void *Buffer, size_t Length) override;
     void OnPipeClose() override;
 

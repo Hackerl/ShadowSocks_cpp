@@ -23,18 +23,18 @@ void CCommonSocketRelay::PipeInit(void *args)
         m_Loop->AddClient(m_Socket->GetSocket(), this);
 }
 
-void CCommonSocketRelay::Init(IIOSocket *Socket, IEventLoop *Loop)
+void CCommonSocketRelay::Init(IEventLoop *Loop, IIOSocket * Socket)
 {
-    m_Socket = Socket;
     m_Loop = Loop;
+    m_Socket = Socket;
 
     if (m_Loop != nullptr && m_Socket != nullptr)
         m_Loop->AddClient(m_Socket->GetSocket(), this);
 }
 
-void CCommonSocketRelay::Init(IEventLoop *Loop)
+void CCommonSocketRelay::SetPlugin(IPlugin *Plugin)
 {
-    m_Loop = Loop;
+
 }
 
 CCommonSocketRelay::~CCommonSocketRelay()

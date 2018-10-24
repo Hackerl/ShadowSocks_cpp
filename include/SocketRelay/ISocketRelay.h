@@ -5,13 +5,16 @@
 #ifndef SHADOWSOCKSR_CPP_ISOCKETRELAY_H
 #define SHADOWSOCKSR_CPP_ISOCKETRELAY_H
 
-#include "Pipe/IPipe.h"
-#include "Pipe/Pipe.h"
+#include "Common/Interface.h"
+#include "Plugin/IPlugin.h"
 #include "Socket/ISocket.h"
+#include "EventLoop/IEventLoop.h"
 
-class ISocketRelay : public CPipe, public ISocketClientCallback
+class ISocketRelay : public Interface
 {
-
+public:
+    virtual void Init(IEventLoop * Loop, IIOSocket * Socket = nullptr) = 0;
+    virtual void SetPlugin(IPlugin * Plugin) = 0;
 };
 
 

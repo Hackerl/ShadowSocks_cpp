@@ -7,6 +7,7 @@
 
 #include "IInstanceManager.h"
 #include "Mutex.h"
+#include <iostream>
 
 template <class T>
 class InstanceManager : public IInstanceManager , public T
@@ -22,14 +23,20 @@ public:
     {
         AutoMutex _0_(m_Mutex);
         m_Ref ++;
+        std::cout << "addref" << m_Ref << std::endl;
     }
 
     void Release() override
     {
         AutoMutex _0_(m_Mutex);
 
+        std::cout << "release" << m_Ref - 1 << std::endl;
+
         if (-- m_Ref == 0)
+        {
+            std::cout << "Delete" << std::endl;
             delete this;
+        }
     }
 
 private:

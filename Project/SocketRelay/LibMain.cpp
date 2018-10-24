@@ -33,7 +33,7 @@ public:
         IPlugin * Socks5Proxy = NewSocks5Proxy();
 
         CSocketRelay * TCPRelay1 = new InstanceManager<CSocketRelay>;
-        TCPRelay1->Init(Local, m_Loop);
+        TCPRelay1->Init(m_Loop, Local);
         TCPRelay1->SetPlugin(Socks5Proxy);
 
         Json::Value Config;
@@ -46,7 +46,7 @@ public:
         PortTunnel->SetConfig(Config);
 
         CSocketRelay * TCPRelay2 = new InstanceManager<CSocketRelay>;
-        TCPRelay2->Init(m_Loop);
+        TCPRelay2->Init(m_Loop, nullptr);
         TCPRelay2->SetPlugin(PortTunnel);
 
         PairPipeConnect(TCPRelay1, TCPRelay2);

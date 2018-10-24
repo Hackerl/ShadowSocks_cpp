@@ -37,10 +37,17 @@ public:
     virtual bool InitDelay(T & arg) = 0;
 };
 
-inline void PairPipeConnect(IPipe * X, IPipe * Y)
+template <class T>
+inline void PairPipeConnect(T * X, T * Y)
 {
-    X->PipeConnect(Y);
-    Y->PipeConnect(X);
+    auto PipeX = dynamic_cast<IPipe *>(X);
+    auto PipeY = dynamic_cast<IPipe *>(Y);
+
+    if (PipeX != nullptr && PipeY != nullptr)
+    {
+        PipeX->PipeConnect(PipeY);
+        PipeX->PipeConnect(PipeX);
+    }
 };
 
 #endif //SHADOWSOCKSR_CPP_IPIPE_H
