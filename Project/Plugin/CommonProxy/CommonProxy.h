@@ -6,6 +6,7 @@
 #define SHADOWSOCKSR_CPP_COMMONPROXY_H
 
 #include "Plugin/Plugin.h"
+#include "Plugin/CommonProxy/CommonProtocol.h"
 
 class CommonProxy : public CPlugin
 {
@@ -14,6 +15,9 @@ public:
 
 public:
     bool OnPipeIn(const void *Buffer, size_t Length) override;
+
+public:
+    bool Socks5ProxyHandler(CCommonProxyRequest * ProxyRequest, size_t Length);
 
 private:
     bool m_HasInit;
