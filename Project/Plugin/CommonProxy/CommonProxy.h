@@ -17,7 +17,7 @@ public:
     bool OnPipeIn(const void *Buffer, size_t Length) override;
 
 public:
-    bool Socks5ProxyHandler(CCommonProxyRequest * ProxyRequest, size_t Length);
+    bool CommonProxyHandler(CCommonProxyRequest *ProxyRequest, size_t Length);
 
 private:
     bool m_HasInit;

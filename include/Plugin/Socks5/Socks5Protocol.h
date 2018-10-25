@@ -63,23 +63,30 @@ struct Socks5_Connect_Request {
 };
 
 struct Socks5_Connect_Response {
-    struct
-    {
+    struct {
         uint8_t Version;
         uint8_t Response;
         uint8_t Reserved;
         uint8_t AddressType;
     } Header;
 
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             uint32_t IP;
             uint16_t Port;
         } IPv4;
 
     } Address;
+
+    Socks5_Connect_Response() : Header(), Address()
+    {
+        Header.Version = SOCKS5_VERSION;
+        Header.Response = 0x01;
+        Header.Reserved = 0x00;
+        Header.AddressType = SocksIPv4Type;
+        Address.IPv4.IP = 0x00;
+        Address.IPv4.Port = 0x80;
+    }
 };
 
 #pragma pack(pop)

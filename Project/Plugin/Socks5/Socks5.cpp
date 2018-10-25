@@ -80,7 +80,13 @@ bool CSocks5Proxy::ConnectRequestHandler(const void *Buffer, size_t Length) {
 
         m_Status = ConnectSuccessStage;
 
-        return m_PipeNode->PipeIn(&ProxyRequest, sizeof(CCommonProxyRequest));
+        bool Res = m_PipeNode->PipeIn(&ProxyRequest, sizeof(CCommonProxyRequest));
+
+        Socks5_Connect_Response Response = {};
+
+        Response.Header.Response = Res ? uint8_t(0x00): uint8_t(0x01);
+
+        return m_PipeNode->PipeOut(&Response, sizeof(Socks5_Connect_Response));;
 
     } while (false);
 
