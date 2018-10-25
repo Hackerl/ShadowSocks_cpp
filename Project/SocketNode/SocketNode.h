@@ -28,7 +28,7 @@ public:
     void OnWrite(int fd, short Event) override;
     void OnClose(int fd, short Event) override;
 
-private:
+protected:
     IIOSocket * m_Socket;
     std::vector<u_char> m_WriteBuffer;
     IEventLoop * m_Loop;

@@ -10,7 +10,11 @@ CSocks5Proxy::CSocks5Proxy()
     m_Status = MethodRequestStage;
 }
 
-bool CSocks5Proxy::OnDataIn(const void *Buffer, size_t Length)
+bool CSocks5Proxy::SetConfig(Json::Value &Config) {
+    return true;
+}
+
+bool CSocks5Proxy::OnUpStream(const void *Buffer, size_t Length)
 {
     bool Res = false;
 
@@ -25,7 +29,7 @@ bool CSocks5Proxy::OnDataIn(const void *Buffer, size_t Length)
             break;
 
         case ConnectSuccessStage:
-            Res = m_PipeNode->PipeIn(Buffer, Length);
+            Res = UpStream(Buffer, Length);
             break;
     }
 
@@ -53,11 +57,12 @@ bool CSocks5Proxy::MethodRequestHandler(const void *Buffer, size_t Length)
 
         m_Status = ConnectRequestStage;
 
-        return m_PipeNode->PipeOut(&MethodResponse, sizeof(MethodResponse));
+        return DownStream(&MethodResponse, sizeof(MethodResponse));
 
     } while (false);
 
-    Destroy();
+    //TODO
+    //Destroy();
 
     return false;
 }
@@ -80,17 +85,18 @@ bool CSocks5Proxy::ConnectRequestHandler(const void *Buffer, size_t Length) {
 
         m_Status = ConnectSuccessStage;
 
-        bool Res = m_PipeNode->PipeIn(&ProxyRequest, sizeof(CCommonProxyRequest));
+        bool Res = UpStream(&ProxyRequest, sizeof(CCommonProxyRequest));
 
         Socks5_Connect_Response Response = {};
 
         Response.Header.Response = Res ? uint8_t(0x00): uint8_t(0x01);
 
-        return m_PipeNode->PipeOut(&Response, sizeof(Socks5_Connect_Response));;
+        return DownStream(&Response, sizeof(Socks5_Connect_Response));;
 
     } while (false);
 
-    Destroy();
+    //TODO
+    //Destroy();
 
     return false;
 }

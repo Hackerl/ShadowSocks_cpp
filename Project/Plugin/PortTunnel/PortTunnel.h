@@ -5,7 +5,8 @@
 #ifndef SHADOWSOCKSR_CPP_PORTTUNNEL_H
 #define SHADOWSOCKSR_CPP_PORTTUNNEL_H
 
-#include "Plugin/Plugin.h"
+#include "Plugin/IPlugin.h"
+#include "Node/Node.h"
 #include "Common/JSONHelper.h"
 #include "Socket/LibSocketExport.h"
 
@@ -15,7 +16,7 @@ struct CTunnelConfig
     u_short TargetPort;
 };
 
-class CPortTunnel : public CPlugin
+class CPortTunnel : public IPlugin, public CNode
 {
 public:
     CPortTunnel() : m_Config()
@@ -41,11 +42,12 @@ public:
         return true;
     }
 
-    bool OnPipeIn(const void *Buffer, size_t Length) override
+    bool OnUpStream(const void *Buffer, size_t Length) override
     {
         if (!m_IsValid)
         {
-            Destroy();
+            //TODO
+            //Destroy();
             return false;
         }
 
@@ -61,15 +63,16 @@ public:
 
                 delete Socket;
 
-                Destroy();
+                //TODO
+                //Destroy();
 
                 return false;
             }
 
-            NodeInit(Socket);
+            InitUpNode(Socket);
         }
 
-        return m_PipeNode->PipeOut(Buffer, Length);
+        return UpStream(Buffer, Length);
     }
 
 private:

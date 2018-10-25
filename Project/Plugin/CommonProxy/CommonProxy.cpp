@@ -13,10 +13,15 @@ CommonProxy::CommonProxy()
     m_HasInit = false;
 }
 
-bool CommonProxy::OnPipeIn(const void *Buffer, size_t Length)
+bool CommonProxy::SetConfig(Json::Value &Config)
+{
+    return true;
+}
+
+bool CommonProxy::OnUpStream(const void *Buffer, size_t Length)
 {
     if (m_HasInit)
-        return m_PipeNode->PipeOut(Buffer, Length);
+        return UpStream(Buffer, Length);
 
     m_HasInit = true;
 
@@ -38,7 +43,7 @@ bool CommonProxy::CommonProxyHandler(CCommonProxyRequest *ProxyRequest, size_t L
         return false;
     }
 
-    NodeInit(Socket);
+    InitUpNode(Socket);
 
     return true;
 }

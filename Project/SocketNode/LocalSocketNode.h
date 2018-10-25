@@ -7,7 +7,7 @@
 
 #include "SocketNode.h"
 
-class LocalSocketNode : public CSocketNode
+class CLocalSocketNode : public CSocketNode
 {
 public:
     bool DataIn(const void *Buffer, size_t Length) override

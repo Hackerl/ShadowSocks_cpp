@@ -5,16 +5,20 @@
 #ifndef SHADOWSOCKSR_CPP_COMMONPROXY_H
 #define SHADOWSOCKSR_CPP_COMMONPROXY_H
 
+#include <Node/Node.h>
 #include "Plugin/Plugin.h"
 #include "Plugin/CommonProxy/CommonProtocol.h"
 
-class CommonProxy : public CPlugin
+class CommonProxy : public IPlugin, public CNode
 {
 public:
     CommonProxy();
 
 public:
-    bool OnPipeIn(const void *Buffer, size_t Length) override;
+    bool SetConfig(Json::Value &Config) override;
+
+public:
+    bool OnUpStream(const void *Buffer, size_t Length) override;
 
 public:
     bool CommonProxyHandler(CCommonProxyRequest *ProxyRequest, size_t Length);

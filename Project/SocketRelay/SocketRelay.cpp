@@ -21,7 +21,7 @@ CSocketRelay::~CSocketRelay()
 void CSocketRelay::SetPlugin(IPlugin * Plugin)
 {
     m_Plugin = Plugin;
-    Plugin->SetPipe(this);
+    //Plugin->SetPipe(this);
 }
 
 bool CSocketRelay::OnDataIn(const void *Buffer, size_t Length)
@@ -29,7 +29,7 @@ bool CSocketRelay::OnDataIn(const void *Buffer, size_t Length)
     if (m_Plugin == nullptr)
         return false;
 
-    return m_Plugin->OnDataIn(Buffer, Length);
+    //return m_Plugin->OnDataIn(Buffer, Length);
 }
 
 bool CSocketRelay::OnPipeIn(const void *Buffer, size_t Length)
@@ -37,5 +37,5 @@ bool CSocketRelay::OnPipeIn(const void *Buffer, size_t Length)
     if (m_Plugin == nullptr)
         return false;
 
-    return m_Plugin->OnPipeIn(Buffer, Length);
+    //return m_Plugin->OnPipeIn(Buffer, Length);
 }
