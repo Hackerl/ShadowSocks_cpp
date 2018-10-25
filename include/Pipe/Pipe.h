@@ -46,14 +46,15 @@ public:
 
         m_PipeClosed = true;
 
+        OnPipeClose();
+
         if (m_PipePort != nullptr)
         {
+            IPipe * TmpPtr = m_PipePort;
             m_PipePort->PipeClose();
-            Release(m_PipePort);
+            Release(TmpPtr);
             m_PipePort = nullptr;
         }
-
-        OnPipeClose();
     }
 
 public:

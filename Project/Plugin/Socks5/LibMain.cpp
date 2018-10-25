@@ -35,18 +35,11 @@ public:
         TCPRelay1->Init(m_Loop, Local);
         TCPRelay1->SetPlugin(Socks5Proxy);
 
-        Json::Value Config;
-
-        Config["TargetIP"] = "127.0.0.1";
-        Config["TargetPort"] = 4444;
-
-        IPlugin * PortTunnel = NewPortTunnel();
-
-        PortTunnel->SetConfig(Config);
+        IPlugin * CommonProxy = NewCommonProxy();
 
         ISocketRelay * TCPRelay2 = NewSocketRelay();
         TCPRelay2->Init(m_Loop, nullptr);
-        TCPRelay2->SetPlugin(PortTunnel);
+        TCPRelay2->SetPlugin(CommonProxy);
 
         PairPipeConnect(TCPRelay1, TCPRelay2);
     }

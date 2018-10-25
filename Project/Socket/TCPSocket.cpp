@@ -88,6 +88,7 @@ bool CTCPSocket::Connect(in_addr_t IP, in_port_t Port)
 
     sockaddr_in Address = {};
 
+    Address.sin_family = AF_INET;
     Address.sin_addr.s_addr = IP;
     Address.sin_port = Port;
 

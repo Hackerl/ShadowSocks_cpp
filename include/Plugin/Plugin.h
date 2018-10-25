@@ -50,10 +50,10 @@ public:
         return m_PipeNode->PipeIn(Buffer, Length);
     }
 
-    bool Destroy()
+    void Destroy()
     {
         if (m_PipeNode == nullptr)
-            return false;
+            return;
 
         m_PipeNode->PipeClose();
     }

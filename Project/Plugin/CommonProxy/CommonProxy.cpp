@@ -6,6 +6,7 @@
 
 #include <Socket/LibSocketExport.h>
 #include <Plugin/CommonProxy/CommonProtocol.h>
+#include <Plugin/Socks5/Socks5Protocol.h>
 
 CommonProxy::CommonProxy()
 {
@@ -23,11 +24,14 @@ bool CommonProxy::OnPipeIn(const void *Buffer, size_t Length)
 
     auto ProxyRequest = (CCommonProxyRequest *) Buffer;
 
-    switch (ProxyRequest->Header.AddressType)
+    switch (ProxyRequest->Header.ProxyType)
     {
         case Socks5ProxyType:
             Res = Socks5ProxyHandler(ProxyRequest, Length);
             break;
+
+        default:
+            Destroy();
     }
 
     return Res;
@@ -35,6 +39,15 @@ bool CommonProxy::OnPipeIn(const void *Buffer, size_t Length)
 
 bool CommonProxy::Socks5ProxyHandler(CCommonProxyRequest *ProxyRequest, size_t Length)
 {
+    Socks5_Connect_Response Response = {};
+
+    Response.Header.Version = SOCKS5_VERSION;
+    Response.Header.Response = 0x00;
+    Response.Header.Reserved = 0x00;
+    Response.Header.AddressType = SocksIPv4Type;
+    Response.Address.IPv4.IP = 0x00;
+    Response.Address.IPv4.Port = 0x80;
+
     switch (ProxyRequest->Header.AddressType)
     {
         case IPv4Type:
@@ -48,19 +61,18 @@ bool CommonProxy::Socks5ProxyHandler(CCommonProxyRequest *ProxyRequest, size_t L
                 Socket->Close();
                 delete Socket;
 
+                Response.Header.Response = 0x01;
+                m_PipeNode->PipeIn(&Response, sizeof(Response));
+
                 break;
             }
 
-            Socks5_Connect_Response Response = {};
+            NodeInit(Socket);
 
-            Response.Version = SOCKS5_VERSION;
-            Response.Response = 0x00;
-            Response.Reserved = 0x00;
+            m_PipeNode->PipeIn(&Response, sizeof(Response));
 
-            return m_PipeNode->PipeIn(&Response, sizeof(Response));
+            break;
     }
 
-    Destroy();
-
-    return false;
+    return true;
 }

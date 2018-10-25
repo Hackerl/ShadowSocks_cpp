@@ -46,7 +46,7 @@ inline void PairPipeConnect(T * X, T * Y)
     if (PipeX != nullptr && PipeY != nullptr)
     {
         PipeX->PipeConnect(PipeY);
-        PipeX->PipeConnect(PipeX);
+        PipeY->PipeConnect(PipeX);
     }
 };
 

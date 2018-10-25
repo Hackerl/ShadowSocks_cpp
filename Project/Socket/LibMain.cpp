@@ -127,6 +127,6 @@ void TestEventCallback()
 
 int main()
 {
-    TestEventCallback();
+    TestClient();
     return 0;
 }
