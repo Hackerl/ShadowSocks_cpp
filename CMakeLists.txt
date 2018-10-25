@@ -15,6 +15,7 @@ add_subdirectory(Project/Pipe)
 add_subdirectory(Project/Socket)
 add_subdirectory(Project/EventLoop)
 add_subdirectory(Project/SocketRelay)
+add_subdirectory(Project/SocketNode)
 add_subdirectory(Project/ShadowSocksr)
 
 add_subdirectory(Project/Plugin/PortTunnel)
