@@ -35,6 +35,14 @@ void CSocketNode::Init(IEventLoop *Loop, IIOSocket *Socket)
         m_Loop->AddClient(m_Socket->GetSocket(), this);
 }
 
+void CSocketNode::NodeClose()
+{
+    CNode::NodeClose();
+
+    if (m_Loop != nullptr && m_Socket != nullptr)
+        m_Loop->Remove(m_Socket->GetSocket());
+}
+
 bool CSocketNode::DataOut(const void *Buffer, size_t Length)
 {
     if (m_Loop == nullptr || m_Socket == nullptr)
@@ -65,7 +73,12 @@ void CSocketNode::OnRead(int fd, short Event)
     ssize_t ReadLen = m_Socket->Recv(Buffer, TCP_MSS, 0);
 
     if (ReadLen > 0)
-        DataIn(Buffer, ReadLen);
+    {
+        bool NodeListStatus = DataIn(Buffer, ReadLen);
+
+        if (!NodeListStatus)
+            NodeClose();
+    }
 }
 
 void CSocketNode::OnWrite(int fd, short Event)
@@ -89,5 +102,5 @@ void CSocketNode::OnWrite(int fd, short Event)
 
 void CSocketNode::OnClose(int fd, short Event)
 {
-
+    NodeClose();
 }

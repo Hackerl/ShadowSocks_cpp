@@ -8,14 +8,20 @@
 #include <cstddef>
 #include "Common/Interface.h"
 
-class INodeCallback : public Interface
+class INodeClose : public Interface
+{
+public:
+    virtual void NodeClose() = 0;
+};
+
+class INodeCallback : public INodeClose
 {
 public:
     virtual bool OnUpStream(const void *Buffer, size_t Length) = 0;
     virtual bool OnDownStream(const void *Buffer, size_t Length) = 0;
 };
 
-class INode : public Interface
+class INode : public INodeClose
 {
 public:
     virtual bool UpStream(const void *Buffer, size_t Length) = 0;

@@ -18,6 +18,7 @@ public:
 
 public:
     void Init(IEventLoop * Loop, IIOSocket * Socket);
+    void NodeClose() override;
 
 public:
     virtual bool DataIn(const void *Buffer, size_t Length) = 0;

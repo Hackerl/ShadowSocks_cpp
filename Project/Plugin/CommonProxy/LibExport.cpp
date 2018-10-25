@@ -3,9 +3,10 @@
 //
 
 #include "CommonProxy.h"
+#include "Common/InstanceManager.h"
 #include "Plugin/LibPluginExport.h"
 
 extern "C" IPlugin * NewCommonProxy()
 {
-    return new CommonProxy;
+    return new InstanceManager<CommonProxy>;
 }

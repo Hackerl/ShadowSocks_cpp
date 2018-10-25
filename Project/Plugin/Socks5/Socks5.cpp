@@ -38,65 +38,51 @@ bool CSocks5Proxy::OnUpStream(const void *Buffer, size_t Length)
 
 bool CSocks5Proxy::MethodRequestHandler(const void *Buffer, size_t Length)
 {
-    do
-    {
-        if (Length < sizeof(Socks5_Method_Request))
-            break;
+    if (Length < sizeof(Socks5_Method_Request))
+        return false;
 
-        auto MethodRequest = (Socks5_Method_Request *) Buffer;
+    auto MethodRequest = (Socks5_Method_Request *) Buffer;
 
-        if (Length < MethodRequest->NMethods + sizeof(Socks5_Method_Request))
-            break;
+    if (Length < MethodRequest->NMethods + sizeof(Socks5_Method_Request))
+        return false;
 
-        //TO-DO Choose method
+    //TO-DO Choose method
 
-        Socks5_Method_Response MethodResponse = {};
+    Socks5_Method_Response MethodResponse = {};
 
-        MethodResponse.Version = SOCKS5_VERSION;
-        MethodResponse.Method = SOCKS5_NO_AUTH_METHOD;
+    MethodResponse.Version = SOCKS5_VERSION;
+    MethodResponse.Method = SOCKS5_NO_AUTH_METHOD;
 
-        m_Status = ConnectRequestStage;
+    m_Status = ConnectRequestStage;
 
-        return DownStream(&MethodResponse, sizeof(MethodResponse));
+    return DownStream(&MethodResponse, sizeof(MethodResponse));
 
-    } while (false);
-
-    //TODO
-    //Destroy();
-
-    return false;
 }
 
-bool CSocks5Proxy::ConnectRequestHandler(const void *Buffer, size_t Length) {
-    do
-    {
-        auto ConnectRequest = (Socks5_Connect_Request *)Buffer;
+bool CSocks5Proxy::ConnectRequestHandler(const void *Buffer, size_t Length)
+{
+    auto ConnectRequest = (Socks5_Connect_Request *)Buffer;
 
-        if (Length < sizeof(ConnectRequest->Header))
-            break;
+    if (Length < sizeof(ConnectRequest->Header))
+        return false;
 
-        if (ConnectRequest->Header.Command != SOCKS5_CONNECT_COMMAND)
-            break;
+    if (ConnectRequest->Header.Command != SOCKS5_CONNECT_COMMAND)
+        return false;
 
-        CCommonProxyRequest ProxyRequest = ParseSocks5Address(ConnectRequest, Length);
+    CCommonProxyRequest ProxyRequest = ParseSocks5Address(ConnectRequest, Length);
 
-        if (ProxyRequest.Header.AddressType == UnknownType)
-            break;
+    if (ProxyRequest.Header.AddressType == UnknownType)
+        return false;
 
-        m_Status = ConnectSuccessStage;
+    m_Status = ConnectSuccessStage;
 
-        bool Res = UpStream(&ProxyRequest, sizeof(CCommonProxyRequest));
+    bool Res = UpStream(&ProxyRequest, sizeof(CCommonProxyRequest));
 
-        Socks5_Connect_Response Response = {};
+    //TODO split the response
 
-        Response.Header.Response = Res ? uint8_t(0x00): uint8_t(0x01);
+    Socks5_Connect_Response Response = {};
 
-        return DownStream(&Response, sizeof(Socks5_Connect_Response));;
+    Response.Header.Response = Res ? uint8_t(0x00): uint8_t(0x01);
 
-    } while (false);
-
-    //TODO
-    //Destroy();
-
-    return false;
+    return DownStream(&Response, sizeof(Socks5_Connect_Response));;
 }

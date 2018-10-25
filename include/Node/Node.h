@@ -6,7 +6,7 @@
 #define SHADOWSOCKSR_CPP_NODE_H
 
 #include "INode.h"
-
+#include "Common/IInstanceManager.h"
 class CNode : public INode, public INodeCallback
 {
 public:
@@ -14,6 +14,29 @@ public:
     {
         m_UpNode = nullptr;
         m_DownNode = nullptr;
+        m_NodeClosed = false;
+    }
+
+public:
+    void NodeClose() override
+    {
+        if (m_NodeClosed)
+            return;
+
+        m_NodeClosed = true;
+
+        if (m_UpNode != nullptr)
+        {
+            m_UpNode->NodeClose();
+            Release(m_UpNode);
+        }
+
+        if (m_DownNode != nullptr)
+        {
+            auto TmpPtr = m_DownNode;
+            m_DownNode->NodeClose();
+            Release(TmpPtr);
+        }
     }
 
 public:
@@ -45,7 +68,6 @@ public:
     }
 
 public:
-
     bool OnUpStream(const void *Buffer, size_t Length) override
     {
         UpStream(Buffer, Length);
@@ -72,6 +94,7 @@ public:
     }
 
 private:
+    bool m_NodeClosed;
     INodeCallback * m_UpNode;
     INodeCallback * m_DownNode;
 };

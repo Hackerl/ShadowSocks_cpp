@@ -45,11 +45,7 @@ public:
     bool OnUpStream(const void *Buffer, size_t Length) override
     {
         if (!m_IsValid)
-        {
-            //TODO
-            //Destroy();
             return false;
-        }
 
         if (!m_HasInit)
         {
@@ -62,9 +58,6 @@ public:
                 Socket->Close();
 
                 delete Socket;
-
-                //TODO
-                //Destroy();
 
                 return false;
             }
