@@ -14,8 +14,9 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 add_subdirectory(Project/Socket)
 add_subdirectory(Project/EventLoop)
 add_subdirectory(Project/SocketNode)
-add_subdirectory(Project/ShadowSocksr)
 
 add_subdirectory(Project/Plugin/PortTunnel)
 add_subdirectory(Project/Plugin/SocksClient)
 add_subdirectory(Project/Plugin/ProxyServer)
+
+add_subdirectory(Project/ShadowSocksr)
