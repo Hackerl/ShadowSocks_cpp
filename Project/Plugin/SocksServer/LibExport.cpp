@@ -2,7 +2,7 @@
 // Created by patteliu on 2018/10/25.
 //
 
-#include "ProxyServer.h"
+#include "SocksServer.h"
 #include "Common/InstanceManager.h"
 #include "Plugin/LibPluginExport.h"
 

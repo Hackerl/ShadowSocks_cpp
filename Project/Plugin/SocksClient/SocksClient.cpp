@@ -46,7 +46,7 @@ bool CSocks5Proxy::MethodRequestHandler(const void *Buffer, size_t Length)
     if (Length < MethodRequest->NMethods + sizeof(Socks5_Method_Request))
         return false;
 
-    //TO-DO Choose method
+    //TODO Choose method
 
     Socks5_Method_Response MethodResponse = {};
 

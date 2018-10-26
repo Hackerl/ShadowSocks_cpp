@@ -2,8 +2,8 @@
 // Created by patteliu on 2018/10/24.
 //
 
-#ifndef SHADOWSOCKSR_CPP_SOCKS5_H
-#define SHADOWSOCKSR_CPP_SOCKS5_H
+#ifndef SHADOWSOCKSR_CPP_SOCKSCLIENT_H
+#define SHADOWSOCKSR_CPP_SOCKSCLIENT_H
 
 #include <Node/Node.h>
 #include "Plugin/Plugin.h"
@@ -34,5 +34,4 @@ private:
     CSock5Status m_Status;
 };
 
-
-#endif //SHADOWSOCKSR_CPP_SOCKS5_H
+#endif //SHADOWSOCKSR_CPP_SOCKSCLIENT_H

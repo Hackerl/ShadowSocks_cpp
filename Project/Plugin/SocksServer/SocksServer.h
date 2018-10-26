@@ -2,8 +2,8 @@
 // Created by patteliu on 2018/10/24.
 //
 
-#ifndef SHADOWSOCKSR_CPP_COMMONPROXY_H
-#define SHADOWSOCKSR_CPP_COMMONPROXY_H
+#ifndef SHADOWSOCKSR_CPP_SOCKSSERVER_H
+#define SHADOWSOCKSR_CPP_SOCKSSERVER_H
 
 #include <Node/Node.h>
 #include "Plugin/Plugin.h"
@@ -27,4 +27,4 @@ private:
     bool m_HasInit;
 };
 
-#endif //SHADOWSOCKSR_CPP_COMMONPROXY_H
+#endif //SHADOWSOCKSR_CPP_SOCKSSERVER_H

@@ -2,7 +2,7 @@
 // Created by patteliu on 2018/10/24.
 //
 
-#include "ProxyServer.h"
+#include "SocksServer.h"
 
 #include <Socket/LibSocketExport.h>
 #include <Plugin/CommonProxy/CommonProtocol.h>

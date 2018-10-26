@@ -18,7 +18,7 @@ public:
         m_Socket = static_cast<IIOSocket *>(arg);
 
         if (m_Loop != nullptr && m_Socket != nullptr)
-            m_Loop->AddClient(m_Socket->GetSocket(), this);
+            return m_Loop->AddClient(m_Socket->GetSocket(), this);
     }
 
 public:

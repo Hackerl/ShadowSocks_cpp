@@ -20,14 +20,14 @@ bool CEventLoop::AddServer(int fd, ISocketServerCallback * ServerHandler)
 {
     struct Stub
     {
-        static void OnAceept(int fd ,short Event, void* arg)
+        static void OnAccept(int fd, short Event, void *arg)
         {
             auto ServerHandler = (ISocketServerCallback*) arg;
             ServerHandler->OnAccept(fd, Event);
         }
     };
 
-    event* Event = event_new(m_EventBase, fd , EV_READ | EV_PERSIST, Stub::OnAceept , ServerHandler);
+    event* Event = event_new(m_EventBase, fd, EV_READ | EV_PERSIST, Stub::OnAccept, ServerHandler);
 
     event_add(Event, nullptr);
 
@@ -48,24 +48,18 @@ bool CEventLoop::AddClient(int fd, ISocketClientCallback * ClientHandler)
 {
     struct Stub
     {
-
         static void OnEvent(int fd ,short Event, void* arg)
         {
             auto ClientHandler = (ISocketClientCallback *) arg;
 
-            do
-            {
-                if (Event & EV_READ)
-                    ClientHandler->OnRead(fd, Event);
+            if (Event & EV_READ)
+                ClientHandler->OnRead(fd, Event);
 
-                if (Event & EV_WRITE)
-                    ClientHandler->OnWrite(fd, Event);
+            if (Event & EV_WRITE)
+                ClientHandler->OnWrite(fd, Event);
 
-                if (Event & EV_CLOSED)
-                    ClientHandler->OnClose(fd, Event);
-
-            } while (false);
-
+            if (Event & EV_CLOSED)
+                ClientHandler->OnClose(fd, Event);
         }
     };
 
@@ -84,7 +78,7 @@ bool CEventLoop::AddClient(int fd, ISocketClientCallback * ClientHandler)
 
     AddRef(ClientHandler);
 
-    return false;
+    return true;
 }
 
 bool CEventLoop::SetEvent(int fd, short Mode)
