@@ -2,7 +2,7 @@ project(Socket)
 
 set(CMAKE_CXX_STANDARD 14)
 
-if(${CMAKE_BUILD_TYPE} STREQUAL "DebugExe")
+if(CMAKE_DEBUGEXE)
     add_executable(Socket LibMain.cpp LibExport.cpp TCPSocket.cpp TCPSocket.h)
     target_link_libraries(Socket libEventLoop.so)
 else()
