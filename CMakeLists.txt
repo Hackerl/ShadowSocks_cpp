@@ -18,5 +18,6 @@ add_subdirectory(Project/SocketNode)
 add_subdirectory(Project/Plugin/PortTunnel)
 add_subdirectory(Project/Plugin/SocksClient)
 add_subdirectory(Project/Plugin/SocksServer)
+add_subdirectory(Project/Plugin/SocketConnector)
 
 add_subdirectory(Project/ShadowSocksr)
