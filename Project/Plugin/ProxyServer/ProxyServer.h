@@ -9,10 +9,10 @@
 #include "Plugin/Plugin.h"
 #include "Plugin/CommonProxy/CommonProtocol.h"
 
-class CommonProxy : public IPlugin, public CNode
+class CProxyServer : public IPlugin, public CNode
 {
 public:
-    CommonProxy();
+    CProxyServer();
 
 public:
     bool SetConfig(Json::Value &Config) override;
@@ -21,7 +21,7 @@ public:
     bool OnUpStream(const void *Buffer, size_t Length) override;
 
 public:
-    bool CommonProxyHandler(CCommonProxyRequest *ProxyRequest, size_t Length);
+    bool SocksProxyHandler(CCommonProxyRequest *ProxyRequest, size_t Length);
 
 private:
     bool m_HasInit;

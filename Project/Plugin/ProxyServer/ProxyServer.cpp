@@ -2,48 +2,52 @@
 // Created by patteliu on 2018/10/24.
 //
 
-#include "CommonProxy.h"
+#include "ProxyServer.h"
 
 #include <Socket/LibSocketExport.h>
 #include <Plugin/CommonProxy/CommonProtocol.h>
 #include <Plugin/Socks5/Socks5Protocol.h>
 
-CommonProxy::CommonProxy()
+CProxyServer::CProxyServer()
 {
     m_HasInit = false;
 }
 
-bool CommonProxy::SetConfig(Json::Value &Config)
+bool CProxyServer::SetConfig(Json::Value &Config)
 {
     return true;
 }
 
-bool CommonProxy::OnUpStream(const void *Buffer, size_t Length)
+bool CProxyServer::OnUpStream(const void *Buffer, size_t Length)
 {
     if (m_HasInit)
         return UpStream(Buffer, Length);
 
     m_HasInit = true;
 
-    return CommonProxyHandler((CCommonProxyRequest *) Buffer, Length);;
+    return SocksProxyHandler((CCommonProxyRequest *) Buffer, Length);
 }
 
-bool CommonProxy::CommonProxyHandler(CCommonProxyRequest *ProxyRequest, size_t Length)
+bool CProxyServer::SocksProxyHandler(CCommonProxyRequest *ProxyRequest, size_t Length)
 {
     if (Length < sizeof(ProxyRequest->Header) + sizeof(ProxyRequest->IPv4Address))
         return false;
 
     ITCPSocket * Socket = NewTCPSocket();
 
+    Socks5_Connect_Response Response = {};
+
     if (!Socket->Connect(ProxyRequest->IPv4Address, ProxyRequest->Port))
     {
         Socket->Close();
         delete Socket;
 
-        return false;
+        return DownStream(&Response, sizeof(Socks5_Connect_Response));
     }
 
     InitUpNode(Socket);
 
-    return true;
+    Response.Header.Response = uint8_t(0x00);
+
+    return DownStream(&Response, sizeof(Socks5_Connect_Response));
 }

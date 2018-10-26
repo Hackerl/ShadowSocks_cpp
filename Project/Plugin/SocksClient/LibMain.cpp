@@ -1,14 +1,13 @@
 //
-// Created by hackerl on 10/14/18.
+// Created by patteliu on 2018/10/24.
 //
 
+#include "Node/INode.h"
 #include "Socket/ISocket.h"
 #include "Socket/LibSocketExport.h"
 #include "EventLoop/LibEventExport.h"
-#include "SocketRelay.h"
-#include "Common/InstanceManager.h"
 #include "Plugin/LibPluginExport.h"
-#include "Common/JSONHelper.h"
+#include "SocketNode/LibSocketNodeExport.h"
 
 class CServer : public ISocketServerCallback
 {
@@ -30,26 +29,16 @@ public:
         ITCPSocket * Local = m_Socket->Accept();
         std::cout << "Accept" << std::endl;
 
+        ISocketNode * LocalNode = NewLocalSocketNode();
+        LocalNode->Init(m_Loop, Local);
+
         IPlugin * Socks5Proxy = NewSocks5Proxy();
+        IPlugin * ProxyServer = NewProxyServer();
 
-        CSocketRelay * TCPRelay1 = new InstanceManager<CSocketRelay>;
-        TCPRelay1->Init(m_Loop, Local);
-        TCPRelay1->SetPlugin(Socks5Proxy);
+        ISocketNode * RemoteNode = NewRemoteSocketNode();
+        RemoteNode->Init(m_Loop);
 
-        Json::Value Config;
-
-        Config["TargetIP"] = "127.0.0.1";
-        Config["TargetPort"] = 4444;
-
-        IPlugin * PortTunnel = NewPortTunnel();
-
-        PortTunnel->SetConfig(Config);
-
-        CSocketRelay * TCPRelay2 = new InstanceManager<CSocketRelay>;
-        TCPRelay2->Init(m_Loop, nullptr);
-        TCPRelay2->SetPlugin(PortTunnel);
-
-        PairPipeConnect(TCPRelay1, TCPRelay2);
+        NodeConnect(LocalNode, Socks5Proxy, ProxyServer, RemoteNode);
     }
 
     void OnClose(int fd ,short Event) override

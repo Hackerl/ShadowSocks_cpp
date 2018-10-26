@@ -2,7 +2,7 @@
 // Created by patteliu on 2018/10/24.
 //
 
-#include "Socks5.h"
+#include "SocksClient.h"
 #include "Common/InstanceManager.h"
 #include "Plugin/LibPluginExport.h"
 

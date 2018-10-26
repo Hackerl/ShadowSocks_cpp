@@ -9,6 +9,6 @@
 
 extern "C" IPlugin * NewPortTunnel();
 extern "C" IPlugin * NewSocks5Proxy();
-extern "C" IPlugin * NewCommonProxy();
+extern "C" IPlugin * NewProxyServer();
 
 #endif //SHADOWSOCKSR_CPP_LIBPLUGINEXPORT_H

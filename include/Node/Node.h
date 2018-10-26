@@ -7,7 +7,7 @@
 
 #include "INode.h"
 #include "Common/IInstanceManager.h"
-class CNode : public INode, public INodeCallback
+class CNode : public INode
 {
 public:
     CNode()
@@ -60,11 +60,13 @@ public:
     void SetUpNode(INodeCallback * UpNode) override
     {
         m_UpNode = UpNode;
+        AddRef(UpNode);
     }
 
     void SetDownNode(INodeCallback * DownNode) override
     {
         m_DownNode = DownNode;
+        AddRef(DownNode);
     }
 
 public:

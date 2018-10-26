@@ -2,11 +2,11 @@
 // Created by patteliu on 2018/10/25.
 //
 
-#include "CommonProxy.h"
+#include "ProxyServer.h"
 #include "Common/InstanceManager.h"
 #include "Plugin/LibPluginExport.h"
 
-extern "C" IPlugin * NewCommonProxy()
+extern "C" IPlugin * NewProxyServer()
 {
-    return new InstanceManager<CommonProxy>;
+    return new InstanceManager<CProxyServer>;
 }

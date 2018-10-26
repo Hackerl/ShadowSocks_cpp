@@ -2,7 +2,7 @@
 // Created by patteliu on 2018/10/24.
 //
 
-#include "Socks5.h"
+#include "SocksClient.h"
 #include "Plugin/CommonProxy/CommonProtocol.h"
 
 CSocks5Proxy::CSocks5Proxy()
@@ -21,11 +21,11 @@ bool CSocks5Proxy::OnUpStream(const void *Buffer, size_t Length)
     switch (m_Status)
     {
         case MethodRequestStage:
-            MethodRequestHandler(Buffer, Length);
+            Res = MethodRequestHandler(Buffer, Length);
             break;
 
         case ConnectRequestStage:
-            ConnectRequestHandler(Buffer, Length);
+            Res = ConnectRequestHandler(Buffer, Length);
             break;
 
         case ConnectSuccessStage:
@@ -76,13 +76,5 @@ bool CSocks5Proxy::ConnectRequestHandler(const void *Buffer, size_t Length)
 
     m_Status = ConnectSuccessStage;
 
-    bool Res = UpStream(&ProxyRequest, sizeof(CCommonProxyRequest));
-
-    //TODO split the response
-
-    Socks5_Connect_Response Response = {};
-
-    Response.Header.Response = Res ? uint8_t(0x00): uint8_t(0x01);
-
-    return DownStream(&Response, sizeof(Socks5_Connect_Response));;
+    return UpStream(&ProxyRequest, sizeof(CCommonProxyRequest));
 }

@@ -6,18 +6,19 @@
 #define SHADOWSOCKSR_CPP_SOCKETNODE_H
 
 #include "Node/Node.h"
+#include "SocketNode/ISocketNode.h"
 #include <Socket/ISocket.h>
 #include <EventLoop/IEventLoop.h>
 #include <vector>
 
-class CSocketNode : public CNode , public ISocketClientCallback
+class CSocketNode : public CNode , public ISocketClientCallback, public ISocketNode
 {
 public:
     CSocketNode();
     ~CSocketNode();
 
 public:
-    void Init(IEventLoop * Loop, IIOSocket * Socket);
+    void Init(IEventLoop * Loop, IIOSocket * Socket) override;
     void NodeClose() override;
 
 public:
