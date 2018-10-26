@@ -6,7 +6,7 @@
 #include "Common/InstanceManager.h"
 #include "Plugin/LibPluginExport.h"
 
-extern "C" IPlugin * NewProxyServer()
+extern "C" IPlugin * NewSocksServer()
 {
     return new InstanceManager<CProxyServer>;
 }

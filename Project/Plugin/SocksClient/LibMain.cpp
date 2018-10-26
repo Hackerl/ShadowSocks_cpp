@@ -33,7 +33,7 @@ public:
         LocalNode->Init(m_Loop, Local);
 
         IPlugin * Socks5Proxy = NewSocks5Proxy();
-        IPlugin * ProxyServer = NewProxyServer();
+        IPlugin * ProxyServer = NewSocksServer();
 
         ISocketNode * RemoteNode = NewRemoteSocketNode();
         RemoteNode->Init(m_Loop);
