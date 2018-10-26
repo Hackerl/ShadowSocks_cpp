@@ -7,6 +7,7 @@
 
 #include <cstddef>
 #include "Common/Interface.h"
+#include <vector>
 
 class INodeClose : public Interface
 {
@@ -36,29 +37,40 @@ public:
     virtual bool OnNodeInit(void * arg) = 0;
 };
 
-template <class L, class N1, class N2, class R>
-inline bool NodeConnect(L * X, N1 * Y, N2 * M, R * N)
+class CNodeManager
 {
-    auto NodeX = dynamic_cast<INode *>(X);
-    auto NodeY = dynamic_cast<INode *>(Y);
+public:
+    void AddNode(INode * Node)
+    {
+        m_NodeList.push_back(Node);
+    }
 
-    auto NodeM = dynamic_cast<INode *>(M);
-    auto NodeN = dynamic_cast<INode *>(N);
+    void AddNode(Interface * I)
+    {
+        auto Node = dynamic_cast<INode *>(I);
 
-    if (NodeX == nullptr || NodeY == nullptr || NodeM == nullptr || NodeN == nullptr)
-        return false;
+        if (Node != nullptr)
+            m_NodeList.push_back(Node);
+    }
 
-    NodeX->SetUpNode(NodeY);
+    void Connect()
+    {
+        INode * PreNode = nullptr;
 
-    NodeY->SetDownNode(NodeX);
-    NodeY->SetUpNode(NodeM);
+        for (auto const & Node : m_NodeList)
+        {
+            if (PreNode != nullptr && Node != nullptr)
+            {
+                Node->SetDownNode(PreNode);
+                PreNode->SetUpNode(Node);
+            }
 
-    NodeM->SetDownNode(NodeY);
-    NodeM->SetUpNode(NodeN);
+            PreNode = Node;
+        }
+    }
 
-    NodeN->SetDownNode(NodeM);
-
-    return true;
-}
+private:
+    std::vector<INode *> m_NodeList;
+};
 
 #endif //SHADOWSOCKSR_CPP_INODE_H

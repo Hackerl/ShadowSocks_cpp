@@ -38,7 +38,14 @@ public:
         ISocketNode * RemoteNode = NewRemoteSocketNode();
         RemoteNode->Init(m_Loop);
 
-        NodeConnect(LocalNode, Socks5Proxy, ProxyServer, RemoteNode);
+        CNodeManager NodeMgr;
+
+        NodeMgr.AddNode(LocalNode);
+        NodeMgr.AddNode(Socks5Proxy);
+        NodeMgr.AddNode(ProxyServer);
+        NodeMgr.AddNode(RemoteNode);
+
+        NodeMgr.Connect();
     }
 
     void OnClose(int fd ,short Event) override
