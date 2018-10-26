@@ -72,12 +72,12 @@ public:
 public:
     bool OnUpStream(const void *Buffer, size_t Length) override
     {
-        UpStream(Buffer, Length);
+        return UpStream(Buffer, Length);
     }
 
     bool OnDownStream(const void *Buffer, size_t Length) override
     {
-        DownStream(Buffer, Length);
+        return DownStream(Buffer, Length);
     }
 
 public:
