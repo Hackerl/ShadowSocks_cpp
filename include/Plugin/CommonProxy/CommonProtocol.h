@@ -11,10 +11,10 @@
 
 #define MAX_HOST_LENGTH 0x20
 
-enum CCommonProxyType
+enum CCommonSocketType
 {
-    Socks5ProxyType = 0,
-    HTTPTunnelType,
+    TCPSocketType = 0,
+    UDPSocketType,
 };
 
 enum CCommonAddressType
@@ -26,11 +26,11 @@ enum CCommonAddressType
 };
 
 #pragma pack(push, 1)
-struct CCommonProxyRequest
+struct CConnectRequest
 {
     struct
     {
-        CCommonProxyType ProxyType;
+        CCommonSocketType SocketType;
         CCommonAddressType AddressType;
     } Header;
 
@@ -45,11 +45,11 @@ struct CCommonProxyRequest
 };
 #pragma pack(pop)
 
-inline CCommonProxyRequest ParseSocks5Address(Socks5_Connect_Request * Request, size_t Length)
+inline CConnectRequest ParseSocks5Address(Socks5_Connect_Request * Request, size_t Length)
 {
-    CCommonProxyRequest ProxyRequest = {};
+    CConnectRequest ProxyRequest = {};
 
-    ProxyRequest.Header.ProxyType = Socks5ProxyType;
+    ProxyRequest.Header.SocketType = TCPSocketType;
     ProxyRequest.Header.AddressType = UnknownType;
 
     if (Request->Header.AddressType != SocksIPv4Type &&

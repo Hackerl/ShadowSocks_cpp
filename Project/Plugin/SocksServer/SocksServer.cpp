@@ -25,29 +25,18 @@ bool CProxyServer::OnUpStream(const void *Buffer, size_t Length)
 
     m_HasInit = true;
 
-    return SocksProxyHandler((CCommonProxyRequest *) Buffer, Length);
+    return SocksProxyHandler((CConnectRequest *) Buffer, Length);
 }
 
-bool CProxyServer::SocksProxyHandler(CCommonProxyRequest *ProxyRequest, size_t Length)
+bool CProxyServer::SocksProxyHandler(CConnectRequest *ProxyRequest, size_t Length)
 {
     if (Length < sizeof(ProxyRequest->Header) + sizeof(ProxyRequest->IPv4Address))
         return false;
 
-    ITCPSocket * Socket = NewTCPSocket();
-
     Socks5_Connect_Response Response = {};
 
-    if (!Socket->Connect(ProxyRequest->IPv4Address, ProxyRequest->Port))
-    {
-        Socket->Close();
-        delete Socket;
-
-        return DownStream(&Response, sizeof(Socks5_Connect_Response));
-    }
-
-    InitUpNode(Socket);
-
-    Response.Header.Response = uint8_t(0x00);
+    if (InitUpNode(ProxyRequest))
+        Response.Header.Response = uint8_t(0x00);
 
     return DownStream(&Response, sizeof(Socks5_Connect_Response));
 }
