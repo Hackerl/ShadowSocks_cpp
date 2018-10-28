@@ -21,7 +21,7 @@ public:
     bool OnUpStream(const void *Buffer, size_t Length) override;
 
 public:
-    bool SocksProxyHandler(CConnectRequest *ProxyRequest, size_t Length);
+    bool SocksProxyHandler(Socks5_Connect_Request * Request, size_t Length);
 
 private:
     bool m_HasInit;

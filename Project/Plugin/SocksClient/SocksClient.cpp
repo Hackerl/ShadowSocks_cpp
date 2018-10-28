@@ -69,12 +69,7 @@ bool CSocks5Proxy::ConnectRequestHandler(const void *Buffer, size_t Length)
     if (ConnectRequest->Header.Command != SOCKS5_CONNECT_COMMAND)
         return false;
 
-    CConnectRequest ProxyRequest = ParseSocks5Address(ConnectRequest, Length);
-
-    if (ProxyRequest.Header.AddressType == UnknownType)
-        return false;
-
     m_Status = ConnectSuccessStage;
 
-    return UpStream(&ProxyRequest, sizeof(CConnectRequest));
+    return UpStream(Buffer, Length);
 }

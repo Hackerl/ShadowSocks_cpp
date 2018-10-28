@@ -25,17 +25,22 @@ bool CProxyServer::OnUpStream(const void *Buffer, size_t Length)
 
     m_HasInit = true;
 
-    return SocksProxyHandler((CConnectRequest *) Buffer, Length);
+    return SocksProxyHandler((Socks5_Connect_Request *)Buffer, Length);
 }
 
-bool CProxyServer::SocksProxyHandler(CConnectRequest *ProxyRequest, size_t Length)
+bool CProxyServer::SocksProxyHandler(Socks5_Connect_Request * Request, size_t Length)
 {
-    if (Length < sizeof(ProxyRequest->Header) + sizeof(ProxyRequest->IPv4Address))
+    if (Length < sizeof(Request->Header))
+        return false;
+
+    CConnectRequest ProxyRequest = ParseSocks5Address(Request, Length);
+
+    if (ProxyRequest.Header.AddressType == UnknownType)
         return false;
 
     Socks5_Connect_Response Response = {};
 
-    if (InitUpNode(ProxyRequest))
+    if (InitUpNode(&ProxyRequest))
         Response.Header.Response = uint8_t(0x00);
 
     return DownStream(&Response, sizeof(Socks5_Connect_Response));
