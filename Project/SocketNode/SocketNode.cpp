@@ -48,6 +48,9 @@ bool CSocketNode::DataOut(const void *Buffer, size_t Length)
     if (m_Loop == nullptr || m_Socket == nullptr)
         return false;
 
+    if (Length == 0)
+        return true;
+
     ssize_t WriteLen = m_Socket->Send(Buffer, Length);
 
     if (WriteLen < 0)

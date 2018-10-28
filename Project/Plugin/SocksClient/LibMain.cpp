@@ -33,7 +33,7 @@ public:
         LocalNode->Init(m_Loop, Local);
 
         IPlugin * Socks5Proxy = NewSocks5Proxy();
-        IPlugin * Socks5Server = NewSocksServer();
+        IPlugin * SSRLocal = NewSSRLocal();
         IPlugin * SocketConnector = NewSocketConnector();
 
         ISocketNode * RemoteNode = NewRemoteSocketNode();
@@ -43,7 +43,7 @@ public:
 
         NodeMgr.AddNode(LocalNode);
         NodeMgr.AddNode(Socks5Proxy);
-        NodeMgr.AddNode(Socks5Server);
+        NodeMgr.AddNode(SSRLocal);
         NodeMgr.AddNode(SocketConnector);
         NodeMgr.AddNode(RemoteNode);
 

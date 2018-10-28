@@ -91,4 +91,32 @@ struct Socks5_Connect_Response {
 
 #pragma pack(pop)
 
+inline size_t GetConnectRequestSize(const void * Buffer, size_t Length)
+{
+    size_t RequestSize = 0;
+
+    auto Request = (Socks5_Connect_Request *) Buffer;
+
+    if (Length < sizeof(Request->Header) + sizeof(Request->Address.Host))
+        return RequestSize;
+
+
+    switch (Request->Header.AddressType)
+    {
+        case SocksIPv4Type:
+            RequestSize = sizeof(Request->Header) + sizeof(Request->Address.IPv4);
+            break;
+
+        case SocksIPv6Type:
+            RequestSize = sizeof(Request->Header) + sizeof(Request->Address.IPv6);
+            break;
+
+        case SocksHostNameType:
+            RequestSize = sizeof(Request->Header) + sizeof(Request->Address.Host) + Request->Address.Host.Length;
+            break;
+    }
+
+    return RequestSize;
+}
+
 #endif //SHADOWSOCKSR_CPP_SOCKS5PROTOCOL_H
