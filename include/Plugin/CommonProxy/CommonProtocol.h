@@ -5,8 +5,11 @@
 #ifndef SHADOWSOCKSR_CPP_COMMONPROTOCOL_H
 #define SHADOWSOCKSR_CPP_COMMONPROTOCOL_H
 
+#include <iostream>
 #include <cstdint>
 #include <cstring>
+#include <arpa/inet.h>
+#include <Plugin/Socks5/Socks5Protocol.h>
 #include "Plugin/Socks5/Socks5Protocol.h"
 
 #define MAX_HOST_LENGTH 0x20
@@ -34,14 +37,8 @@ struct CConnectRequest
         CCommonAddressType AddressType;
     } Header;
 
-    uint16_t Port;
-
-    union
-    {
-        uint32_t IPv4Address;
-        in6_addr IPv6Address;
-        uint8_t HostName[MAX_HOST_LENGTH];
-    };
+    std::string Address;
+    u_short Port;
 };
 #pragma pack(pop)
 
@@ -59,15 +56,31 @@ inline CConnectRequest ParseSocks5Address(Socks5_Connect_Request * Request, size
 
     auto & Address = Request->Address;
 
+    char IPStr[INET6_ADDRSTRLEN] = {};
+
     switch (Request->Header.AddressType)
     {
         case SocksIPv4Type:
             if (Length < sizeof(Request->Header) + sizeof(Address.IPv4))
                 break;
 
-            ProxyRequest.Header.AddressType =  IPv4Type;
-            ProxyRequest.IPv4Address = Address.IPv4.IP;
-            ProxyRequest.Port = Address.IPv4.Port;
+            inet_ntop(AF_INET, &Address.IPv4.IP, IPStr, INET_ADDRSTRLEN);
+
+            ProxyRequest.Header.AddressType = IPv4Type;
+            ProxyRequest.Address = IPStr;
+            ProxyRequest.Port = ntohs(Address.IPv4.Port);
+
+            break;
+
+        case SocksIPv6Type:
+            if (Length < sizeof(Request->Header) + sizeof(Address.IPv6))
+                break;
+
+            inet_ntop(AF_INET6, &Address.IPv6.IP, IPStr, INET6_ADDRSTRLEN);
+
+            ProxyRequest.Header.AddressType = IPv6Type;
+            ProxyRequest.Address = IPStr;
+            ProxyRequest.Port = ntohs(Address.IPv6.Port);
 
             break;
 
@@ -79,9 +92,8 @@ inline CConnectRequest ParseSocks5Address(Socks5_Connect_Request * Request, size
                 break;
 
             ProxyRequest.Header.AddressType = HostType;
-
-            memcpy(ProxyRequest.HostName, Address.Host.HostName, Address.Host.Length);
-            ProxyRequest.Port = * (uint16_t *)(Address.Host.HostName + Address.Host.Length);
+            ProxyRequest.Address.assign(Address.Host.HostName, Address.Host.HostName + Address.Host.Length);
+            ProxyRequest.Port = ntohs(*(uint16_t *)(Address.Host.HostName + Address.Host.Length));
 
             break;
     }

@@ -7,6 +7,7 @@
 
 #include <Node/Node.h>
 #include "Plugin/Plugin.h"
+#include "Plugin/CommonProxy/CommonProtocol.h"
 
 enum CSocketProxyType
 {
@@ -32,6 +33,10 @@ public:
 
 public:
     bool SetConfig(Json::Value &Config) override;
+
+public:
+    bool NoProxyHandler(CConnectRequest * ConnectInfo);
+    bool HTTPTunnelHandler(CConnectRequest * ConnectInfo);
 
 private:
     CConnectorConfig m_Config;
