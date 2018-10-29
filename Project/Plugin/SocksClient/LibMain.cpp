@@ -34,7 +34,24 @@ public:
 
         IPlugin * Socks5Proxy = NewSocks5Proxy();
         IPlugin * SSRLocal = NewSSRLocal();
+
+        Json::Value SSRLocalConfig;
+
+        SSRLocalConfig["Server"] = "104.251.227.105";
+        SSRLocalConfig["Port"] = 16139;
+
+        SSRLocal->SetConfig(SSRLocalConfig);
+
         IPlugin * SocketConnector = NewSocketConnector();
+
+        Json::Value ConnectorConfig;
+
+        /*
+        ConnectorConfig["ProxyType"] = "HTTPTunnel";
+        ConnectorConfig["ProxyServer"] = "127.0.0.1";
+        ConnectorConfig["ProxyPort"] = 8118;
+        SocketConnector->SetConfig(ConnectorConfig);
+        */
 
         ISocketNode * RemoteNode = NewRemoteSocketNode();
         RemoteNode->Init(m_Loop);
