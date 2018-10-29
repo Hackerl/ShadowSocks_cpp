@@ -4,6 +4,7 @@
 
 #include "SocketConnector.h"
 #include "Socket/LibSocketExport.h"
+#include "SocketProxy/LibSocketProxyExport.h"
 #include "Common/JSONHelper.h"
 
 CSocketConnector::CSocketConnector() : m_Config()
@@ -76,5 +77,22 @@ bool CSocketConnector::NoProxyHandler(CConnectRequest * ConnectInfo)
 
 bool CSocketConnector::HTTPTunnelHandler(CConnectRequest * ConnectInfo)
 {
-    return false;
+    ITCPSocket * Socket = NewTCPSocket();
+
+    ISocketProxy * HTTPTunnel = NewHTTPTunnel();
+
+    HTTPTunnel->SetSocket(Socket);
+    HTTPTunnel->SetProxy(m_Config.ProxyServer, m_Config.ProxyPort);
+
+    auto HTTPTunnelSocket = dynamic_cast<IIOSocket *>(HTTPTunnel);
+
+    if (!HTTPTunnel->Connect(ConnectInfo->Address, ConnectInfo->Port))
+    {
+        HTTPTunnelSocket->Close();
+        delete HTTPTunnel;
+
+        return false;
+    }
+
+    return InitUpNode(HTTPTunnelSocket);
 }
