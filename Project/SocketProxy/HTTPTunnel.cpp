@@ -88,7 +88,7 @@ bool CHTTPTunnel::Connect(std::string IP, ushort Port)
 
     std::string Data = TunnelRequest.str();
 
-    if (!m_Socket->Send(Data.data(), Data.size()))
+    if (m_Socket->Send(Data.data(), Data.size()) <= 0)
         return false;
 
     u_char Buffer[1024] = {};
