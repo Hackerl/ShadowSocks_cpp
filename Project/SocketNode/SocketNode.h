@@ -34,6 +34,7 @@ protected:
     IIOSocket * m_Socket;
     std::vector<u_char> m_WriteBuffer;
     IEventLoop * m_Loop;
+    bool m_Closed;
 };
 
 #endif //SHADOWSOCKSR_CPP_SOCKETNODE_H

@@ -10,6 +10,7 @@ CSocketNode::CSocketNode()
 {
     m_Socket = nullptr;
     m_Loop = nullptr;
+    m_Closed = false;
 }
 
 CSocketNode::~CSocketNode()
@@ -75,13 +76,16 @@ void CSocketNode::OnRead(int fd, short Event)
 
     ssize_t ReadLen = m_Socket->Recv(Buffer, TCP_MSS, 0);
 
-    if (ReadLen > 0)
+    if (ReadLen <= 0)
     {
-        bool NodeListStatus = DataIn(Buffer, ReadLen);
-
-        if (!NodeListStatus)
-            NodeClose();
+        NodeClose();
+        return;
     }
+
+    bool NodeListStatus = DataIn(Buffer, ReadLen);
+
+    if (!NodeListStatus)
+        NodeClose();
 }
 
 void CSocketNode::OnWrite(int fd, short Event)
@@ -105,5 +109,10 @@ void CSocketNode::OnWrite(int fd, short Event)
 
 void CSocketNode::OnClose(int fd, short Event)
 {
+    if (m_Closed)
+        return;
+
+    m_Closed = true;
+
     NodeClose();
 }

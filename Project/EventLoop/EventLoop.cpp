@@ -53,13 +53,22 @@ bool CEventLoop::AddClient(int fd, ISocketClientCallback * ClientHandler)
             auto ClientHandler = (ISocketClientCallback *) arg;
 
             if (Event & EV_READ)
+            {
                 ClientHandler->OnRead(fd, Event);
+                return;
+            }
 
             if (Event & EV_WRITE)
+            {
                 ClientHandler->OnWrite(fd, Event);
+                return;
+            }
 
             if (Event & EV_CLOSED)
+            {
                 ClientHandler->OnClose(fd, Event);
+                return;
+            }
         }
     };
 
