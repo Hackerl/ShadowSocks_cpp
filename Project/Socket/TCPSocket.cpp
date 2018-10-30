@@ -117,7 +117,28 @@ int CTCPSocket::GetSocket()
     return m_IsValid ? m_Socket : -1;
 }
 
-bool CTCPSocket::Close() {
+int CTCPSocket::GetSockOpt(int Level, int OptName, void *OptVal, socklen_t *OptLen)
+{
+    if (!m_IsValid)
+        return -1;
+
+    int res = getsockopt(m_Socket, Level, OptName, OptVal, OptLen);
+
+    return res;
+}
+
+int CTCPSocket::SetSockOpt(int Level, int OptName, const void * OptVal, socklen_t OptLen)
+{
+    if (!m_IsValid)
+        return -1;
+
+    int res = setsockopt(m_Socket, Level, OptName, OptVal, OptLen);
+
+    return res;
+}
+
+bool CTCPSocket::Close()
+{
     if (!m_IsValid)
         return false;
 

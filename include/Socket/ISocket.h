@@ -13,6 +13,8 @@ class IIOSocket : public Interface
 {
 public:
     virtual int GetSocket() = 0;
+    virtual int GetSockOpt(int Level, int OptName, void * OptVal, socklen_t * OptLen) = 0;
+    virtual int SetSockOpt(int Level, int OptName, const void * OptVal, socklen_t OptLen) = 0;
     virtual ssize_t Recv(void *Buffer, size_t Length, int Flag = 0) = 0;
     virtual ssize_t Send(const void *Buffer, size_t Length, int Flag = 0) = 0;
     virtual bool Close() = 0;

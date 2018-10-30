@@ -28,6 +28,8 @@ public:
     bool Close() override;
     ssize_t Recv(void *Buffer, size_t Length, int Flag) override;
     ssize_t Send(const void *Buffer, size_t Length, int Flag) override;
+    int GetSockOpt(int Level, int OptName, void * OptVal, socklen_t * OptLen) override;
+    int SetSockOpt(int Level, int OptName, const void * OptVal, socklen_t OptLen) override;
 
 private:
     int m_Socket;
