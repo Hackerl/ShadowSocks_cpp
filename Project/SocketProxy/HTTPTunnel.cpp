@@ -34,6 +34,22 @@ int CHTTPTunnel::GetSocket()
     return m_Socket->GetSocket();
 }
 
+int CHTTPTunnel::GetSockOpt(int Level, int OptName, void *OptVal, socklen_t *OptLen)
+{
+    if (m_Socket == nullptr)
+        return -1;
+
+    return m_Socket->GetSockOpt(Level, OptName, OptVal, OptLen);
+}
+
+int CHTTPTunnel::SetSockOpt(int Level, int OptName, const void *OptVal, socklen_t OptLen)
+{
+    if (m_Socket == nullptr)
+        return -1;
+
+    return m_Socket->SetSockOpt(Level, OptName, OptVal, OptLen);
+}
+
 ssize_t CHTTPTunnel::Recv(void *Buffer, size_t Length, int Flag)
 {
     if (m_Socket == nullptr)

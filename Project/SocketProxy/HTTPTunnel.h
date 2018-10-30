@@ -18,6 +18,8 @@ public:
     int GetSocket() override;
     ssize_t Recv(void *Buffer, size_t Length, int Flag = 0) override;
     ssize_t Send(const void *Buffer, size_t Length, int Flag = 0) override;
+    int GetSockOpt(int Level, int OptName, void * OptVal, socklen_t * OptLen) override;
+    int SetSockOpt(int Level, int OptName, const void * OptVal, socklen_t OptLen) override;
     bool Close() override;
 
 public:
