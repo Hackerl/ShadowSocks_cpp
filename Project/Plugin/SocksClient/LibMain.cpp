@@ -38,7 +38,7 @@ public:
         Json::Value SSRLocalConfig;
 
         SSRLocalConfig["Server"] = "104.251.227.105";
-        SSRLocalConfig["Port"] = 16139;
+        SSRLocalConfig["Port"] = 8080;
 
         SSRLocal->SetConfig(SSRLocalConfig);
 
