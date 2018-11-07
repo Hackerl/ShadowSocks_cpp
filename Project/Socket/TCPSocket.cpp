@@ -4,6 +4,7 @@
 
 #include "TCPSocket.h"
 #include <unistd.h>
+#include <fcntl.h>
 #include <arpa/inet.h>
 
 CTCPSocket::CTCPSocket()
@@ -92,7 +93,36 @@ bool CTCPSocket::Connect(in_addr_t IP, in_port_t Port)
     Address.sin_addr.s_addr = IP;
     Address.sin_port = Port;
 
+    long ControlFlag = fcntl(m_Socket, F_GETFL, NULL);
+
+    fcntl(m_Socket, F_SETFL, ControlFlag | O_NONBLOCK);
+
     int res = connect(m_Socket, (sockaddr *)&Address, sizeof(Address));
+
+    if (res < 0 && errno == EINPROGRESS)
+    {
+        timeval TimeOut = {};
+
+        TimeOut.tv_sec = 2;
+        TimeOut.tv_usec = 0;
+
+        fd_set fdSet;
+
+        FD_ZERO(&fdSet);
+        FD_SET(m_Socket, &fdSet);
+
+        if (select(m_Socket + 1, NULL, &fdSet, NULL, &TimeOut) > 0)
+        {
+            int OptVal = -1;
+            socklen_t OptLen = sizeof(OptVal);
+
+            GetSockOpt(SOL_SOCKET, SO_ERROR, &OptVal, &OptLen);
+
+            res = OptVal;
+        }
+    }
+
+    fcntl(m_Socket, F_SETFL, ControlFlag);
 
     m_IsConnected = res != -1;
 
