@@ -3,6 +3,7 @@
 //
 
 #include "TCPSocket.h"
+#include "Socket/DNS.h"
 #include <unistd.h>
 #include <fcntl.h>
 #include <arpa/inet.h>
@@ -33,14 +34,14 @@ bool CTCPSocket::Bind(std::string IP, ushort Port)
     if (!m_IsValid)
         return false;
 
-    sockaddr_in Addr = {};
+    sockaddr_in Address = {};
 
-    Addr.sin_family = AF_INET;
-    Addr.sin_port = htons(Port);
+    Address.sin_family = AF_INET;
+    Address.sin_port = htons(Port);
 
-    inet_pton(AF_INET, IP.c_str() , &Addr.sin_addr);
+    inet_pton(AF_INET, IP.c_str() , &Address.sin_addr);
 
-    int res = bind(m_Socket, (sockaddr *)&Addr, sizeof(Addr));
+    int res = bind(m_Socket, (sockaddr *)&Address, sizeof(Address));
 
     return res != -1;
 }
@@ -76,10 +77,12 @@ bool CTCPSocket::Connect(std::string IP, ushort Port, time_t TimeOut)
     if (!m_IsValid || m_IsConnected)
         return false;
 
-    in_addr Address = {};
-    inet_pton(AF_INET, IP.c_str(), &Address);
+    std::vector<in_addr> IPList = CDNS::Query(IP);
 
-    return Connect(Address.s_addr, htons(Port), TimeOut);
+    if (IPList.empty())
+        return false;
+
+    return Connect(IPList.front().s_addr, htons(Port), TimeOut);
 }
 
 bool CTCPSocket::Connect(in_addr_t IP, in_port_t Port, time_t TimeOut)

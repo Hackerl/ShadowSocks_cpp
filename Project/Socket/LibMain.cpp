@@ -100,7 +100,7 @@ void TestEventCallback()
 
     do
     {
-        if (!Client.Connect("127.0.0.1", 3333))
+        if (!Client.Connect("127.0.0.1", 3333, 2))
         {
             std::cout << "Connect Faild" << std::endl;
             break;
