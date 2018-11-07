@@ -124,7 +124,7 @@ bool CTCPSocket::Connect(in_addr_t IP, in_port_t Port)
 
     fcntl(m_Socket, F_SETFL, ControlFlag);
 
-    m_IsConnected = res != -1;
+    m_IsConnected = res == 0;
 
     return m_IsConnected;
 }
