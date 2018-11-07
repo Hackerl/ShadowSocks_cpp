@@ -20,8 +20,8 @@ public:
 public:
     bool Bind(std::string IP, ushort Port) override;
     bool Listen(int backlog) override;
-    bool Connect(std::string IP, ushort Port) override;
-    bool Connect(in_addr_t IP, in_port_t Port) override;
+    bool Connect(std::string IP, ushort Port, time_t TimeOut) override;
+    bool Connect(in_addr_t IP, in_port_t Port, time_t TimeOut) override;
     ITCPSocket * Accept() override;
 
 public:

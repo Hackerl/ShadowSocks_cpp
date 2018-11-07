@@ -71,7 +71,7 @@ ssize_t CTCPSocket::Send(const void *Buffer, size_t Length, int Flag)
     return send(m_Socket, Buffer, Length, Flag);
 }
 
-bool CTCPSocket::Connect(std::string IP, ushort Port)
+bool CTCPSocket::Connect(std::string IP, ushort Port, time_t TimeOut)
 {
     if (!m_IsValid || m_IsConnected)
         return false;
@@ -79,10 +79,10 @@ bool CTCPSocket::Connect(std::string IP, ushort Port)
     in_addr Address = {};
     inet_pton(AF_INET, IP.c_str(), &Address);
 
-    return Connect(Address.s_addr, htons(Port));
+    return Connect(Address.s_addr, htons(Port), TimeOut);
 }
 
-bool CTCPSocket::Connect(in_addr_t IP, in_port_t Port)
+bool CTCPSocket::Connect(in_addr_t IP, in_port_t Port, time_t TimeOut)
 {
     if (!m_IsValid || m_IsConnected)
         return false;
@@ -101,17 +101,17 @@ bool CTCPSocket::Connect(in_addr_t IP, in_port_t Port)
 
     if (res < 0 && errno == EINPROGRESS)
     {
-        timeval TimeOut = {};
+        timeval TimeOutVal = {};
 
-        TimeOut.tv_sec = 2;
-        TimeOut.tv_usec = 0;
+        TimeOutVal.tv_sec = TimeOut;
+        TimeOutVal.tv_usec = 0;
 
         fd_set fdSet;
 
         FD_ZERO(&fdSet);
         FD_SET(m_Socket, &fdSet);
 
-        if (select(m_Socket + 1, NULL, &fdSet, NULL, &TimeOut) > 0)
+        if (select(m_Socket + 1, nullptr, &fdSet, nullptr, &TimeOutVal) > 0)
         {
             int OptVal = -1;
             socklen_t OptLen = sizeof(OptVal);
