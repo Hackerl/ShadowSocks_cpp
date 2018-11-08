@@ -13,11 +13,11 @@
 class CDNS
 {
 public:
-    static std::vector<in_addr> Query(std::string & HostName)
+    static std::vector<in_addr> Query(const char * HostName)
     {
         std::vector<in_addr> IPList;
 
-        hostent * DNSInfo = gethostbyname(HostName.c_str());
+        hostent * DNSInfo = gethostbyname(HostName);
 
         if (DNSInfo == nullptr)
             return IPList;
