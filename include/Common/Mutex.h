@@ -7,9 +7,10 @@
 
 #include <pthread.h>
 
-class Mutex {
+class Mutex
+{
 public:
-    Mutex()
+    Mutex() : m_lock()
     {
         pthread_mutex_init(&m_lock, nullptr);
     }
@@ -19,6 +20,13 @@ public:
         pthread_mutex_destroy(&m_lock);
     }
 
+public:
+    pthread_mutex_t * Get()
+    {
+        return &m_lock;
+    }
+
+public:
     void Lock()
     {
         pthread_mutex_lock(&m_lock);
