@@ -10,7 +10,7 @@
 class Condition
 {
 public:
-    Condition() : m_Cond()
+    Condition() : m_Cond(), m_Signal(false)
     {
         pthread_cond_init(&m_Cond, nullptr);
     }
@@ -25,22 +25,36 @@ public:
     {
         m_Mutex.Lock();
 
-        pthread_cond_wait(&m_Cond, m_Mutex.Get());
+        while (!m_Signal)
+            pthread_cond_wait(&m_Cond, m_Mutex.Get());
+
+        m_Signal = false;
 
         m_Mutex.UnLock();
     }
 
     void Notify()
     {
+        m_Mutex.Lock();
+
+        m_Signal = true;
         pthread_cond_signal(&m_Cond);
+
+        m_Mutex.UnLock();
     }
 
     void NotifyAll()
     {
+        m_Mutex.Lock();
+
+        m_Signal = true;
         pthread_cond_broadcast(&m_Cond);
+
+        m_Mutex.UnLock();
     }
 
 private:
+    bool m_Signal;
     pthread_cond_t m_Cond;
     Mutex m_Mutex;
 };
