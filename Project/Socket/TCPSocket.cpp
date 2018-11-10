@@ -14,6 +14,8 @@ CTCPSocket::CTCPSocket()
 
     m_IsValid = m_Socket != -1;
     m_IsConnected = false;
+
+    SetSendTimeOut(1);
 }
 
 CTCPSocket::CTCPSocket(int fd, bool IsConnected)
@@ -22,6 +24,8 @@ CTCPSocket::CTCPSocket(int fd, bool IsConnected)
 
     m_IsValid = m_Socket != -1;
     m_IsConnected = IsConnected;
+
+    SetSendTimeOut(1);
 }
 
 CTCPSocket::~CTCPSocket()
@@ -168,6 +172,30 @@ int CTCPSocket::SetSockOpt(int Level, int OptName, const void * OptVal, socklen_
     int res = setsockopt(m_Socket, Level, OptName, OptVal, OptLen);
 
     return res;
+}
+
+bool CTCPSocket::SetSendTimeOut(time_t TimeOut)
+{
+    timeval TimeOutVal = {};
+
+    TimeOutVal.tv_sec = TimeOut;
+    TimeOutVal.tv_usec = 0;
+
+    int res = setsockopt(m_Socket, SOL_SOCKET, SO_SNDTIMEO, &TimeOutVal, sizeof(TimeOutVal));
+
+    return res != -1;
+}
+
+bool CTCPSocket::SetRecvTimeOut(time_t TimeOut)
+{
+    timeval TimeOutVal = {};
+
+    TimeOutVal.tv_sec = TimeOut;
+    TimeOutVal.tv_usec = 0;
+
+    int res = setsockopt(m_Socket, SOL_SOCKET, SO_RCVTIMEO, &TimeOutVal, sizeof(TimeOutVal));
+
+    return res != -1;
 }
 
 bool CTCPSocket::Close()

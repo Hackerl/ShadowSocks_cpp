@@ -18,6 +18,10 @@ public:
     int GetSocket() override;
 
 public:
+    bool SetSendTimeOut(time_t TimeOut);
+    bool SetRecvTimeOut(time_t TimeOut);
+
+public:
     bool Bind(std::string IP, ushort Port) override;
     bool Listen(int backlog) override;
     bool Connect(std::string IP, ushort Port, time_t TimeOut) override;

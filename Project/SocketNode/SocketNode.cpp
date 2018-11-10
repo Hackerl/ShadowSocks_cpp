@@ -54,7 +54,7 @@ bool CSocketNode::DataOut(const void *Buffer, size_t Length)
 
     ssize_t WriteLen = m_Socket->Send(Buffer, Length, MSG_NOSIGNAL);
 
-    if (WriteLen <= 0)
+    if (WriteLen <= 0 && errno != EAGAIN)
         return false;
 
     if (WriteLen < Length)
