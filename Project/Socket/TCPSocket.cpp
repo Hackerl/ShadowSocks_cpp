@@ -15,7 +15,7 @@ CTCPSocket::CTCPSocket()
     m_IsValid = m_Socket != -1;
     m_IsConnected = false;
 
-    SetSendTimeOut(1);
+    SetSendTimeOut(2);
 }
 
 CTCPSocket::CTCPSocket(int fd, bool IsConnected)
@@ -25,7 +25,7 @@ CTCPSocket::CTCPSocket(int fd, bool IsConnected)
     m_IsValid = m_Socket != -1;
     m_IsConnected = IsConnected;
 
-    SetSendTimeOut(1);
+    SetSendTimeOut(2);
 }
 
 CTCPSocket::~CTCPSocket()
