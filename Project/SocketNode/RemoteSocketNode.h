@@ -6,6 +6,7 @@
 #define SHADOWSOCKSR_CPP_REMOTESOCKETNODE_H
 
 #include "SocketNode.h"
+#include <netinet/tcp.h>
 
 class CRemoteSocketNode : public CSocketNode, public INodeInit
 {
@@ -17,8 +18,14 @@ public:
 
         m_Socket = static_cast<IIOSocket *>(arg);
 
-        if (m_Loop != nullptr && m_Socket != nullptr)
-            return m_Loop->AddClient(m_Socket->GetSocket(), this);
+        if (m_Loop == nullptr || m_Socket == nullptr)
+            return false;
+
+        int OptVal = 1;
+
+        m_Socket->SetSockOpt(IPPROTO_TCP, TCP_NODELAY, &OptVal, sizeof(OptVal));
+
+        return m_Loop->AddClient(m_Socket->GetSocket(), this);
     }
 
 public:

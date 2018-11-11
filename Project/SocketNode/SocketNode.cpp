@@ -3,8 +3,9 @@
 //
 
 #include "SocketNode.h"
+#include <netinet/tcp.h>
 
-#define TCP_MSS 1460
+#define USER_TCP_MSS 1460
 
 CSocketNode::CSocketNode()
 {
@@ -32,8 +33,14 @@ void CSocketNode::Init(IEventLoop *Loop, IIOSocket *Socket)
     m_Loop = Loop;
     m_Socket = Socket;
 
-    if (m_Loop != nullptr && m_Socket != nullptr)
-        m_Loop->AddClient(m_Socket->GetSocket(), this);
+    if (m_Loop == nullptr || m_Socket == nullptr)
+        return;
+
+    int OptVal = 1;
+
+    m_Socket->SetSockOpt(IPPROTO_TCP, TCP_NODELAY, &OptVal, sizeof(OptVal));
+
+    m_Loop->AddClient(m_Socket->GetSocket(), this);
 }
 
 void CSocketNode::NodeClose()
@@ -78,9 +85,9 @@ void CSocketNode::OnRead(int fd, short Event)
     if (m_Socket == nullptr)
         return;
 
-    u_char Buffer[TCP_MSS] = {};
+    u_char Buffer[USER_TCP_MSS] = {};
 
-    ssize_t ReadLen = m_Socket->Recv(Buffer, TCP_MSS, 0);
+    ssize_t ReadLen = m_Socket->Recv(Buffer, USER_TCP_MSS, 0);
 
     if (ReadLen <= 0)
     {
@@ -104,7 +111,7 @@ void CSocketNode::OnWrite(int fd, short Event)
 
     size_t BufferSize = m_WriteBuffer.size();
 
-    ssize_t WriteLen = m_Socket->Send(m_WriteBuffer.data(), BufferSize < TCP_MSS ? BufferSize : TCP_MSS);
+    ssize_t WriteLen = m_Socket->Send(m_WriteBuffer.data(), BufferSize < USER_TCP_MSS ? BufferSize : USER_TCP_MSS);
 
     if (WriteLen > 0)
         m_WriteBuffer.erase(m_WriteBuffer.begin(), m_WriteBuffer.begin() + WriteLen);
