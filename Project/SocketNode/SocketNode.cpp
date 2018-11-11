@@ -65,7 +65,7 @@ bool CSocketNode::DataOut(const void *Buffer, size_t Length)
         return true;
     }
 
-    ssize_t WriteLen = m_Socket->Send(Buffer, Length, MSG_NOSIGNAL);
+    ssize_t WriteLen = m_Socket->Send(Buffer, Length, MSG_NOSIGNAL | MSG_DONTWAIT);
 
     if (WriteLen <= 0 && errno != EAGAIN)
         return false;
@@ -111,7 +111,7 @@ void CSocketNode::OnWrite(int fd, short Event)
 
     size_t BufferSize = m_WriteBuffer.size();
 
-    ssize_t WriteLen = m_Socket->Send(m_WriteBuffer.data(), BufferSize < USER_TCP_MSS ? BufferSize : USER_TCP_MSS);
+    ssize_t WriteLen = m_Socket->Send(m_WriteBuffer.data(), BufferSize < USER_TCP_MSS ? BufferSize : USER_TCP_MSS, MSG_NOSIGNAL | MSG_DONTWAIT);
 
     if (WriteLen > 0)
         m_WriteBuffer.erase(m_WriteBuffer.begin(), m_WriteBuffer.begin() + WriteLen);
