@@ -23,13 +23,16 @@ struct CConnectorConfig
     u_short ProxyPort;
 };
 
-class CSocketConnector : public IPlugin, public CNode, public INodeInit
+class CSocketConnector : public IPlugin, public CNode, public INodeService
 {
 public:
     CSocketConnector();
 
 public:
-    bool OnNodeInit(void * arg) override;
+    bool NodeInit(INodeManager * NodeManager) override;
+
+public:
+    bool OnNodeService(unsigned int ServiceID, void * Context) override;
 
 public:
     bool SetConfig(Json::Value &Config) override;

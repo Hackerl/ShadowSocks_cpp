@@ -3,7 +3,7 @@
 //
 
 #include "SocksServer.h"
-
+#include "Node/NodeService.h"
 #include <Socket/LibSocketExport.h>
 #include <Plugin/CommonProxy/CommonProtocol.h>
 #include <Plugin/Socks5/Socks5Protocol.h>
@@ -40,7 +40,7 @@ bool CProxyServer::SocksProxyHandler(Socks5_Connect_Request * Request, size_t Le
 
     Socks5_Connect_Response Response = {};
 
-    if (InitUpNode(&ProxyRequest))
+    if (m_NodeManager->InvokeService(REQUEST_SOCKET_CONNECT ,&ProxyRequest))
         Response.Header.Response = uint8_t(0x00);
 
     return DownStream(&Response, sizeof(Socks5_Connect_Response));

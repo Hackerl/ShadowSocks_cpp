@@ -6,17 +6,29 @@
 #define SHADOWSOCKSR_CPP_REMOTESOCKETNODE_H
 
 #include "SocketNode.h"
+#include "Node/NodeService.h"
 #include <netinet/tcp.h>
 
-class CRemoteSocketNode : public CSocketNode, public INodeInit
+class CRemoteSocketNode : public CSocketNode, public INodeService
 {
 public:
-    bool OnNodeInit(void * arg) override
+    bool NodeInit(INodeManager * NodeManager) override
     {
+        CNode::NodeInit(NodeManager);
+
+        return m_NodeManager->RegisterService(INIT_REMOTE_SOCKET, this);
+    }
+
+public:
+    bool OnNodeService(unsigned int ServiceID, void * Context) override
+    {
+        if (ServiceID != INIT_REMOTE_SOCKET)
+            return false;
+
         if (m_Socket != nullptr)
             return false;
 
-        m_Socket = static_cast<IIOSocket *>(arg);
+        m_Socket = static_cast<IIOSocket *>(Context);
 
         if (m_Loop == nullptr || m_Socket == nullptr)
             return false;

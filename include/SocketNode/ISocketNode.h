@@ -11,7 +11,7 @@
 class ISocketNode : public Interface
 {
 public:
-    virtual void Init(IEventLoop * Loop, IIOSocket * Socket = nullptr) = 0;
+    virtual void SocketNodeInit(IEventLoop *Loop, IIOSocket *Socket = nullptr) = 0;
 };
 
 #endif //SHADOWSOCKSR_CPP_ISOCKETNODE_H

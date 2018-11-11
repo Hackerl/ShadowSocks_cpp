@@ -6,6 +6,7 @@
 #include "Socket/LibSocketExport.h"
 #include "SocketProxy/LibSocketProxyExport.h"
 #include "Common/JSONHelper.h"
+#include "Node/NodeService.h"
 
 CSocketConnector::CSocketConnector() : m_Config()
 {
@@ -35,11 +36,21 @@ bool CSocketConnector::SetConfig(Json::Value &Config)
     return true;
 }
 
-bool CSocketConnector::OnNodeInit(void *arg)
+bool CSocketConnector::NodeInit(INodeManager *NodeManager)
+{
+    CNode::NodeInit(NodeManager);
+
+    return m_NodeManager->RegisterService(REQUEST_SOCKET_CONNECT, this);
+}
+
+bool CSocketConnector::OnNodeService(unsigned int ServiceID, void *Context)
 {
     //TODO parse target ip and port, connect with proxy config, init remote socket node
 
-    auto ConnectInfo = static_cast<CConnectRequest *>(arg);
+    if (ServiceID != REQUEST_SOCKET_CONNECT)
+        return false;
+
+    auto ConnectInfo = static_cast<CConnectRequest *>(Context);
 
     bool Res = false;
 
@@ -53,7 +64,7 @@ bool CSocketConnector::OnNodeInit(void *arg)
             Res = HTTPTunnelHandler(ConnectInfo);
             break;
     }
-    
+
     return Res;
 }
 
@@ -72,7 +83,7 @@ bool CSocketConnector::NoProxyHandler(CConnectRequest * ConnectInfo)
         return false;
     }
 
-    return InitUpNode(Socket);
+    return m_NodeManager->InvokeService(INIT_REMOTE_SOCKET, Socket);
 }
 
 bool CSocketConnector::HTTPTunnelHandler(CConnectRequest * ConnectInfo)
@@ -94,5 +105,5 @@ bool CSocketConnector::HTTPTunnelHandler(CConnectRequest * ConnectInfo)
         return false;
     }
 
-    return InitUpNode(HTTPTunnelSocket);
+    return m_NodeManager->InvokeService(INIT_REMOTE_SOCKET, HTTPTunnelSocket);
 }

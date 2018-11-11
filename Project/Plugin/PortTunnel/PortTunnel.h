@@ -7,6 +7,7 @@
 
 #include "Plugin/IPlugin.h"
 #include "Node/Node.h"
+#include "Node/NodeService.h"
 #include "Common/JSONHelper.h"
 #include "Socket/LibSocketExport.h"
 
@@ -62,7 +63,7 @@ public:
                 return false;
             }
 
-            InitUpNode(Socket);
+            m_NodeManager->InvokeService(INIT_REMOTE_SOCKET, Socket);
         }
 
         return UpStream(Buffer, Length);

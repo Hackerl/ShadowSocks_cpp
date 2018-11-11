@@ -7,6 +7,7 @@
 
 #include "INode.h"
 #include "Common/IInstanceManager.h"
+
 class CNode : public INode
 {
 public:
@@ -14,10 +15,16 @@ public:
     {
         m_UpNode = nullptr;
         m_DownNode = nullptr;
+        m_NodeManager = nullptr;
         m_NodeClosed = false;
     }
 
 public:
+    bool NodeInit(INodeManager * NodeManager) override
+    {
+        m_NodeManager = NodeManager;
+    }
+
     void NodeClose() override
     {
         if (m_NodeClosed)
@@ -25,18 +32,7 @@ public:
 
         m_NodeClosed = true;
 
-        if (m_UpNode != nullptr)
-        {
-            m_UpNode->NodeClose();
-            Release(m_UpNode);
-        }
-
-        if (m_DownNode != nullptr)
-        {
-            auto TmpPtr = m_DownNode;
-            m_DownNode->NodeClose();
-            Release(TmpPtr);
-        }
+        //TODO Node Close
     }
 
 public:
@@ -60,13 +56,11 @@ public:
     void SetUpNode(INodeCallback * UpNode) override
     {
         m_UpNode = UpNode;
-        AddRef(UpNode);
     }
 
     void SetDownNode(INodeCallback * DownNode) override
     {
         m_DownNode = DownNode;
-        AddRef(DownNode);
     }
 
 public:
@@ -80,20 +74,8 @@ public:
         return DownStream(Buffer, Length);
     }
 
-public:
-    bool InitUpNode(void * arg)
-    {
-        auto UpNode = dynamic_cast<INodeInit *>(m_UpNode);
-
-        return UpNode == nullptr ? false : UpNode->OnNodeInit(arg);
-    }
-
-    bool InitDownNode(void * arg)
-    {
-        auto DownNode = dynamic_cast<INodeInit *>(m_DownNode);
-
-        return DownNode == nullptr ? false : DownNode->OnNodeInit(arg);
-    }
+protected:
+    INodeManager * m_NodeManager;
 
 private:
     bool m_NodeClosed;

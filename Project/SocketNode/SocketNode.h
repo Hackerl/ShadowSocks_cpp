@@ -7,6 +7,7 @@
 
 #include "Node/Node.h"
 #include "SocketNode/ISocketNode.h"
+#include "Node/INodeManager.h"
 #include <Socket/ISocket.h>
 #include <EventLoop/IEventLoop.h>
 #include <vector>
@@ -18,7 +19,7 @@ public:
     ~CSocketNode();
 
 public:
-    void Init(IEventLoop * Loop, IIOSocket * Socket) override;
+    void SocketNodeInit(IEventLoop *Loop, IIOSocket *Socket) override;
     void NodeClose() override;
 
 public:

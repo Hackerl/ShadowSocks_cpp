@@ -28,7 +28,7 @@ CSocketNode::~CSocketNode()
     m_WriteBuffer.clear();
 }
 
-void CSocketNode::Init(IEventLoop *Loop, IIOSocket *Socket)
+void CSocketNode::SocketNodeInit(IEventLoop *Loop, IIOSocket *Socket)
 {
     m_Loop = Loop;
     m_Socket = Socket;
@@ -114,7 +114,10 @@ void CSocketNode::OnWrite(int fd, short Event)
     ssize_t WriteLen = m_Socket->Send(m_WriteBuffer.data(), BufferSize, MSG_NOSIGNAL | MSG_DONTWAIT);
 
     if (WriteLen > 0)
+    {
         m_WriteBuffer.erase(m_WriteBuffer.begin(), m_WriteBuffer.begin() + WriteLen);
+        m_WriteBuffer.shrink_to_fit();
+    }
 
     if (m_WriteBuffer.empty())
         m_Loop->SetEvent(m_Socket->GetSocket(), EV_READ | EV_CLOSED | EV_PERSIST);
