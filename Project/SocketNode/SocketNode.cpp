@@ -111,7 +111,7 @@ void CSocketNode::OnWrite(int fd, short Event)
 
     size_t BufferSize = m_WriteBuffer.size();
 
-    ssize_t WriteLen = m_Socket->Send(m_WriteBuffer.data(), BufferSize < USER_TCP_MSS ? BufferSize : USER_TCP_MSS, MSG_NOSIGNAL | MSG_DONTWAIT);
+    ssize_t WriteLen = m_Socket->Send(m_WriteBuffer.data(), BufferSize, MSG_NOSIGNAL | MSG_DONTWAIT);
 
     if (WriteLen > 0)
         m_WriteBuffer.erase(m_WriteBuffer.begin(), m_WriteBuffer.begin() + WriteLen);
