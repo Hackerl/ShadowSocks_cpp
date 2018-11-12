@@ -16,7 +16,7 @@ public:
     {
         CNode::NodeInit(NodeManager);
 
-        return m_NodeManager->RegisterService(INIT_REMOTE_SOCKET, this);
+        return RegisterService(INIT_REMOTE_SOCKET, this);
     }
 
 public:

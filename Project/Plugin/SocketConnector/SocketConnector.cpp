@@ -40,7 +40,7 @@ bool CSocketConnector::NodeInit(INodeManager *NodeManager)
 {
     CNode::NodeInit(NodeManager);
 
-    return m_NodeManager->RegisterService(REQUEST_SOCKET_CONNECT, this);
+    return RegisterService(REQUEST_SOCKET_CONNECT, this);
 }
 
 bool CSocketConnector::OnNodeService(unsigned int ServiceID, void *Context)
@@ -83,7 +83,7 @@ bool CSocketConnector::NoProxyHandler(CConnectRequest * ConnectInfo)
         return false;
     }
 
-    return m_NodeManager->InvokeService(INIT_REMOTE_SOCKET, Socket);
+    return InvokeService(INIT_REMOTE_SOCKET, Socket);
 }
 
 bool CSocketConnector::HTTPTunnelHandler(CConnectRequest * ConnectInfo)
@@ -105,5 +105,5 @@ bool CSocketConnector::HTTPTunnelHandler(CConnectRequest * ConnectInfo)
         return false;
     }
 
-    return m_NodeManager->InvokeService(INIT_REMOTE_SOCKET, HTTPTunnelSocket);
+    return InvokeService(INIT_REMOTE_SOCKET, HTTPTunnelSocket);
 }

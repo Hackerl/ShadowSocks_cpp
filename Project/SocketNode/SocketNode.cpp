@@ -11,7 +11,6 @@ CSocketNode::CSocketNode()
 {
     m_Socket = nullptr;
     m_Loop = nullptr;
-    m_Closed = false;
 }
 
 CSocketNode::~CSocketNode()
@@ -41,14 +40,6 @@ void CSocketNode::SocketNodeInit(IEventLoop *Loop, IIOSocket *Socket)
     m_Socket->SetSockOpt(IPPROTO_TCP, TCP_NODELAY, &OptVal, sizeof(OptVal));
 
     m_Loop->AddClient(m_Socket->GetSocket(), this);
-}
-
-void CSocketNode::NodeClose()
-{
-    CNode::NodeClose();
-
-    if (m_Loop != nullptr && m_Socket != nullptr)
-        m_Loop->Remove(m_Socket->GetSocket());
 }
 
 bool CSocketNode::DataOut(const void *Buffer, size_t Length)
@@ -91,14 +82,14 @@ void CSocketNode::OnRead(int fd, short Event)
 
     if (ReadLen <= 0)
     {
-        NodeClose();
+        OnClose(m_Socket->GetSocket(), EV_CLOSED);
         return;
     }
 
     bool NodeListStatus = DataIn(Buffer, ReadLen);
 
     if (!NodeListStatus)
-        NodeClose();
+        OnClose(m_Socket->GetSocket(), EV_CLOSED);
 }
 
 void CSocketNode::OnWrite(int fd, short Event)
@@ -125,10 +116,10 @@ void CSocketNode::OnWrite(int fd, short Event)
 
 void CSocketNode::OnClose(int fd, short Event)
 {
-    if (m_Closed)
-        return;
-
-    m_Closed = true;
+    BroadcastEvent(NODE_CLOSE_EVENT, nullptr, nullptr);
 
     NodeClose();
+
+    if (m_Loop != nullptr && m_Socket != nullptr)
+        m_Loop->Remove(m_Socket->GetSocket());
 }

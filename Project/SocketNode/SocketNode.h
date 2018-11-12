@@ -20,7 +20,6 @@ public:
 
 public:
     void SocketNodeInit(IEventLoop *Loop, IIOSocket *Socket) override;
-    void NodeClose() override;
 
 public:
     virtual bool DataIn(const void *Buffer, size_t Length) = 0;
@@ -35,7 +34,6 @@ protected:
     IIOSocket * m_Socket;
     std::vector<u_char> m_WriteBuffer;
     IEventLoop * m_Loop;
-    bool m_Closed;
 };
 
 #endif //SHADOWSOCKSR_CPP_SOCKETNODE_H

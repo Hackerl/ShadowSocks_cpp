@@ -7,6 +7,8 @@
 
 #include "INode.h"
 #include "INodeManager.h"
+#include "Node/NodeEvent.h"
+#include "Common/InstanceManager.h"
 #include <map>
 
 struct CNodeEventInfo
@@ -15,8 +17,27 @@ struct CNodeEventInfo
     INodeEvent * Node;
 };
 
-class CCNodeManager : public INodeManager
+class CCNodeManager : public INodeManager, public INodeEvent
 {
+public:
+    CCNodeManager()
+    {
+        RegisterEvent(NODE_CLOSE_EVENT, this);
+    }
+
+public:
+    ~CCNodeManager()
+    {
+        for (auto const & Iterator : m_NodeList)
+        {
+            Release(Iterator);
+        }
+
+        m_NodeList.clear();
+        m_NodeEventList.clear();
+        m_NodeServiceList.clear();
+    }
+
 public:
     void RegisterEvent(unsigned int EventID, INodeEvent * Node) override
     {
@@ -28,14 +49,14 @@ public:
         m_NodeEventList.push_back(NodeEventInfo);
     }
 
-    void BroadcastEvent(unsigned int EventID, void * Context) override
+    void BroadcastEvent(unsigned int EventID, void * Context, INodeEvent * Publisher) override
     {
         for (auto const & Iterator : m_NodeEventList)
         {
             if (Iterator.EventID != EventID)
                 continue;
 
-            Iterator.Node->OnNodeEvent(EventID, Context);
+            Iterator.Node->OnNodeEvent(EventID, Context, Publisher);
         }
     }
 
@@ -46,7 +67,7 @@ public:
         m_NodeServiceList.insert(std::make_pair(ServiceID, Node));
     }
 
-    bool InvokeService(unsigned int ServiceID, void * Context)
+    bool InvokeService(unsigned int ServiceID, void * Context) override
     {
         auto Iterator = m_NodeServiceList.find(ServiceID);
 
@@ -54,6 +75,18 @@ public:
             return false;
 
         return Iterator->second->OnNodeService(ServiceID, Context);
+    }
+
+public:
+    void OnNodeEvent(unsigned int EventID, void * Context, INodeEvent * Publisher) override
+    {
+        if (EventID != NODE_CLOSE_EVENT)
+            return;
+
+        for (auto const & Iterator : m_NodeList)
+        {
+            Iterator->NodeClose();
+        }
     }
 
 public:

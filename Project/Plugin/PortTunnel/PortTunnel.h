@@ -63,7 +63,7 @@ public:
                 return false;
             }
 
-            m_NodeManager->InvokeService(INIT_REMOTE_SOCKET, Socket);
+            InvokeService(INIT_REMOTE_SOCKET, Socket);
         }
 
         return UpStream(Buffer, Length);

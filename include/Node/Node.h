@@ -6,6 +6,7 @@
 #define SHADOWSOCKSR_CPP_NODE_H
 
 #include "INode.h"
+#include "Node/NodeEvent.h"
 #include "Common/IInstanceManager.h"
 
 class CNode : public INode
@@ -23,6 +24,7 @@ public:
     bool NodeInit(INodeManager * NodeManager) override
     {
         m_NodeManager = NodeManager;
+        AddRef(NodeManager);
     }
 
     void NodeClose() override
@@ -33,6 +35,24 @@ public:
         m_NodeClosed = true;
 
         //TODO Node Close
+
+        if (m_NodeManager != nullptr)
+        {
+            Release(m_NodeManager);
+            m_NodeManager = nullptr;
+        }
+
+        if (m_UpNode != nullptr)
+        {
+            Release(m_UpNode);
+            m_UpNode = nullptr;
+        }
+
+        if (m_DownNode != nullptr)
+        {
+            Release(m_DownNode);
+            m_DownNode = nullptr;
+        }
     }
 
 public:
@@ -56,11 +76,13 @@ public:
     void SetUpNode(INodeCallback * UpNode) override
     {
         m_UpNode = UpNode;
+        AddRef(UpNode);
     }
 
     void SetDownNode(INodeCallback * DownNode) override
     {
         m_DownNode = DownNode;
+        AddRef(DownNode);
     }
 
 public:
@@ -74,13 +96,44 @@ public:
         return DownStream(Buffer, Length);
     }
 
-protected:
-    INodeManager * m_NodeManager;
+public:
+    void RegisterEvent(unsigned int EventID, INodeEvent * Node)
+    {
+        if (m_NodeManager == nullptr)
+            return;
+
+        m_NodeManager->RegisterEvent(EventID, Node);
+    }
+
+    void BroadcastEvent(unsigned int EventID, void * Context, INodeEvent * Publisher)
+    {
+        if (m_NodeManager == nullptr)
+            return;
+
+        m_NodeManager->BroadcastEvent(EventID, Context, Publisher);
+    }
+
+    bool RegisterService(unsigned int ServiceID, INodeService * Node)
+    {
+        if (m_NodeManager == nullptr)
+            return false;
+
+        return m_NodeManager->RegisterService(ServiceID, Node);
+    }
+
+    bool InvokeService(unsigned int ServiceID, void * Context)
+    {
+        if (m_NodeManager == nullptr)
+            return false;
+
+        return m_NodeManager->InvokeService(ServiceID, Context);
+    }
 
 private:
     bool m_NodeClosed;
     INodeCallback * m_UpNode;
     INodeCallback * m_DownNode;
+    INodeManager * m_NodeManager;
 };
 
 #endif //SHADOWSOCKSR_CPP_NODE_H

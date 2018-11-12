@@ -40,7 +40,7 @@ bool CProxyServer::SocksProxyHandler(Socks5_Connect_Request * Request, size_t Le
 
     Socks5_Connect_Response Response = {};
 
-    if (m_NodeManager->InvokeService(REQUEST_SOCKET_CONNECT ,&ProxyRequest))
+    if (InvokeService(REQUEST_SOCKET_CONNECT ,&ProxyRequest))
         Response.Header.Response = uint8_t(0x00);
 
     return DownStream(&Response, sizeof(Socks5_Connect_Response));
