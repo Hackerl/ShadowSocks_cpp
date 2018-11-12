@@ -11,7 +11,6 @@ CSocketNode::CSocketNode()
 {
     m_Socket = nullptr;
     m_Loop = nullptr;
-
     m_Closed = false;
 }
 
@@ -133,10 +132,13 @@ bool CSocketNode::NodeInit(INodeManager *NodeManager)
 
 void CSocketNode::OnNodeEvent(unsigned int EventID, void * Context)
 {
+    if (m_Socket == nullptr)
+        return;
+
     switch (EventID)
     {
         case PIPE_STREAM_BLOCK:
-            m_Loop->SetEvent(m_Socket->GetSocket(), 0);
+            m_Loop->SetEvent(m_Socket->GetSocket(), EV_CLOSED | EV_PERSIST);
             break;
 
         case PIPE_STREAM_FLOW:
@@ -150,14 +152,10 @@ void CSocketNode::NodeClose()
     CNode::NodeClose();
 
     if (m_WriteBuffer.size() > 0)
-    {
         m_Socket->Send(m_WriteBuffer.data(), m_WriteBuffer.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
-    }
 
     if (m_Loop != nullptr && m_Socket != nullptr)
-    {
         m_Loop->Remove(m_Socket->GetSocket());
-    }
 }
 
 void CSocketNode::OnClose(int fd, short Event)
