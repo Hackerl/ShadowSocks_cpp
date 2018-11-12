@@ -66,6 +66,8 @@ bool CSocketNode::DataOut(const void *Buffer, size_t Length)
         m_WriteBuffer.insert(m_WriteBuffer.end(), (u_char *)Buffer + WriteLen, (u_char *)Buffer + Length);
 
         m_Loop->SetEvent(m_Socket->GetSocket(), EV_READ | EV_WRITE | EV_CLOSED | EV_PERSIST);
+
+        BroadcastEvent(PIPE_STREAM_BLOCK, nullptr, this);
     }
 
     return true;
@@ -111,7 +113,31 @@ void CSocketNode::OnWrite(int fd, short Event)
     }
 
     if (m_WriteBuffer.empty())
+    {
+        BroadcastEvent(PIPE_STREAM_FLOW, nullptr, this);
         m_Loop->SetEvent(m_Socket->GetSocket(), EV_READ | EV_CLOSED | EV_PERSIST);
+    }
+}
+
+bool CSocketNode::NodeInit(INodeManager *NodeManager)
+{
+    CNode::NodeInit(NodeManager);
+
+    return RegisterEvent(PIPE_STREAM_BLOCK, this) && RegisterEvent(PIPE_STREAM_FLOW, this);
+}
+
+void CSocketNode::OnNodeEvent(unsigned int EventID, void * Context)
+{
+    switch (EventID)
+    {
+        case PIPE_STREAM_BLOCK:
+            m_Loop->SetEvent(m_Socket->GetSocket(), EV_CLOSED | EV_PERSIST);
+            break;
+
+        case PIPE_STREAM_FLOW:
+            m_Loop->SetEvent(m_Socket->GetSocket(), EV_READ | EV_CLOSED | EV_PERSIST);
+            break;
+    }
 }
 
 void CSocketNode::OnClose(int fd, short Event)

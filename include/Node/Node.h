@@ -97,18 +97,18 @@ public:
     }
 
 public:
-    void RegisterEvent(unsigned int EventID, INodeEvent * Node)
+    bool RegisterEvent(unsigned int EventID, INodeEvent * Node)
     {
         if (m_NodeManager == nullptr)
-            return;
+            return false;
 
         m_NodeManager->RegisterEvent(EventID, Node);
     }
 
-    void BroadcastEvent(unsigned int EventID, void * Context, INodeEvent * Publisher = nullptr)
+    bool BroadcastEvent(unsigned int EventID, void * Context, INodeEvent * Publisher = nullptr)
     {
         if (m_NodeManager == nullptr)
-            return;
+            return false;
 
         m_NodeManager->BroadcastEvent(EventID, Context, Publisher);
     }

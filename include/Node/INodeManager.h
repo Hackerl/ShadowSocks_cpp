@@ -10,7 +10,7 @@
 class INodeEvent : public Interface
 {
 public:
-    virtual void OnNodeEvent(unsigned int EventID, void * Context, INodeEvent * Publisher) = 0;
+    virtual void OnNodeEvent(unsigned int EventID, void * Context) = 0;
 };
 
 class INodeService : public Interface

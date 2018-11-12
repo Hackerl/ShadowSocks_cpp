@@ -53,10 +53,10 @@ public:
     {
         for (auto const & Iterator : m_NodeEventList)
         {
-            if (Iterator.EventID != EventID)
+            if (Iterator.EventID != EventID || Publisher == Iterator.Node)
                 continue;
 
-            Iterator.Node->OnNodeEvent(EventID, Context, Publisher);
+            Iterator.Node->OnNodeEvent(EventID, Context);
         }
     }
 
@@ -78,7 +78,7 @@ public:
     }
 
 public:
-    void OnNodeEvent(unsigned int EventID, void * Context, INodeEvent * Publisher) override
+    void OnNodeEvent(unsigned int EventID, void * Context) override
     {
         if (EventID != NODE_CLOSE_EVENT)
             return;

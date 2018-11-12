@@ -8,6 +8,8 @@
 enum NodeEventRegister : unsigned int
 {
     NODE_CLOSE_EVENT = 0,
+    PIPE_STREAM_BLOCK,
+    PIPE_STREAM_FLOW
 };
 
 #endif //SHADOWSOCKSR_CPP_NODEEVENT_H
