@@ -36,7 +36,7 @@ bool CSocketConnector::SetConfig(Json::Value &Config)
     return true;
 }
 
-bool CSocketConnector::NodeInit(INodeManager *NodeManager)
+bool CSocketConnector::NodeInit(INodeManager * NodeManager)
 {
     CNode::NodeInit(NodeManager);
 

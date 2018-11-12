@@ -105,7 +105,7 @@ public:
         m_NodeManager->RegisterEvent(EventID, Node);
     }
 
-    void BroadcastEvent(unsigned int EventID, void * Context, INodeEvent * Publisher)
+    void BroadcastEvent(unsigned int EventID, void * Context, INodeEvent * Publisher = nullptr)
     {
         if (m_NodeManager == nullptr)
             return;

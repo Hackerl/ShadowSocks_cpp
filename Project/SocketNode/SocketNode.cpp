@@ -116,7 +116,7 @@ void CSocketNode::OnWrite(int fd, short Event)
 
 void CSocketNode::OnClose(int fd, short Event)
 {
-    BroadcastEvent(NODE_CLOSE_EVENT, nullptr, nullptr);
+    BroadcastEvent(NODE_CLOSE_EVENT, nullptr);
 
     NodeClose();
 
