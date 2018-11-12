@@ -140,12 +140,15 @@ void CSocketNode::OnNodeEvent(unsigned int EventID, void * Context)
     }
 }
 
-void CSocketNode::OnClose(int fd, short Event)
+void CSocketNode::NodeClose()
 {
-    BroadcastEvent(NODE_CLOSE_EVENT, nullptr);
-
-    NodeClose();
+    CNode::NodeClose();
 
     if (m_Loop != nullptr && m_Socket != nullptr)
         m_Loop->Remove(m_Socket->GetSocket());
+}
+
+void CSocketNode::OnClose(int fd, short Event)
+{
+    BroadcastEvent(NODE_CLOSE_EVENT, nullptr, this);
 }

@@ -28,6 +28,8 @@ public:
 public:
     bool NodeInit(INodeManager * NodeManager) override;
     void OnNodeEvent(unsigned int EventID, void * Context) override;
+    void NodeClose() override;
+
 
 public:
     void OnRead(int fd, short Event) override ;
