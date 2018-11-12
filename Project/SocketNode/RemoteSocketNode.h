@@ -14,7 +14,7 @@ class CRemoteSocketNode : public CSocketNode, public INodeService
 public:
     bool NodeInit(INodeManager * NodeManager) override
     {
-        CNode::NodeInit(NodeManager);
+        CSocketNode::NodeInit(NodeManager);
 
         return RegisterService(INIT_REMOTE_SOCKET, this);
     }

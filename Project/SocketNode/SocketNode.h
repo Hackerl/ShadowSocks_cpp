@@ -37,6 +37,7 @@ public:
     void OnClose(int fd, short Event) override;
 
 protected:
+    bool m_Closed;
     IIOSocket * m_Socket;
     std::vector<u_char> m_WriteBuffer;
     IEventLoop * m_Loop;

@@ -36,17 +36,8 @@ public:
 
         //TODO Node Close
 
-        if (m_UpNode != nullptr)
-        {
-            Release(m_UpNode);
-            m_UpNode = nullptr;
-        }
-
-        if (m_DownNode != nullptr)
-        {
-            Release(m_DownNode);
-            m_DownNode = nullptr;
-        }
+        m_UpNode = nullptr;
+        m_DownNode = nullptr;
 
         if (m_NodeManager != nullptr)
         {
@@ -76,13 +67,11 @@ public:
     void SetUpNode(INodeCallback * UpNode) override
     {
         m_UpNode = UpNode;
-        AddRef(UpNode);
     }
 
     void SetDownNode(INodeCallback * DownNode) override
     {
         m_DownNode = DownNode;
-        AddRef(DownNode);
     }
 
 public:

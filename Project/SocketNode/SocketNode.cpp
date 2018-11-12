@@ -11,6 +11,8 @@ CSocketNode::CSocketNode()
 {
     m_Socket = nullptr;
     m_Loop = nullptr;
+
+    m_Closed = false;
 }
 
 CSocketNode::~CSocketNode()
@@ -61,13 +63,13 @@ bool CSocketNode::DataOut(const void *Buffer, size_t Length)
     if (WriteLen <= 0 && errno != EAGAIN)
         return false;
 
-    if (WriteLen < Length)
+    if (WriteLen != Length)
     {
         m_WriteBuffer.insert(m_WriteBuffer.end(), (u_char *)Buffer + WriteLen, (u_char *)Buffer + Length);
 
-        m_Loop->SetEvent(m_Socket->GetSocket(), EV_READ | EV_WRITE | EV_CLOSED | EV_PERSIST);
-
         BroadcastEvent(PIPE_STREAM_BLOCK, nullptr, this);
+
+        m_Loop->SetEvent(m_Socket->GetSocket(), EV_READ | EV_WRITE | EV_CLOSED | EV_PERSIST);
     }
 
     return true;
@@ -123,7 +125,10 @@ bool CSocketNode::NodeInit(INodeManager *NodeManager)
 {
     CNode::NodeInit(NodeManager);
 
-    return RegisterEvent(PIPE_STREAM_BLOCK, this) && RegisterEvent(PIPE_STREAM_FLOW, this);
+    RegisterEvent(PIPE_STREAM_BLOCK, this);
+    RegisterEvent(PIPE_STREAM_FLOW, this);
+
+    return true;
 }
 
 void CSocketNode::OnNodeEvent(unsigned int EventID, void * Context)
@@ -131,7 +136,7 @@ void CSocketNode::OnNodeEvent(unsigned int EventID, void * Context)
     switch (EventID)
     {
         case PIPE_STREAM_BLOCK:
-            m_Loop->SetEvent(m_Socket->GetSocket(), EV_CLOSED | EV_PERSIST);
+            m_Loop->SetEvent(m_Socket->GetSocket(), 0);
             break;
 
         case PIPE_STREAM_FLOW:
@@ -144,11 +149,23 @@ void CSocketNode::NodeClose()
 {
     CNode::NodeClose();
 
+    if (m_WriteBuffer.size() > 0)
+    {
+        m_Socket->Send(m_WriteBuffer.data(), m_WriteBuffer.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
+    }
+
     if (m_Loop != nullptr && m_Socket != nullptr)
+    {
         m_Loop->Remove(m_Socket->GetSocket());
+    }
 }
 
 void CSocketNode::OnClose(int fd, short Event)
 {
+    if (m_Closed)
+        return;
+
+    m_Closed = true;
+
     BroadcastEvent(NODE_CLOSE_EVENT, nullptr, this);
 }
