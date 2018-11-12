@@ -100,7 +100,8 @@ bool CHTTPTunnel::Connect(std::string IP, ushort Port)
     TunnelRequest << "CONNECT "<< IP << ":" << Port <<" HTTP/1.1" << HTTP_LINE_SPLIT;
     TunnelRequest << "HOST: " << IP << ":" << Port << HTTP_LINE_SPLIT;
     TunnelRequest << "User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:40.0) Gecko/20100101 Firefox/44.0" << HTTP_LINE_SPLIT;
-    TunnelRequest << "Proxy-Connection: keep-alive" << HTTP_HEADER_END;
+    TunnelRequest << "Proxy-Connection: keep-alive" << HTTP_LINE_SPLIT;
+    TunnelRequest << "Connection: keep-alive" << HTTP_HEADER_END;
 
     std::string Data = TunnelRequest.str();
 
