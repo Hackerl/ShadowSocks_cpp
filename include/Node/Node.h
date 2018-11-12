@@ -36,12 +36,6 @@ public:
 
         //TODO Node Close
 
-        if (m_NodeManager != nullptr)
-        {
-            Release(m_NodeManager);
-            m_NodeManager = nullptr;
-        }
-
         if (m_UpNode != nullptr)
         {
             Release(m_UpNode);
@@ -52,6 +46,12 @@ public:
         {
             Release(m_DownNode);
             m_DownNode = nullptr;
+        }
+
+        if (m_NodeManager != nullptr)
+        {
+            Release(m_NodeManager);
+            m_NodeManager = nullptr;
         }
     }
 

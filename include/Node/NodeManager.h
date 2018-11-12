@@ -93,6 +93,8 @@ public:
     void AddNode(INode * Node)
     {
         m_NodeList.push_back(Node);
+        AddRef(Node);
+
         Node->NodeInit(this);
     }
 
@@ -103,6 +105,8 @@ public:
         if (Node != nullptr)
         {
             m_NodeList.push_back(Node);
+            AddRef(Node);
+
             Node->NodeInit(this);
         }
     }
