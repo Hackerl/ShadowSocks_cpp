@@ -4,6 +4,7 @@
 
 #include "EventLoop.h"
 #include "Common/IInstanceManager.h"
+#include <glog/logging.h>
 
 CEventLoop::CEventLoop()
 {
@@ -16,81 +17,55 @@ CEventLoop::~CEventLoop()
     m_EventBase = nullptr;
 }
 
-bool CEventLoop::AddServer(int fd, ISocketServerCallback * ServerHandler)
-{
-    struct Stub
-    {
-        static void OnAccept(int fd, short Event, void *arg)
-        {
-            auto ServerHandler = (ISocketServerCallback*) arg;
-            ServerHandler->OnAccept(fd, Event);
-        }
-    };
-
-    event* Event = event_new(m_EventBase, fd, EV_READ | EV_PERSIST, Stub::OnAccept, ServerHandler);
-
-    event_add(Event, nullptr);
-
-    EventSession Session = {};
-
-    Session.Event = Event;
-    Session.CloseHandler = (ISocketCloseCallback *) ServerHandler;
-
-    AutoMutex _0_(m_Mutex);
-    m_SocketEventMap.insert(std::pair<int, EventSession>(fd, Session));
-
-    AddRef(ServerHandler);
-
-    return true;
-}
-
-bool CEventLoop::AddClient(int fd, ISocketClientCallback * ClientHandler)
+bool CEventLoop::Add(int fd, ISocketCallback * SocketHandler)
 {
     struct Stub
     {
         static void OnEvent(int fd ,short Event, void* arg)
         {
-            auto ClientHandler = (ISocketClientCallback *) arg;
+            auto Handler = (ISocketCallback *) arg;
 
             if (Event & EV_READ)
             {
-                ClientHandler->OnRead(fd, Event);
+                Handler->OnRead(fd, EV_READ);
                 return;
             }
 
             if (Event & EV_WRITE)
             {
-                ClientHandler->OnWrite(fd, Event);
+                Handler->OnWrite(fd, EV_WRITE);
                 return;
             }
 
-            if (Event & EV_CLOSED)
+            if (Event & EV_TIMEOUT)
             {
-                ClientHandler->OnClose(fd, Event);
-                return;
+                LOG(INFO) << "Socket TimeOut Event";
+
+                Handler->OnRead(fd, EV_TIMEOUT);
+                Handler->OnWrite(fd, EV_TIMEOUT);
             }
         }
     };
 
-    event* Event = event_new(m_EventBase, fd, EV_READ | EV_CLOSED | EV_PERSIST, Stub::OnEvent , ClientHandler);
+    event* Event = event_new(m_EventBase, fd, EV_READ | EV_CLOSED | EV_PERSIST, Stub::OnEvent , SocketHandler);
 
     event_add(Event, nullptr);
 
     EventSession Session = {};
 
     Session.Event = Event;
-    Session.CloseHandler = (ISocketCloseCallback *) ClientHandler;
+    Session.SocketHandler = SocketHandler;
 
     AutoMutex _0_(m_Mutex);
 
     m_SocketEventMap.insert(std::pair<int, EventSession>(fd, Session));
 
-    AddRef(ClientHandler);
+    AddRef(SocketHandler);
 
     return true;
 }
 
-bool CEventLoop::SetEvent(int fd, short Mode)
+bool CEventLoop::SetEvent(int fd, short Mode, time_t TimeOut)
 {
     AutoMutex _0_(m_Mutex);
 
@@ -105,7 +80,18 @@ bool CEventLoop::SetEvent(int fd, short Mode)
 
     Session.Event->ev_events = Mode;
 
-    event_add(Session.Event, nullptr);
+    if (!TimeOut)
+    {
+        event_add(Session.Event, nullptr);
+        return true;
+    }
+
+    timeval TimeOutVal = {};
+
+    TimeOutVal.tv_sec = TimeOut;
+    TimeOutVal.tv_usec = 0;
+
+    event_add(Session.Event, &TimeOutVal);
 
     return true;
 }
@@ -124,7 +110,7 @@ bool CEventLoop::Remove(int fd)
     event_del(Session.Event);
     event_free(Session.Event);
 
-    Release(Session.CloseHandler);
+    Release(Session.SocketHandler);
 
     m_SocketEventMap.erase(Iterator);
 
@@ -147,9 +133,9 @@ void CEventLoop::Destroy()
         event_del(Session.Event);
         event_free(Session.Event);
 
-        Session.CloseHandler->OnClose(Iterator.first, EV_CLOSED);
+        Session.SocketHandler->OnClose(Iterator.first, EV_CLOSED);
 
-        Release(Session.CloseHandler);
+        Release(Session.SocketHandler);
     }
 
     m_SocketEventMap.clear();

@@ -12,7 +12,7 @@
 #include <EventLoop/IEventLoop.h>
 #include <vector>
 
-class CSocketNode : public CNode , public ISocketClientCallback, public ISocketNode, public INodeEvent
+class CSocketNode : public CNode , public ISocketCallback, public ISocketNode, public INodeEvent
 {
 public:
     CSocketNode();
@@ -38,6 +38,7 @@ public:
 
 protected:
     bool m_Closed;
+    short m_Mode;
     IIOSocket * m_Socket;
     std::vector<u_char> m_WriteBuffer;
     IEventLoop * m_Loop;

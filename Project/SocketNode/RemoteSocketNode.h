@@ -37,7 +37,7 @@ public:
 
         m_Socket->SetSockOpt(IPPROTO_TCP, TCP_NODELAY, &OptVal, sizeof(OptVal));
 
-        return m_Loop->AddClient(m_Socket->GetSocket(), this);
+        return m_Loop->Add(m_Socket->GetSocket(), this);
     }
 
 public:

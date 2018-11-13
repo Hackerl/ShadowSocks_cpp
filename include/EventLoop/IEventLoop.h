@@ -11,10 +11,9 @@
 class IEventLoop : public Interface
 {
 public:
-    virtual bool AddServer(int fd, ISocketServerCallback * ServerHandler) = 0;
-    virtual bool AddClient(int fd, ISocketClientCallback * ClientHandler) = 0;
+    virtual bool Add(int fd, ISocketCallback * SocketHandler) = 0;
     virtual bool Remove(int fd) = 0;
     virtual void Loop() = 0;
-    virtual bool SetEvent(int fd, short Mode) = 0;
+    virtual bool SetEvent(int fd, short Mode, time_t TimeOut = 0) = 0;
 };
 #endif //SHADOWSOCKSR_CPP_IEVENTLOOP_H

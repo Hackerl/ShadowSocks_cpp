@@ -36,25 +36,12 @@ public:
     virtual bool Bind(std::string IP, ushort Port) = 0;
 };
 
-class ISocketCloseCallback : public Interface
-{
-public:
-    virtual void OnClose(int fd ,short Event) = 0;
-};
-
-class ISocketClientCallback : public ISocketCloseCallback
+class ISocketCallback : public Interface
 {
 public:
     virtual void OnRead(int fd ,short Event) = 0;
     virtual void OnWrite(int fd ,short Event) = 0;
-    void OnClose(int fd ,short Event) override = 0;
-};
-
-class ISocketServerCallback : public ISocketCloseCallback
-{
-public:
-    virtual void OnAccept(int fd, short Event) = 0;
-    void OnClose(int fd ,short Event) override = 0;
+    virtual void OnClose(int fd ,short Event) = 0;
 };
 
 #endif //SHADOWSOCKSR_CPP_ISOCKET_H

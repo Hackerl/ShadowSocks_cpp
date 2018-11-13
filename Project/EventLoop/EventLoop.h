@@ -13,7 +13,7 @@
 struct EventSession
 {
     event * Event;
-    ISocketCloseCallback * CloseHandler;
+    ISocketCallback * SocketHandler;
 };
 
 class CEventLoop : public IEventLoop
@@ -23,10 +23,9 @@ public:
     ~CEventLoop();
 
 public:
-    bool AddServer (int fd, ISocketServerCallback * ServerHandler) override;
-    bool AddClient (int fd, ISocketClientCallback * ClientHandler) override;
+    bool Add(int fd, ISocketCallback * SocketHandler) override;
     bool Remove(int fd) override;
-    bool SetEvent(int fd, short Mode) override;
+    bool SetEvent(int fd, short Mode, time_t TimeOut) override;
     void Loop() override;
     void Destroy();
 

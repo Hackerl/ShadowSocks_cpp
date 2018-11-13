@@ -61,7 +61,7 @@ void TestClient()
     DeleteTCPSocket(Client);
 }
 
-class CClient : public CTCPSocket , public ISocketClientCallback
+class CClient : public CTCPSocket , public ISocketCallback
 {
 public:
     CClient()
@@ -77,6 +77,8 @@ public:
         char Buffer[1024];
 
         int len = Recv(Buffer, 1024, 0);
+
+        m_Loop->SetEvent(fd, EV_READ| EV_WRITE | EV_PERSIST);
     }
 
     void OnWrite(int fd ,short Event) override
@@ -127,6 +129,6 @@ void TestEventCallback()
 
 int main()
 {
-    TestClient();
+    TestEventCallback();
     return 0;
 }
