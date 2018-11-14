@@ -19,6 +19,8 @@ CEventLoop::~CEventLoop()
 
 bool CEventLoop::Add(int fd, ISocketCallback * SocketHandler)
 {
+    LOG(INFO) << "Add fd: " << fd;
+
     struct Stub
     {
         static void OnEvent(int fd ,short Event, void* arg)
@@ -67,6 +69,8 @@ bool CEventLoop::Add(int fd, ISocketCallback * SocketHandler)
 
 bool CEventLoop::SetEvent(int fd, short Mode, time_t TimeOut)
 {
+    LOG(INFO) << "SetEvent fd: " << fd << " Mode: " << Mode << " TimeOut " << TimeOut;
+
     AutoMutex _0_(m_Mutex);
 
     auto Iterator = m_SocketEventMap.find(fd);
@@ -98,6 +102,8 @@ bool CEventLoop::SetEvent(int fd, short Mode, time_t TimeOut)
 
 bool CEventLoop::Remove(int fd)
 {
+    LOG(INFO) << "Remove fd: " << fd;
+
     AutoMutex _0_(m_Mutex);
 
     auto Iterator = m_SocketEventMap.find(fd);

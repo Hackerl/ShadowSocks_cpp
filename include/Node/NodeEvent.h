@@ -7,8 +7,7 @@
 
 enum NodeEventRegister : unsigned int
 {
-    NODE_CLOSE_EVENT = 0,
-    PIPE_STREAM_BLOCK,
+    PIPE_STREAM_BLOCK = 0,
     PIPE_STREAM_FLOW
 };
 

@@ -32,7 +32,7 @@ public:
     bool NodeInit(INodeManager * NodeManager) override;
 
 public:
-    bool OnNodeService(unsigned int ServiceID, void * Context) override;
+    bool OnNodeService(NodeServiceRegister ServiceID, void *Context) override;
 
 public:
     bool SetConfig(Json::Value &Config) override;

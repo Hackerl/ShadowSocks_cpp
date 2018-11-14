@@ -27,7 +27,7 @@ public:
 
 public:
     bool NodeInit(INodeManager * NodeManager) override;
-    void OnNodeEvent(unsigned int EventID, void * Context) override;
+    void OnNodeEvent(NodeEventRegister EventID, void *Context) override;
     void NodeClose() override;
 
 

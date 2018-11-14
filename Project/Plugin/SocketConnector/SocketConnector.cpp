@@ -43,7 +43,7 @@ bool CSocketConnector::NodeInit(INodeManager * NodeManager)
     return RegisterService(REQUEST_SOCKET_CONNECT, this);
 }
 
-bool CSocketConnector::OnNodeService(unsigned int ServiceID, void *Context)
+bool CSocketConnector::OnNodeService(NodeServiceRegister ServiceID, void *Context)
 {
     //TODO parse target ip and port, connect with proxy config, init remote socket node
 

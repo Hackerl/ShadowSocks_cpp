@@ -86,7 +86,7 @@ public:
     }
 
 public:
-    bool RegisterEvent(unsigned int EventID, INodeEvent * Node)
+    bool RegisterEvent(NodeEventRegister EventID, INodeEvent * Node)
     {
         if (m_NodeManager == nullptr)
             return false;
@@ -94,7 +94,7 @@ public:
         m_NodeManager->RegisterEvent(EventID, Node);
     }
 
-    bool BroadcastEvent(unsigned int EventID, void * Context, INodeEvent * Publisher = nullptr)
+    bool BroadcastEvent(NodeEventRegister EventID, void * Context, INodeEvent * Publisher = nullptr)
     {
         if (m_NodeManager == nullptr)
             return false;
@@ -102,7 +102,7 @@ public:
         m_NodeManager->BroadcastEvent(EventID, Context, Publisher);
     }
 
-    bool RegisterService(unsigned int ServiceID, INodeService * Node)
+    bool RegisterService(NodeServiceRegister ServiceID, INodeService * Node)
     {
         if (m_NodeManager == nullptr)
             return false;
@@ -110,7 +110,7 @@ public:
         return m_NodeManager->RegisterService(ServiceID, Node);
     }
 
-    bool InvokeService(unsigned int ServiceID, void * Context)
+    bool InvokeService(NodeServiceRegister ServiceID, void * Context)
     {
         if (m_NodeManager == nullptr)
             return false;

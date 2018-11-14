@@ -7,12 +7,17 @@
 #include "Socket/LibSocketExport.h"
 #include "EventLoop/LibEventExport.h"
 
-class CServer : public CTCPSocket , public ISocketServerCallback
+class CServer : public CTCPSocket , public ISocketCallback
 {
-    void OnAccept(int fd, short Event) override
+    void OnRead(int fd, short Event) override
     {
         Accept();
         std::cout << "Accept" << std::endl;
+    }
+
+    void OnWrite(int fd ,short Event) override
+    {
+
     }
 
     void OnClose(int fd ,short Event) override
@@ -33,7 +38,7 @@ void TestServer()
 
     IEventLoop * Loop = NewEventLoop();
 
-    Loop->AddServer(Server.GetSocket(), &Server);
+    Loop->Add(Server.GetSocket(), &Server);
 
     Loop->Loop();
 
@@ -116,7 +121,7 @@ void TestEventCallback()
 
         Client.m_Loop = Loop;
 
-        Loop->AddClient(Client.GetSocket(), &Client);
+        Loop->Add(Client.GetSocket(), &Client);
 
         //Loop->AddServer(Server.GetSocket(), &Server);
 

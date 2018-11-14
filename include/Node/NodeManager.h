@@ -7,7 +7,7 @@
 
 #include "INode.h"
 #include "INodeManager.h"
-#include "Node/NodeEvent.h"
+#include "Node/NodeService.h"
 #include "Common/InstanceManager.h"
 #include <map>
 
@@ -17,12 +17,12 @@ struct CNodeEventInfo
     INodeEvent * Node;
 };
 
-class CCNodeManager : public INodeManager, public INodeEvent
+class CCNodeManager : public INodeManager, public INodeService
 {
 public:
     CCNodeManager()
     {
-        RegisterEvent(NODE_CLOSE_EVENT, this);
+        RegisterService(REQUEST_CLOSE_PIPE, this);
     }
 
 public:
@@ -39,7 +39,7 @@ public:
     }
 
 public:
-    void RegisterEvent(unsigned int EventID, INodeEvent * Node) override
+    void RegisterEvent(NodeEventRegister EventID, INodeEvent *Node) override
     {
         CNodeEventInfo NodeEventInfo = {};
 
@@ -49,7 +49,7 @@ public:
         m_NodeEventList.push_back(NodeEventInfo);
     }
 
-    void BroadcastEvent(unsigned int EventID, void * Context, INodeEvent * Publisher) override
+    void BroadcastEvent(NodeEventRegister EventID, void *Context, INodeEvent *Publisher) override
     {
         for (auto const & Iterator : m_NodeEventList)
         {
@@ -61,13 +61,13 @@ public:
     }
 
 public:
-    bool RegisterService(unsigned int ServiceID, INodeService * Node) override
+    bool RegisterService(NodeServiceRegister ServiceID, INodeService *Node) override
     {
         //TODO Check Service Exist
         m_NodeServiceList.insert(std::make_pair(ServiceID, Node));
     }
 
-    bool InvokeService(unsigned int ServiceID, void * Context) override
+    bool InvokeService(NodeServiceRegister ServiceID, void *Context) override
     {
         auto Iterator = m_NodeServiceList.find(ServiceID);
 
@@ -78,10 +78,10 @@ public:
     }
 
 public:
-    void OnNodeEvent(unsigned int EventID, void * Context) override
+    bool OnNodeService(NodeServiceRegister ServiceID, void *Context) override
     {
-        if (EventID != NODE_CLOSE_EVENT)
-            return;
+        if (ServiceID != REQUEST_CLOSE_PIPE)
+            return false;
 
         for (auto const & Iterator : m_NodeList)
         {

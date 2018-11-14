@@ -20,7 +20,7 @@ public:
     }
 
 public:
-    bool OnNodeService(unsigned int ServiceID, void * Context) override
+    bool OnNodeService(NodeServiceRegister ServiceID, void *Context) override
     {
         if (ServiceID != INIT_REMOTE_SOCKET)
             return false;

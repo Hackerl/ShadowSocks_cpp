@@ -9,6 +9,7 @@ enum NodeServiceRegister : unsigned int
 {
     INIT_REMOTE_SOCKET = 0,
     REQUEST_SOCKET_CONNECT,
+    REQUEST_CLOSE_PIPE
 };
 
 #endif //SHADOWSOCKSR_CPP_NODESERVICE_H

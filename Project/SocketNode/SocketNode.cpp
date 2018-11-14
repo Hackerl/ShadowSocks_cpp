@@ -5,6 +5,7 @@
 #include "SocketNode.h"
 #include <netinet/tcp.h>
 #include <glog/logging.h>
+#include <Node/NodeService.h>
 
 #define USER_TCP_MSS 1460
 #define MAX_SEND_BUFFER_SZIE (50 * 1024)
@@ -91,6 +92,7 @@ void CSocketNode::OnRead(int fd, short Event)
 
     if (ReadLen <= 0)
     {
+        LOG(WARNING) << "Close Pipe. fd: " << m_Socket->GetSocket()<<" Receive Result: " << ReadLen;
         OnClose(m_Socket->GetSocket(), EV_CLOSED);
         return;
     }
@@ -98,7 +100,10 @@ void CSocketNode::OnRead(int fd, short Event)
     bool NodeListStatus = DataIn(Buffer, ReadLen);
 
     if (!NodeListStatus)
+    {
+        LOG(WARNING) << "Close Pipe. Pipe Flow Failed. fd:" << m_Socket->GetSocket();
         OnClose(m_Socket->GetSocket(), EV_CLOSED);
+    }
 }
 
 void CSocketNode::OnWrite(int fd, short Event)
@@ -144,7 +149,7 @@ bool CSocketNode::NodeInit(INodeManager *NodeManager)
     return true;
 }
 
-void CSocketNode::OnNodeEvent(unsigned int EventID, void * Context)
+void CSocketNode::OnNodeEvent(NodeEventRegister EventID, void *Context)
 {
     if (m_Socket == nullptr)
         return;
@@ -202,5 +207,7 @@ void CSocketNode::OnClose(int fd, short Event)
 
     m_Closed = true;
 
-    BroadcastEvent(NODE_CLOSE_EVENT, nullptr, this);
+    LOG(WARNING) << "OnClose fd: " << m_Socket->GetSocket();
+
+    InvokeService(REQUEST_CLOSE_PIPE, nullptr);
 }

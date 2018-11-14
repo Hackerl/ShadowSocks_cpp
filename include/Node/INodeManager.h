@@ -6,26 +6,28 @@
 #define SHADOWSOCKSR_CPP_INODEMANAGER_H
 
 #include "Common/Interface.h"
+#include "NodeEvent.h"
+#include "NodeService.h"
 
 class INodeEvent : public Interface
 {
 public:
-    virtual void OnNodeEvent(unsigned int EventID, void * Context) = 0;
+    virtual void OnNodeEvent(NodeEventRegister EventID, void *Context) = 0;
 };
 
 class INodeService : public Interface
 {
 public:
-    virtual bool OnNodeService(unsigned int ServiceID, void * Context) = 0;
+    virtual bool OnNodeService(NodeServiceRegister ServiceID, void *Context) = 0;
 };
 
 class INodeManager : public Interface
 {
 public:
-    virtual void RegisterEvent(unsigned int EventID, INodeEvent * Node) = 0;
-    virtual void BroadcastEvent(unsigned int EventID, void * Context, INodeEvent * Publisher) = 0;
-    virtual bool RegisterService(unsigned int ServiceID, INodeService * Node) = 0;
-    virtual bool InvokeService(unsigned int ServiceID, void * Context) = 0;
+    virtual void RegisterEvent(NodeEventRegister EventID, INodeEvent *Node) = 0;
+    virtual void BroadcastEvent(NodeEventRegister EventID, void *Context, INodeEvent *Publisher) = 0;
+    virtual bool RegisterService(NodeServiceRegister ServiceID, INodeService *Node) = 0;
+    virtual bool InvokeService(NodeServiceRegister ServiceID, void *Context) = 0;
 };
 
 #endif //SHADOWSOCKSR_CPP_INODEMANAGER_H
