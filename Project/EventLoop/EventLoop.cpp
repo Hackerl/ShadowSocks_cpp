@@ -130,21 +130,17 @@ void CEventLoop::Loop()
 
 void CEventLoop::Destroy()
 {
-    AutoMutex _0_(m_Mutex);
+    std::vector<EventSession> EventSessionList;
+
+    m_Mutex.Lock();
 
     for (auto const& Iterator : m_SocketEventMap)
-    {
-        const EventSession& Session = Iterator.second;
+        EventSessionList.push_back(Iterator.second);
 
-        event_del(Session.Event);
-        event_free(Session.Event);
+    m_Mutex.UnLock();
 
-        Session.SocketHandler->OnClose(Iterator.first, EV_CLOSED);
-
-        Release(Session.SocketHandler);
-    }
-
-    m_SocketEventMap.clear();
+    for (auto const& Session : EventSessionList)
+        Session.SocketHandler->OnClose(0, EV_CLOSED);
 
     event_base_loopbreak(m_EventBase);
 }
