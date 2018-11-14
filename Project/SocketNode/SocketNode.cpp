@@ -8,8 +8,8 @@
 #include <Node/NodeService.h>
 
 #define USER_TCP_MSS 1460
-#define MAX_SEND_BUFFER_SIZE (50 * 1024)
-#define MIN_SEND_BUFFER_SIZE (10 * 1024)
+#define MAX_SEND_BUFFER_SIZE (30 * USER_TCP_MSS)
+#define MIN_SEND_BUFFER_SIZE (4 * USER_TCP_MSS)
 
 CSocketNode::CSocketNode()
 {

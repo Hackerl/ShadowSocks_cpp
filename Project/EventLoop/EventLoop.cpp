@@ -27,18 +27,6 @@ bool CEventLoop::Add(int fd, ISocketCallback * SocketHandler)
         {
             auto Handler = (ISocketCallback *) arg;
 
-            if (Event & EV_READ)
-            {
-                Handler->OnRead(fd, EV_READ);
-                return;
-            }
-
-            if (Event & EV_WRITE)
-            {
-                Handler->OnWrite(fd, EV_WRITE);
-                return;
-            }
-
             if (Event & EV_TIMEOUT)
             {
                 LOG(INFO) << "Socket TimeOut Event";
@@ -46,6 +34,12 @@ bool CEventLoop::Add(int fd, ISocketCallback * SocketHandler)
                 Handler->OnRead(fd, EV_TIMEOUT);
                 Handler->OnWrite(fd, EV_TIMEOUT);
             }
+
+            if (Event & EV_WRITE)
+                Handler->OnWrite(fd, EV_WRITE);
+
+            if (Event & EV_READ)
+                Handler->OnRead(fd, EV_READ);
         }
     };
 
