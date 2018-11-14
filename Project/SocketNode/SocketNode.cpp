@@ -92,7 +92,7 @@ void CSocketNode::OnRead(int fd, short Event)
 
     if (ReadLen <= 0)
     {
-        LOG(WARNING) << "Close Pipe. fd: " << m_Socket->GetSocket()<<" Receive Result: " << ReadLen;
+        LOG(INFO) << "Close Pipe. fd: " << m_Socket->GetSocket()<<" Receive Result: " << ReadLen;
         OnClose(m_Socket->GetSocket(), EV_CLOSED);
         return;
     }
@@ -207,7 +207,7 @@ void CSocketNode::OnClose(int fd, short Event)
 
     m_Closed = true;
 
-    LOG(WARNING) << "OnClose fd: " << m_Socket->GetSocket();
+    LOG(INFO) << "OnClose fd: " << m_Socket->GetSocket();
 
     InvokeService(REQUEST_CLOSE_PIPE, nullptr);
 }
