@@ -8,7 +8,8 @@
 #include <Node/NodeService.h>
 
 #define USER_TCP_MSS 1460
-#define MAX_SEND_BUFFER_SZIE (50 * 1024)
+#define MAX_SEND_BUFFER_SIZE (50 * 1024)
+#define MIN_SEND_BUFFER_SIZE (10 * 1024)
 
 CSocketNode::CSocketNode()
 {
@@ -58,8 +59,16 @@ bool CSocketNode::DataOut(const void *Buffer, size_t Length)
 
     if (!m_WriteBuffer.empty())
     {
+        LOG(INFO) << "Write Buffer Inset Size: " << Length;
+
         m_WriteBuffer.insert(m_WriteBuffer.end(), (u_char *)Buffer, (u_char *)Buffer + Length);
-        BroadcastEvent(PIPE_STREAM_BLOCK, this);
+
+        if (m_WriteBuffer.size() > MIN_SEND_BUFFER_SIZE)
+        {
+            LOG(INFO) << "Write Buffer Size: " << m_WriteBuffer.size();
+
+            BroadcastEvent(PIPE_STREAM_BLOCK, this);
+        }
 
         return true;
     }
@@ -71,8 +80,8 @@ bool CSocketNode::DataOut(const void *Buffer, size_t Length)
 
     if (WriteLen != Length)
     {
+        LOG(INFO) << "Try Send Size: " << Length << " Real Send Size: " << WriteLen;
         m_WriteBuffer.insert(m_WriteBuffer.end(), (u_char *)Buffer + WriteLen, (u_char *)Buffer + Length);
-        BroadcastEvent(PIPE_STREAM_BLOCK, this);
     }
 
     return true;
@@ -114,7 +123,7 @@ void CSocketNode::OnWrite(int fd, short Event)
     if (Event == EV_TIMEOUT)
         BroadcastEvent(PIPE_STREAM_FLOW, this);
 
-    if (m_WriteBuffer.size() > MAX_SEND_BUFFER_SZIE)
+    if (m_WriteBuffer.size() > MAX_SEND_BUFFER_SIZE)
     {
         LOG(WARNING) << "WriteBuffer Size Limit: " << m_WriteBuffer.size() << " Clear Buffer";
 
@@ -127,7 +136,13 @@ void CSocketNode::OnWrite(int fd, short Event)
 
     size_t BufferSize = m_WriteBuffer.size();
 
-    ssize_t WriteLen = m_Socket->Send(m_WriteBuffer.data(), BufferSize, MSG_NOSIGNAL | MSG_DONTWAIT);
+    LOG(INFO) << "Write Buffer Size: " << BufferSize;
+
+    size_t SendSize = BufferSize < USER_TCP_MSS ? BufferSize : USER_TCP_MSS;
+
+    ssize_t WriteLen = m_Socket->Send(m_WriteBuffer.data(), SendSize, MSG_NOSIGNAL | MSG_DONTWAIT);
+
+    LOG(INFO) << "OnWrite Try Send Size: " << SendSize << " Real Send Size " << WriteLen;
 
     if (WriteLen > 0)
     {
