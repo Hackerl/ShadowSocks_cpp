@@ -49,7 +49,7 @@ bool CEventLoop::Add(int fd, ISocketCallback * SocketHandler)
         }
     };
 
-    event* Event = event_new(m_EventBase, fd, EV_READ | EV_CLOSED | EV_PERSIST, Stub::OnEvent , SocketHandler);
+    event* Event = event_new(m_EventBase, fd, EV_READ | EV_PERSIST, Stub::OnEvent , SocketHandler);
 
     event_add(Event, nullptr);
 
