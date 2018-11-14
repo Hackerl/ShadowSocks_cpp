@@ -55,6 +55,14 @@ bool CSocketNode::DataOut(const void *Buffer, size_t Length)
     if (Length == 0)
         return true;
 
+    if (!m_WriteBuffer.empty())
+    {
+        m_WriteBuffer.insert(m_WriteBuffer.end(), (u_char *)Buffer, (u_char *)Buffer + Length);
+        BroadcastEvent(PIPE_STREAM_BLOCK, this);
+
+        return true;
+    }
+
     ssize_t WriteLen = m_Socket->Send(Buffer, Length, MSG_NOSIGNAL | MSG_DONTWAIT);
 
     if (WriteLen <= 0 && errno != EAGAIN)
@@ -63,7 +71,6 @@ bool CSocketNode::DataOut(const void *Buffer, size_t Length)
     if (WriteLen != Length)
     {
         m_WriteBuffer.insert(m_WriteBuffer.end(), (u_char *)Buffer + WriteLen, (u_char *)Buffer + Length);
-
         BroadcastEvent(PIPE_STREAM_BLOCK, this);
     }
 
