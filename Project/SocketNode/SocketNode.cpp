@@ -8,6 +8,8 @@
 #include <Node/NodeService.h>
 
 #define USER_TCP_MSS 1460
+#define READ_MAX_SIZE (USER_TCP_MSS * 2)
+#define SEND_MAX_SIZE (USER_TCP_MSS * 3)
 #define MAX_SEND_BUFFER_SIZE (30 * USER_TCP_MSS)
 #define MIN_SEND_BUFFER_SIZE (4 * USER_TCP_MSS)
 
@@ -59,13 +61,13 @@ bool CSocketNode::DataOut(const void *Buffer, size_t Length)
 
     if (!m_WriteBuffer.empty())
     {
-        LOG(INFO) << "Write Buffer Inset Size: " << Length;
+        LOG(INFO) << "fd: " << m_Socket->GetSocket() << " Write Buffer Inset Size: " << Length;
 
         m_WriteBuffer.insert(m_WriteBuffer.end(), (u_char *)Buffer, (u_char *)Buffer + Length);
 
         if (m_WriteBuffer.size() > MIN_SEND_BUFFER_SIZE)
         {
-            LOG(INFO) << "Write Buffer Size: " << m_WriteBuffer.size();
+            LOG(INFO) << "fd: " << m_Socket->GetSocket() << " Write Buffer Size: " << m_WriteBuffer.size();
 
             BroadcastEvent(PIPE_STREAM_BLOCK, this);
         }
@@ -80,7 +82,7 @@ bool CSocketNode::DataOut(const void *Buffer, size_t Length)
 
     if (WriteLen != Length)
     {
-        LOG(INFO) << "Try Send Size: " << Length << " Real Send Size: " << WriteLen;
+        LOG(INFO) << "fd: " << m_Socket->GetSocket() << " Try Send Size: " << Length << " Real Send Size: " << WriteLen;
         m_WriteBuffer.insert(m_WriteBuffer.end(), (u_char *)Buffer + WriteLen, (u_char *)Buffer + Length);
     }
 
@@ -95,13 +97,13 @@ void CSocketNode::OnRead(int fd, short Event)
     if (Event == EV_TIMEOUT)
         return;
 
-    u_char Buffer[USER_TCP_MSS] = {};
+    u_char Buffer[READ_MAX_SIZE] = {};
 
-    ssize_t ReadLen = m_Socket->Recv(Buffer, USER_TCP_MSS, 0);
+    ssize_t ReadLen = m_Socket->Recv(Buffer, READ_MAX_SIZE, 0);
 
     if (ReadLen <= 0)
     {
-        LOG(INFO) << "Close Pipe. fd: " << m_Socket->GetSocket()<<" Receive Result: " << ReadLen;
+        LOG(INFO) << "fd: " << m_Socket->GetSocket() << " Close Pipe. Receive Result: " << ReadLen;
         OnClose(m_Socket->GetSocket(), EV_CLOSED);
         return;
     }
@@ -110,7 +112,7 @@ void CSocketNode::OnRead(int fd, short Event)
 
     if (!NodeListStatus)
     {
-        LOG(WARNING) << "Close Pipe. Pipe Flow Failed. fd:" << m_Socket->GetSocket();
+        LOG(WARNING) << "fd: " << m_Socket->GetSocket() << " Close Pipe. Pipe Flow Failed.";
         OnClose(m_Socket->GetSocket(), EV_CLOSED);
     }
 }
@@ -125,7 +127,7 @@ void CSocketNode::OnWrite(int fd, short Event)
 
     if (m_WriteBuffer.size() > MAX_SEND_BUFFER_SIZE)
     {
-        LOG(WARNING) << "WriteBuffer Size Limit: " << m_WriteBuffer.size() << " Clear Buffer";
+        LOG(WARNING) << "fd: " << m_Socket->GetSocket() << " WriteBuffer Size Limit: " << m_WriteBuffer.size() << " Clear Buffer";
 
         m_WriteBuffer.clear();
         m_WriteBuffer.shrink_to_fit();
@@ -136,13 +138,13 @@ void CSocketNode::OnWrite(int fd, short Event)
 
     size_t BufferSize = m_WriteBuffer.size();
 
-    LOG(INFO) << "Write Buffer Size: " << BufferSize;
+    LOG(INFO) << "fd: " << m_Socket->GetSocket() << " Write Buffer Size: " << BufferSize;
 
-    size_t SendSize = BufferSize < USER_TCP_MSS ? BufferSize : USER_TCP_MSS;
+    size_t SendSize = BufferSize < SEND_MAX_SIZE ? BufferSize : SEND_MAX_SIZE;
 
     ssize_t WriteLen = m_Socket->Send(m_WriteBuffer.data(), SendSize, MSG_NOSIGNAL | MSG_DONTWAIT);
 
-    LOG(INFO) << "OnWrite Try Send Size: " << SendSize << " Real Send Size " << WriteLen;
+    LOG(INFO) << "fd: " << m_Socket->GetSocket() << " OnWrite Try Send Size: " << SendSize << " Real Send Size " << WriteLen;
 
     if (WriteLen > 0)
     {
@@ -169,11 +171,11 @@ void CSocketNode::OnNodeEvent(NodeEventRegister EventID, void *Context)
     if (m_Socket == nullptr)
         return;
 
-    LOG(INFO) << "OnNodeEvent: " << EventID << " Block Node: " << std::hex << Context;
+    LOG(INFO) << "fd: " << m_Socket->GetSocket() << " OnNodeEvent: " << EventID;
 
     if (this == Context)
     {
-        LOG(INFO) << "Block Node Dispatch";
+        LOG(INFO) << "fd: " << m_Socket->GetSocket() << " Block Node Dispatch";
 
         switch (EventID)
         {
@@ -188,7 +190,7 @@ void CSocketNode::OnNodeEvent(NodeEventRegister EventID, void *Context)
     }
     else
     {
-        LOG(INFO) << "Other Node Dispatch";
+        LOG(INFO) << "fd: " << m_Socket->GetSocket() << " Other Node Dispatch";
 
         switch (EventID)
         {
@@ -222,7 +224,7 @@ void CSocketNode::OnClose(int fd, short Event)
 
     m_Closed = true;
 
-    LOG(INFO) << "OnClose fd: " << m_Socket->GetSocket();
+    LOG(INFO) << "fd: " << m_Socket->GetSocket() << " OnClose";
 
     InvokeService(REQUEST_CLOSE_PIPE, nullptr);
 }
