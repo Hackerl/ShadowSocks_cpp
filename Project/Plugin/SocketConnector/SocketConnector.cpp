@@ -4,9 +4,9 @@
 
 #include "SocketConnector.h"
 #include "Socket/LibSocketExport.h"
-#include "SocketProxy/LibSocketProxyExport.h"
 #include "Common/JSONHelper.h"
 #include "Node/NodeService.h"
+#include "Socket/HTTPTunnel.h"
 
 CSocketConnector::CSocketConnector() : m_Config()
 {
@@ -90,20 +90,17 @@ bool CSocketConnector::HTTPTunnelHandler(CConnectRequest * ConnectInfo)
 {
     ITCPSocket * Socket = NewTCPSocket();
 
-    ISocketProxy * HTTPTunnel = NewHTTPTunnel();
+    CHTTPTunnel HTTPTunnel;
 
-    HTTPTunnel->SetSocket(Socket);
-    HTTPTunnel->SetProxy(m_Config.ProxyServer, m_Config.ProxyPort);
+    HTTPTunnel.SetProxy(m_Config.ProxyServer, m_Config.ProxyPort);
 
-    auto HTTPTunnelSocket = dynamic_cast<IIOSocket *>(HTTPTunnel);
-
-    if (!HTTPTunnel->Connect(ConnectInfo->Address, ConnectInfo->Port))
+    if (!HTTPTunnel.Connect(Socket, ConnectInfo->Address, ConnectInfo->Port))
     {
-        HTTPTunnelSocket->Close();
-        delete HTTPTunnel;
+        Socket->Close();
+        delete Socket;
 
         return false;
     }
 
-    return InvokeService(INIT_REMOTE_SOCKET, HTTPTunnelSocket);
+    return InvokeService(INIT_REMOTE_SOCKET, Socket);
 }
