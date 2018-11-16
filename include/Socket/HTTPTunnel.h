@@ -60,15 +60,14 @@ public:
 
         bool Success = false;
 
-        for (int i = 0; i < ReadLen; i++)
+        const char HTTPSuccessStatus[4] = {' ', '2', '0', '0'};
+
+        for (int i = 0; i <= ReadLen - sizeof(HTTPSuccessStatus); i++)
         {
             if (Buffer[i] != ' ')
                 continue;
 
-            if (i + 4 > ReadLen)
-                break;
-
-            if (!memcmp(Buffer + i, " 200", 4))
+            if (!memcmp(Buffer + i, HTTPSuccessStatus, sizeof(HTTPSuccessStatus)))
             {
                 Success = true;
                 break;
