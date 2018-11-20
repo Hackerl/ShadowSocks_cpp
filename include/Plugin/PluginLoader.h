@@ -22,7 +22,8 @@ public:
 
     ~CPluginLoader()
     {
-        dlclose(m_DLHandle);
+        if (m_DLHandle != nullptr)
+            dlclose(m_DLHandle);
     }
 
 public:
