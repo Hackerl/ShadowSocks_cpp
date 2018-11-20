@@ -6,8 +6,8 @@
 #define SHADOWSOCKSR_CPP_NODE_H
 
 #include "INode.h"
-#include "Node/NodeEvent.h"
-#include "Common/IInstanceManager.h"
+#include "NodeEvent.h"
+#include <Common/IInstanceManager.h>
 
 class CNode : public INode
 {

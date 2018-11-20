@@ -5,7 +5,7 @@
 #ifndef SHADOWSOCKSR_CPP_ISOCKETNODE_H
 #define SHADOWSOCKSR_CPP_ISOCKETNODE_H
 
-#include "Common/Interface.h"
+#include <Common/Interface.h>
 #include <EventLoop/IEventLoop.h>
 
 class ISocketNode : public Interface

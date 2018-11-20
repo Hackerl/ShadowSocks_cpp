@@ -5,10 +5,8 @@
 #ifndef SHADOWSOCKSR_CPP_INODE_H
 #define SHADOWSOCKSR_CPP_INODE_H
 
-#include "Common/Interface.h"
 #include "INodeManager.h"
 #include <cstddef>
-#include <vector>
 
 class INodeClose : public Interface
 {

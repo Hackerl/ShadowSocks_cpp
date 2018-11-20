@@ -5,9 +5,9 @@
 #ifndef SHADOWSOCKSR_CPP_INODEMANAGER_H
 #define SHADOWSOCKSR_CPP_INODEMANAGER_H
 
-#include "Common/Interface.h"
 #include "NodeEvent.h"
 #include "NodeService.h"
+#include <Common/Interface.h>
 
 class INodeEvent : public Interface
 {

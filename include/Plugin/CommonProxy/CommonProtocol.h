@@ -10,7 +10,6 @@
 #include <cstring>
 #include <arpa/inet.h>
 #include <Plugin/Socks5/Socks5Protocol.h>
-#include "Plugin/Socks5/Socks5Protocol.h"
 
 #define MAX_HOST_LENGTH 0x20
 

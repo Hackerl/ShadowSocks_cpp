@@ -7,8 +7,8 @@
 
 #include "INode.h"
 #include "INodeManager.h"
-#include "Node/NodeService.h"
-#include "Common/InstanceManager.h"
+#include "NodeService.h"
+#include <Common/InstanceManager.h>
 #include <map>
 
 struct CNodeEventInfo

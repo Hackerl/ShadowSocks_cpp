@@ -6,8 +6,8 @@
 #define SHADOWSOCKSR_CPP_ISOCKET_H
 
 #include <event.h>
-#include <iostream>
-#include "Common/Interface.h"
+#include <string>
+#include <Common/Interface.h>
 
 class IIOSocket : public Interface
 {
