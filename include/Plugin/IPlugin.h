@@ -5,8 +5,8 @@
 #ifndef SHADOWSOCKSR_CPP_IPLUGIN_H
 #define SHADOWSOCKSR_CPP_IPLUGIN_H
 
-#include "Common/Interface.h"
-#include "json/json.h"
+#include <Common/Interface.h>
+#include <jsoncpp/json/json.h>
 
 class IPlugin : public Interface
 {

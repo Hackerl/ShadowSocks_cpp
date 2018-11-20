@@ -3,6 +3,7 @@
 //
 
 #include "SocketNode.h"
+#include <event.h>
 #include <netinet/tcp.h>
 #include <glog/logging.h>
 #include <Node/NodeService.h>
@@ -104,7 +105,7 @@ void CSocketNode::OnRead(int fd, short Event)
     if (ReadLen <= 0)
     {
         LOG(INFO) << "fd: " << m_Socket->GetSocket() << " Close Pipe. Receive Result: " << ReadLen;
-        OnClose(m_Socket->GetSocket(), EV_CLOSED);
+        OnClose(m_Socket->GetSocket(), EV_READ);
         return;
     }
 
@@ -113,7 +114,7 @@ void CSocketNode::OnRead(int fd, short Event)
     if (!NodeListStatus)
     {
         LOG(WARNING) << "fd: " << m_Socket->GetSocket() << " Close Pipe. Pipe Flow Failed.";
-        OnClose(m_Socket->GetSocket(), EV_CLOSED);
+        OnClose(m_Socket->GetSocket(), EV_READ);
     }
 }
 

@@ -5,9 +5,9 @@
 #ifndef SHADOWSOCKSR_CPP_JSONHELPER_H
 #define SHADOWSOCKSR_CPP_JSONHELPER_H
 
-#include <json/json.h>
-#include <cstdio>
 #include "Singleton.h"
+#include <cstdio>
+#include <jsoncpp/json/json.h>
 
 class CJSONHelper {
 #define g_JSON SINGLETON_(CJSONHelper)

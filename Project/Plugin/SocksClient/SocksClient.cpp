@@ -3,7 +3,7 @@
 //
 
 #include "SocksClient.h"
-#include "Plugin/CommonProxy/CommonProtocol.h"
+#include <Plugin/CommonProxy/CommonProtocol.h>
 
 CSocks5Proxy::CSocks5Proxy()
 {

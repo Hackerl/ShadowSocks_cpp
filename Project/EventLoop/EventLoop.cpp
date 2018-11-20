@@ -3,7 +3,7 @@
 //
 
 #include "EventLoop.h"
-#include "Common/IInstanceManager.h"
+#include <Common/IInstanceManager.h>
 #include <glog/logging.h>
 
 CEventLoop::CEventLoop()
@@ -134,7 +134,7 @@ void CEventLoop::Destroy()
     m_Mutex.UnLock();
 
     for (auto const& Session : EventSessionList)
-        Session.SocketHandler->OnClose(0, EV_CLOSED);
+        Session.SocketHandler->OnClose(0, EV_READ);
 
     event_base_loopbreak(m_EventBase);
 }

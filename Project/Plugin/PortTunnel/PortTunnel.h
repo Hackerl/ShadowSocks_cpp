@@ -5,11 +5,11 @@
 #ifndef SHADOWSOCKSR_CPP_PORTTUNNEL_H
 #define SHADOWSOCKSR_CPP_PORTTUNNEL_H
 
-#include "Plugin/IPlugin.h"
-#include "Node/Node.h"
-#include "Node/NodeService.h"
-#include "Common/JSONHelper.h"
-#include "Socket/LibSocketExport.h"
+#include <Plugin/IPlugin.h>
+#include <Node/Node.h>
+#include <Node/NodeService.h>
+#include <Common/JSONHelper.h>
+#include <Socket/LibSocketExport.h>
 
 struct CTunnelConfig
 {

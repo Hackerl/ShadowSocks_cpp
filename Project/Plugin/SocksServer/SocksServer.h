@@ -6,8 +6,9 @@
 #define SHADOWSOCKSR_CPP_SOCKSSERVER_H
 
 #include <Node/Node.h>
-#include "Plugin/Plugin.h"
-#include "Plugin/CommonProxy/CommonProtocol.h"
+#include <jsoncpp/json/json.h>
+#include <Plugin/Plugin.h>
+#include <Plugin/CommonProxy/CommonProtocol.h>
 
 class CProxyServer : public IPlugin, public CNode
 {

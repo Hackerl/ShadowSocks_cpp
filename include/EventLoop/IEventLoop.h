@@ -5,8 +5,8 @@
 #ifndef SHADOWSOCKSR_CPP_IEVENTLOOP_H
 #define SHADOWSOCKSR_CPP_IEVENTLOOP_H
 
-#include "Common/Interface.h"
-#include "Socket/ISocket.h"
+#include <Common/Interface.h>
+#include <Socket/ISocket.h>
 
 class IEventLoop : public Interface
 {

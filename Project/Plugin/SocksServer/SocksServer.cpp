@@ -3,9 +3,8 @@
 //
 
 #include "SocksServer.h"
-#include "Node/NodeService.h"
+#include <Node/NodeService.h>
 #include <Socket/LibSocketExport.h>
-#include <Plugin/CommonProxy/CommonProtocol.h>
 #include <Plugin/Socks5/Socks5Protocol.h>
 
 CProxyServer::CProxyServer()
