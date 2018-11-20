@@ -5,7 +5,7 @@
 #ifndef SHADOWSOCKSR_CPP_TCPSOCKET_H
 #define SHADOWSOCKSR_CPP_TCPSOCKET_H
 
-#include "Socket/ISocket.h"
+#include <Socket/ISocket.h>
 
 class CTCPSocket : public ITCPSocket
 {

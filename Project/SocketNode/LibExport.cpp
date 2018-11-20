@@ -4,8 +4,8 @@
 
 #include "LocalSocketNode.h"
 #include "RemoteSocketNode.h"
-#include "Common/InstanceManager.h"
-#include "SocketNode/LibSocketNodeExport.h"
+#include <Common/InstanceManager.h>
+#include <SocketNode/LibSocketNodeExport.h>
 
 extern "C" ISocketNode * NewLocalSocketNode()
 {

@@ -3,6 +3,7 @@
 //
 
 #include "EventLoop.h"
+#include <EventLoop/LibEventExport.h>
 
 extern "C" IEventLoop * NewEventLoop()
 {

@@ -3,7 +3,7 @@
 //
 
 #include "TCPSocket.h"
-#include "Socket/DNS.h"
+#include <Socket/DNS.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <arpa/inet.h>

@@ -6,7 +6,7 @@
 #define SHADOWSOCKSR_CPP_REMOTESOCKETNODE_H
 
 #include "SocketNode.h"
-#include "Node/NodeService.h"
+#include <Node/NodeService.h>
 #include <netinet/tcp.h>
 
 class CRemoteSocketNode : public CSocketNode, public INodeService

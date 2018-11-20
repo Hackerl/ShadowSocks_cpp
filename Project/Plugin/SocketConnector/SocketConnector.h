@@ -6,8 +6,8 @@
 #define SHADOWSOCKSR_CPP_SOCKETCONNECTOR_H
 
 #include <Node/Node.h>
-#include "Plugin/Plugin.h"
-#include "Plugin/CommonProxy/CommonProtocol.h"
+#include <Plugin/Plugin.h>
+#include <Plugin/CommonProxy/CommonProtocol.h>
 
 enum CSocketProxyType
 {

@@ -3,10 +3,10 @@
 //
 
 #include "SocketConnector.h"
-#include "Socket/LibSocketExport.h"
-#include "Common/JSONHelper.h"
-#include "Node/NodeService.h"
-#include "Socket/HTTPTunnel.h"
+#include <Socket/LibSocketExport.h>
+#include <Common/JSONHelper.h>
+#include <Node/NodeService.h>
+#include <Socket/HTTPTunnel.h>
 
 CSocketConnector::CSocketConnector() : m_Config()
 {
