@@ -1,8 +1,11 @@
 #include "CShadowSocks.h"
 #include <fstream>
 
-int main()
+int main(int argc, char ** argv)
 {
+    FLAGS_alsologtostderr = 1;
+    google::InitGoogleLogging(argv[0]);
+
     std::ifstream InFile("Config.json");
 
     if (!InFile.is_open())
@@ -17,8 +20,12 @@ int main()
     if (!jr.parse(InFile, jv))
     {
         LOG(ERROR) << "Cant Not Parse Config File";
+
+        InFile.close();
         return 0;
     }
+
+    InFile.close();
 
     CShadowSocks ShadowSocks;
 
