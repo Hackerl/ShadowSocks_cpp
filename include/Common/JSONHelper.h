@@ -40,7 +40,6 @@ public:
         return true;
     }
 
-
     std::string GetString(const Json::Value &jv, const char *Name, const char *Default = "")
     {
         if (!jv.isObject())

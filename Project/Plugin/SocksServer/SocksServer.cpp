@@ -6,6 +6,7 @@
 #include <Node/NodeService.h>
 #include <Socket/LibSocketExport.h>
 #include <Plugin/Socks5/Socks5Protocol.h>
+#include <Plugin/PluginLoader.h>
 
 CProxyServer::CProxyServer()
 {

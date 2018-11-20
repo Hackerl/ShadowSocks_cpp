@@ -6,7 +6,7 @@
 #define SHADOWSOCKSR_CPP_SOCKSCLIENT_H
 
 #include <Node/Node.h>
-#include <Plugin/Plugin.h>
+#include <Plugin/IPlugin.h>
 #include <jsoncpp/json/json.h>
 
 enum CSock5Status

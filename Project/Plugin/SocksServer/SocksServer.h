@@ -7,7 +7,7 @@
 
 #include <Node/Node.h>
 #include <jsoncpp/json/json.h>
-#include <Plugin/Plugin.h>
+#include <Plugin/IPlugin.h>
 #include <Plugin/CommonProxy/CommonProtocol.h>
 
 class CProxyServer : public IPlugin, public CNode

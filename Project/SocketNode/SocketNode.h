@@ -30,7 +30,6 @@ public:
     void OnNodeEvent(NodeEventRegister EventID, void *Context) override;
     void NodeClose() override;
 
-
 public:
     void OnRead(int fd, short Event) override ;
     void OnWrite(int fd, short Event) override;

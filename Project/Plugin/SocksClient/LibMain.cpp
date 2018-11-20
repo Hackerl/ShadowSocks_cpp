@@ -7,9 +7,10 @@
 #include "Socket/LibSocketExport.h"
 #include "EventLoop/LibEventExport.h"
 #include "Plugin/LibPluginExport.h"
+#include "Node/NodeManager.h"
 #include "SocketNode/LibSocketNodeExport.h"
 
-class CServer : public ISocketServerCallback
+class CServer : public ISocketCallback
 {
 public:
     CServer(ITCPSocket * Socket, IEventLoop * Loop)
@@ -24,47 +25,14 @@ public:
     }
 
 public:
-    void OnAccept(int fd, short Event) override
+    void OnRead(int fd, short Event) override
     {
-        ITCPSocket * Local = m_Socket->Accept();
-        std::cout << "Accept" << std::endl;
 
-        ISocketNode * LocalNode = NewLocalSocketNode();
-        LocalNode->Init(m_Loop, Local);
+    }
 
-        IPlugin * Socks5Proxy = NewSocks5Proxy();
-        IPlugin * SSRLocal = NewSSRLocal();
+    void OnWrite(int fd ,short Event) override
+    {
 
-        Json::Value SSRLocalConfig;
-
-        SSRLocalConfig["Server"] = "104.251.227.105";
-        SSRLocalConfig["Port"] = 8080;
-
-        SSRLocal->SetConfig(SSRLocalConfig);
-
-        IPlugin * SocketConnector = NewSocketConnector();
-
-        Json::Value ConnectorConfig;
-
-        /*
-        ConnectorConfig["ProxyType"] = "HTTPTunnel";
-        ConnectorConfig["ProxyServer"] = "127.0.0.1";
-        ConnectorConfig["ProxyPort"] = 8118;
-        SocketConnector->SetConfig(ConnectorConfig);
-        */
-
-        ISocketNode * RemoteNode = NewRemoteSocketNode();
-        RemoteNode->Init(m_Loop);
-
-        CNodeManager NodeMgr;
-
-        NodeMgr.AddNode(LocalNode);
-        NodeMgr.AddNode(Socks5Proxy);
-        NodeMgr.AddNode(SSRLocal);
-        NodeMgr.AddNode(SocketConnector);
-        NodeMgr.AddNode(RemoteNode);
-
-        NodeMgr.Connect();
     }
 
     void OnClose(int fd ,short Event) override
@@ -81,7 +49,7 @@ void TestServer()
 {
     ITCPSocket * Socket = NewTCPSocket();
 
-    if (!Socket->Bind("0.0.0.0", 3333))
+    if (!Socket->Bind("0.0.0.0", 1080))
     {
         std::cout << "Bind Faild" << std::endl;
         return;
@@ -97,7 +65,7 @@ void TestServer()
 
     CServer Server(Socket, Loop);
 
-    Loop->AddServer(Socket->GetSocket(), &Server);
+    Loop->Add(Socket->GetSocket(), &Server);
 
     Loop->Loop();
 
