@@ -7,7 +7,6 @@
 
 #include "IInstanceManager.h"
 #include "Mutex.h"
-#include <iostream>
 
 template <class T>
 class InstanceManager : public IInstanceManager , public T

@@ -8,6 +8,7 @@
 #include "INode.h"
 #include "INodeManager.h"
 #include "NodeService.h"
+#include <vector>
 #include <Common/InstanceManager.h>
 #include <map>
 
