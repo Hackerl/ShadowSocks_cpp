@@ -5,6 +5,7 @@
 #ifndef SHADOWSOCKSR_CPP_SOCKETNODE_H
 #define SHADOWSOCKSR_CPP_SOCKETNODE_H
 
+#include <vector>
 #include <Node/Node.h>
 #include <SocketNode/ISocketNode.h>
 #include <Node/INodeManager.h>
