@@ -7,8 +7,9 @@
 #include <netinet/tcp.h>
 #include <glog/logging.h>
 #include <Node/NodeService.h>
+#include <algorithm>
 
-#define USER_TCP_MSS 1460
+#define USER_TCP_MSS 1460UL
 #define READ_MAX_SIZE (USER_TCP_MSS * 2)
 #define SEND_MAX_SIZE (USER_TCP_MSS * 3)
 #define MAX_SEND_BUFFER_SIZE (30 * USER_TCP_MSS)
@@ -84,7 +85,10 @@ bool CSocketNode::DataOut(const void *Buffer, size_t Length)
     if (WriteLen != Length)
     {
         LOG(INFO) << "fd: " << m_Socket->GetSocket() << " Try Send Size: " << Length << " Real Send Size: " << WriteLen;
-        m_WriteBuffer.insert(m_WriteBuffer.end(), (u_char *)Buffer + WriteLen, (u_char *)Buffer + Length);
+
+        LOG(INFO) << "fd: " << m_Socket->GetSocket() << " Write Buffer Inset Size: " << std::max(WriteLen, 0L);
+
+        m_WriteBuffer.insert(m_WriteBuffer.end(), (u_char *)Buffer + std::max(WriteLen, 0L), (u_char *)Buffer + Length);
     }
 
     return true;
@@ -141,7 +145,7 @@ void CSocketNode::OnWrite(int fd, short Event)
 
     LOG(INFO) << "fd: " << m_Socket->GetSocket() << " Write Buffer Size: " << BufferSize;
 
-    size_t SendSize = BufferSize < SEND_MAX_SIZE ? BufferSize : SEND_MAX_SIZE;
+    size_t SendSize = std::min(BufferSize, SEND_MAX_SIZE);
 
     ssize_t WriteLen = m_Socket->Send(m_WriteBuffer.data(), SendSize, MSG_NOSIGNAL | MSG_DONTWAIT);
 
