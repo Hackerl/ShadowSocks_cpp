@@ -9,9 +9,3 @@ extern "C" ITCPSocket * NewTCPSocket()
 {
     return new CTCPSocket;
 }
-
-extern "C" void DeleteTCPSocket(ITCPSocket * EventLoop)
-{
-    auto * Socket = dynamic_cast<CTCPSocket *>(EventLoop);
-    delete Socket;
-}
