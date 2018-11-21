@@ -13,6 +13,11 @@ CProxyServer::CProxyServer()
     m_HasInit = false;
 }
 
+bool CProxyServer::SetConfig(Json::Value &Config)
+{
+    return true;
+}
+
 bool CProxyServer::OnUpStream(const void *Buffer, size_t Length)
 {
     if (m_HasInit)

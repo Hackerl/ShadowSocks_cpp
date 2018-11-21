@@ -1,4 +1,4 @@
-#include "ShadowSocks.h"
+#include "CShadowSocks.h"
 #include <fstream>
 
 int main(int argc, char ** argv)
@@ -20,6 +20,8 @@ int main(int argc, char ** argv)
     if (!jr.parse(InFile, jv))
     {
         LOG(ERROR) << "Cant Not Parse Config File";
+
+        InFile.close();
         return 0;
     }
 

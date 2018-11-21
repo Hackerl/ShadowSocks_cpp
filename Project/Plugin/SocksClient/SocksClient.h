@@ -6,6 +6,7 @@
 #define SHADOWSOCKSR_CPP_SOCKSCLIENT_H
 
 #include <Node/Node.h>
+#include <Plugin/IPlugin.h>
 #include <jsoncpp/json/json.h>
 
 enum CSock5Status
@@ -15,13 +16,13 @@ enum CSock5Status
     ConnectSuccessStage
 };
 
-class CSocks5Proxy : public CNode
+class CSocks5Proxy : public IPlugin, public CNode
 {
 public:
     CSocks5Proxy();
 
 public:
-    bool SetNodeConfig(Json::Value &Config) override;
+    bool SetConfig(Json::Value &Config) override;
 
 public:
     bool OnUpStream(const void *Buffer, size_t Length) override;

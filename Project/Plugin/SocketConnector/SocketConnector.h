@@ -6,6 +6,7 @@
 #define SHADOWSOCKSR_CPP_SOCKETCONNECTOR_H
 
 #include <Node/Node.h>
+#include <Plugin/IPlugin.h>
 #include <Plugin/CommonProxy/CommonProtocol.h>
 
 enum CSocketProxyType
@@ -22,7 +23,7 @@ struct CConnectorConfig
     u_short ProxyPort;
 };
 
-class CSocketConnector : public CNode, public INodeService
+class CSocketConnector : public IPlugin, public CNode, public INodeService
 {
 public:
     CSocketConnector();
@@ -34,7 +35,7 @@ public:
     bool OnNodeService(NodeServiceRegister ServiceID, void *Context) override;
 
 public:
-    bool SetNodeConfig(Json::Value &Config) override;
+    bool SetConfig(Json::Value &Config) override;
 
 public:
     bool NoProxyHandler(CConnectRequest * ConnectInfo);
