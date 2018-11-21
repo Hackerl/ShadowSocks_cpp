@@ -7,16 +7,12 @@
 
 #include <Node/Node.h>
 #include <jsoncpp/json/json.h>
-#include <Plugin/IPlugin.h>
 #include <Plugin/CommonProxy/CommonProtocol.h>
 
-class CProxyServer : public IPlugin, public CNode
+class CProxyServer : public CNode
 {
 public:
     CProxyServer();
-
-public:
-    bool SetConfig(Json::Value &Config) override;
 
 public:
     bool OnUpStream(const void *Buffer, size_t Length) override;

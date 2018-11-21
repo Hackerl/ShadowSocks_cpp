@@ -27,6 +27,11 @@ public:
         AddRef(NodeManager);
     }
 
+    bool SetNodeConfig(Json::Value &Config) override
+    {
+        return true;
+    }
+
     void NodeClose() override
     {
         if (m_NodeClosed)

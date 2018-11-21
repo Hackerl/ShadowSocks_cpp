@@ -6,7 +6,7 @@
 #include <Plugin/LibPluginExport.h>
 #include <Common/InstanceManager.h>
 
-extern "C" IPlugin * NewPlugin()
+extern "C" INode * NewPlugin()
 {
     return new InstanceManager<CSocketConnector>;
 }

@@ -5,7 +5,6 @@
 #ifndef SHADOWSOCKSR_CPP_PORTTUNNEL_H
 #define SHADOWSOCKSR_CPP_PORTTUNNEL_H
 
-#include <Plugin/IPlugin.h>
 #include <Node/Node.h>
 #include <Node/NodeService.h>
 #include <Common/JSONHelper.h>
@@ -17,7 +16,7 @@ struct CTunnelConfig
     u_short TargetPort;
 };
 
-class CPortTunnel : public IPlugin, public CNode
+class CPortTunnel : public CNode
 {
 public:
     CPortTunnel() : m_Config()
@@ -27,7 +26,7 @@ public:
     }
 
 public:
-    bool SetConfig(Json::Value &Config) override
+    bool SetNodeConfig(Json::Value &Config) override
     {
         u_int Port = g_JSON->GetUInt(Config, "TargetPort", 0x10000);
         std::string IP = g_JSON->GetString(Config, "TargetIP");

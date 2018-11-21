@@ -5,8 +5,8 @@
 #ifndef SHADOWSOCKSR_CPP_LIBPLUGINEXPORT_H
 #define SHADOWSOCKSR_CPP_LIBPLUGINEXPORT_H
 
-#include "IPlugin.h"
+#include <Node/INode.h>
 
-extern "C" IPlugin * NewPlugin();
+extern "C" INode * NewNode();
 
 #endif //SHADOWSOCKSR_CPP_LIBPLUGINEXPORT_H

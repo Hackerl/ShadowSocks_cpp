@@ -2,12 +2,11 @@
 // Created by patteliu on 2018/11/20.
 //
 
-#include "CShadowSocks.h"
+#include "ShadowSocks.h"
 #include <EventLoop/LibEventExport.h>
 #include <Socket/LibSocketExport.h>
 #include <glog/logging.h>
 #include <SocketNode/LibSocketNodeExport.h>
-#include <Plugin/IPlugin.h>
 #include <Plugin/LibPluginExport.h>
 #include <Node/NodeManager.h>
 #include <Common/JSONHelper.h>
@@ -78,15 +77,15 @@ void CShadowSocks::OnRead(int fd, short Event)
 
     for (auto const & PluginLoader : m_PluginLoaderList)
     {
-        IPlugin * Plugin = PluginLoader->Builder();
+        INode * Node = PluginLoader->Builder();
 
-        if (!Plugin)
+        if (!Node)
         {
             LOG(ERROR) << "Build Plugin Failed";
             continue;
         }
 
-        NodeMgr->AddNode(Plugin);
+        NodeMgr->AddNode(Node);
     }
 
     ISocketNode * RemoteNode = NewRemoteSocketNode();

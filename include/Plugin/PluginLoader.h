@@ -5,11 +5,11 @@
 #ifndef SHADOWSOCKSR_CPP_PLUGINLOADER_H
 #define SHADOWSOCKSR_CPP_PLUGINLOADER_H
 
-#include "IPlugin.h"
 #include <dlfcn.h>
 #include <glog/logging.h>
+#include <Node/INode.h>
 
-typedef IPlugin * (* FUNC_PluginBuilder)();
+typedef INode * (* FUNC_NodeBuilder)();
 
 class CPluginLoader
 {
@@ -17,7 +17,7 @@ public:
     CPluginLoader()
     {
         m_DLHandle = nullptr;
-        m_PluginBuilder = nullptr;
+        m_NodeBuilder = nullptr;
     }
 
     ~CPluginLoader()
@@ -36,9 +36,9 @@ public:
             LOG(ERROR) << "Open Library Failed: " << Name;
         }
 
-        m_PluginBuilder = (FUNC_PluginBuilder)dlsym(m_DLHandle, "NewPlugin");
+        m_NodeBuilder = (FUNC_NodeBuilder)dlsym(m_DLHandle, "NewPlugin");
 
-        if (!m_PluginBuilder)
+        if (!m_NodeBuilder)
         {
             LOG(ERROR) << "Find NewPlugin Function Failed: " << Name;
         }
@@ -49,29 +49,29 @@ public:
         m_Config = Config;
     }
 
-    IPlugin * Builder()
+    INode * Builder()
     {
-        if (!m_PluginBuilder)
+        if (!m_NodeBuilder)
             return nullptr;
 
-        IPlugin * Plugin =  m_PluginBuilder();
+        INode * Node =  m_NodeBuilder();
 
-        if (!Plugin->SetConfig(m_Config))
+        if (!Node->SetNodeConfig(m_Config))
         {
-            delete Plugin;
+            delete Node;
 
-            LOG(ERROR) << "Plugin Set Config Failed";
+            LOG(ERROR) << "Node Set Config Failed";
 
             return nullptr;
         }
 
-        return Plugin;
+        return Node;
     }
 
 private:
     void * m_DLHandle;
     Json::Value m_Config;
-    FUNC_PluginBuilder m_PluginBuilder;
+    FUNC_NodeBuilder m_NodeBuilder;
 };
 
 #endif //SHADOWSOCKSR_CPP_PLUGINLOADER_H
