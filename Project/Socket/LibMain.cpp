@@ -3,9 +3,10 @@
 //
 
 #include "TCPSocket.h"
-#include "Socket/ISocket.h"
-#include "Socket/LibSocketExport.h"
-#include "EventLoop/LibEventExport.h"
+#include <Socket/ISocket.h>
+#include <Socket/LibSocketExport.h>
+#include <EventLoop/LibEventExport.h>
+#include <iostream>
 
 class CServer : public CTCPSocket , public ISocketCallback
 {
@@ -63,7 +64,7 @@ void TestClient()
 
     } while (false);
 
-    DeleteTCPSocket(Client);
+    delete Client;
 }
 
 class CClient : public CTCPSocket , public ISocketCallback
