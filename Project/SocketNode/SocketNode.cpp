@@ -86,7 +86,7 @@ bool CSocketNode::DataOut(const void *Buffer, size_t Length)
     {
         LOG(INFO) << "fd: " << m_Socket->GetSocket() << " Try Send Size: " << Length << " Real Send Size: " << WriteLen;
 
-        LOG(INFO) << "fd: " << m_Socket->GetSocket() << " Write Buffer Inset Size: " << std::max(WriteLen, 0L);
+        LOG(INFO) << "fd: " << m_Socket->GetSocket() << " Write Buffer Inset Size: " << Length - std::max(WriteLen, 0L);
 
         m_WriteBuffer.insert(m_WriteBuffer.end(), (u_char *)Buffer + std::max(WriteLen, 0L), (u_char *)Buffer + Length);
     }
