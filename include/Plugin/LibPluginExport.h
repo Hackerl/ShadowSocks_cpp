@@ -7,6 +7,6 @@
 
 #include <Node/INode.h>
 
-extern "C" INode * NewPlugin();
+extern "C" INode * NewNode();
 
 #endif //SHADOWSOCKSR_CPP_LIBPLUGINEXPORT_H
