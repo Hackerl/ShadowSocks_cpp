@@ -5,7 +5,6 @@
 #ifndef SSRPLUGIN_BINASCII_H
 #define SSRPLUGIN_BINASCII_H
 
-#include <iostream>
 #include <vector>
 #include <sstream>
 
@@ -14,7 +13,7 @@ constexpr char HexMap[] = {'0', '1', '2', '3', '4', '5', '6', '7',
 class CBinascii
 {
 public:
-    static std::string Hexlify(u_char * Buffer, size_t Length)
+    static std::string Hexlify(const u_char * Buffer, size_t Length)
     {
         std::string s(Length * 2, ' ');
 
@@ -27,7 +26,7 @@ public:
         return s;
     }
 
-    static std::vector<u_char> UnHexlify(std::string HexString)
+    static std::vector<u_char> UnHexlify(std::string & HexString)
     {
         std::vector<u_char> Buffer;
 

@@ -5,11 +5,10 @@
 #ifndef SSRPLUGIN_ENCRYPTOR_H
 #define SSRPLUGIN_ENCRYPTOR_H
 
-#include "openssl/md5.h"
-#include "openssl/evp.h"
-#include <iostream>
 #include <vector>
 #include <cstring>
+#include <openssl/md5.h>
+#include <openssl/evp.h>
 
 #define EVP_BytesToKey_MD5_Len 16
 #define MAX_TMP_BUFFER_LEN 128

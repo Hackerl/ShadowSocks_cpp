@@ -5,8 +5,8 @@
 #ifndef SSRPLUGIN_HMAC_H
 #define SSRPLUGIN_HMAC_H
 
-#include <openssl/hmac.h>
 #include <cstring>
+#include <openssl/hmac.h>
 
 #define HMAC_HASH_BYTES 16
 

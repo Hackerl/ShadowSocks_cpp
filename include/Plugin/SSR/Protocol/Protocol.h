@@ -5,13 +5,13 @@
 #ifndef SSRPLUGIN_PROTOCOL_H
 #define SSRPLUGIN_PROTOCOL_H
 
-#include <iostream>
 #include <vector>
+#include <string>
 
 struct CServerInfo
 {
     std::string Host;
-    ushort Port;
+    u_short Port;
     std::string Param;
     std::vector<u_char> IV;
     std::vector<u_char> RecvIV;

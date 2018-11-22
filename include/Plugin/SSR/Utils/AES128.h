@@ -5,9 +5,8 @@
 #ifndef SSRPLUGIN_AES128_H
 #define SSRPLUGIN_AES128_H
 
-#include <openssl/aes.h>
-#include <iostream>
 #include "Encryptor.h"
+#include <openssl/aes.h>
 
 class CAES128 : public CEncryptor
 {

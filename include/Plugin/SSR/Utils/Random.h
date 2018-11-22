@@ -5,8 +5,8 @@
 #ifndef SSRPLUGIN_RANDOM_H
 #define SSRPLUGIN_RANDOM_H
 
-#include "Common/Singleton.h"
 #include <random>
+#include <Common/Singleton.h>
 
 class CRandom
 {

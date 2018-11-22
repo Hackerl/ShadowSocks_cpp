@@ -22,7 +22,7 @@ bool CSocketConnector::SetConfig(Json::Value &Config)
     u_int Port = g_JSON->GetUInt(Config, "ProxyPort");
 
     if (Type.empty() || Server.empty() || Port == 0)
-        return false;
+        return true;
 
     if (Type == "Socks5")
         m_Config.ProxyType = Socks5ProxyType;
