@@ -26,7 +26,7 @@ public:
         return s;
     }
 
-    static std::vector<u_char> UnHexlify(std::string & HexString)
+    static std::vector<u_char> UnHexlify(std::string HexString)
     {
         std::vector<u_char> Buffer;
 
