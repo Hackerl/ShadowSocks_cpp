@@ -1,9 +1,20 @@
 #include "CShadowSocks.h"
 #include <fstream>
+#include <climits>
+#include <libgen.h>
+
+void SetWorkPath()
+{
+    char ExePath[PATH_MAX] = {};
+    readlink("/proc/self/exe", ExePath, PATH_MAX);
+    chdir(dirname(ExePath));
+}
 
 int main(int argc, char ** argv)
 {
-    FLAGS_alsologtostderr = 1;
+    SetWorkPath();
+
+    FLAGS_alsologtostderr = true;
     google::InitGoogleLogging(argv[0]);
 
     std::ifstream InFile("Config.json");
