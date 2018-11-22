@@ -5,7 +5,13 @@ project(ShadowSocksr_cpp)
 
 set(CMAKE_CXX_STANDARD 14)
 
-include_directories(${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/include/libevent)
+find_package(PkgConfig REQUIRED)
+
+pkg_check_modules(JSONCPP REQUIRED jsoncpp)
+pkg_check_modules(LIBGLOG REQUIRED libglog)
+pkg_check_modules(LIBEVENT REQUIRED libevent)
+
+include_directories(${PROJECT_SOURCE_DIR}/include ${JSONCPP_INCLUDE_DIRS})
 link_directories(${PROJECT_SOURCE_DIR}/lib ${PROJECT_SOURCE_DIR}/bin ${PROJECT_SOURCE_DIR}/../SSRPlugin/bin)
 
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)

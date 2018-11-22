@@ -6,7 +6,6 @@
 #define SHADOWSOCKSR_CPP_SOCKSSERVER_H
 
 #include <Node/Node.h>
-#include <jsoncpp/json/json.h>
 #include <Plugin/IPlugin.h>
 #include <Plugin/CommonProxy/CommonProtocol.h>
 

@@ -7,7 +7,6 @@
 
 #include <Node/Node.h>
 #include <Plugin/IPlugin.h>
-#include <jsoncpp/json/json.h>
 
 enum CSock5Status
 {

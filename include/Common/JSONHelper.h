@@ -7,7 +7,7 @@
 
 #include "Singleton.h"
 #include <cstdio>
-#include <jsoncpp/json/json.h>
+#include <json/json.h>
 
 class CJSONHelper {
 #define g_JSON SINGLETON_(CJSONHelper)

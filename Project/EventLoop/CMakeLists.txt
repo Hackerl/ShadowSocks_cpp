@@ -8,4 +8,4 @@ else()
     add_library(EventLoop SHARED EventLoop.cpp EventLoop.h LibExport.cpp)
 endif()
 
-target_link_libraries(EventLoop libevent.so libglog.so)
+target_link_libraries(EventLoop ${LIBEVENT_LIBRARIES} ${LIBGLOG_LIBRARIES})

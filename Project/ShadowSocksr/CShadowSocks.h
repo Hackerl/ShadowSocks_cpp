@@ -6,8 +6,8 @@
 #define SHADOWSOCKSR_CPP_SHADOWSOCKSR_H
 
 #include <list>
+#include <json/json.h>
 #include <Socket/ISocket.h>
-#include <jsoncpp/json/json.h>
 #include <EventLoop/IEventLoop.h>
 #include <Plugin/PluginLoader.h>
 
