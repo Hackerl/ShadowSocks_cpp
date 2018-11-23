@@ -25,11 +25,11 @@ public:
     ~CSSRLocal();
 
 public:
-    bool SetConfig(const Json::Value &Config) override;
+    bool SetConfig(const Json::Value & Config) override;
 
 public:
-    std::vector<u_char> ClientProtocolPack(const u_char *Buffer, size_t Length);
-    std::vector<u_char> ClientProtocolUnPack(const u_char *Buffer, size_t Length);
+    std::vector<u_char> ClientProtocolPack(const u_char * Buffer, size_t Length);
+    std::vector<u_char> ClientProtocolUnPack(const u_char * Buffer, size_t Length);
 
 public:
     bool OnUpStream(const void *Buffer, size_t Length) override;
