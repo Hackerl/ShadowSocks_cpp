@@ -11,52 +11,69 @@
 
 typedef IPlugin * (* FUNC_PluginBuilder)();
 
+struct CPluginInfo
+{
+    void * DLHandle;
+    FUNC_PluginBuilder PluginBuilder;
+    Json::Value PluginConfig;
+};
+
 class CPluginLoader
 {
+#define g_PluginLoader SINGLETON_(CPluginLoader)
 public:
-    CPluginLoader()
-    {
-        m_DLHandle = nullptr;
-        m_PluginBuilder = nullptr;
-    }
-
     ~CPluginLoader()
     {
-        if (m_DLHandle != nullptr)
-            dlclose(m_DLHandle);
+        for (auto const& PluginInfo : m_PluginInfoMap)
+            dlclose(PluginInfo.second.DLHandle);
+
+        m_PluginInfoMap.clear();
     }
 
 public:
-    void Init(const char * Name)
+    void Add(const char * Name, const Json::Value & Config)
     {
-        void * m_DLHandle = dlopen(Name, RTLD_LAZY);
+        auto Iterator = m_PluginInfoMap.find(Name);
 
-        if (!m_DLHandle)
+        if (Iterator != m_PluginInfoMap.end())
+            return;
+
+        void * DLHandle = dlopen(Name, RTLD_LAZY);
+
+        if (!DLHandle)
         {
             LOG(ERROR) << "Open Library Failed: " << Name;
         }
 
-        m_PluginBuilder = (FUNC_PluginBuilder)dlsym(m_DLHandle, "NewPlugin");
+        auto PluginBuilder = (FUNC_PluginBuilder)dlsym(DLHandle, "NewPlugin");
 
-        if (!m_PluginBuilder)
+        if (!PluginBuilder)
         {
             LOG(ERROR) << "Find NewPlugin Function Failed: " << Name;
+            return;
         }
+
+        CPluginInfo PluginInfo = {};
+
+        PluginInfo.DLHandle = DLHandle;
+        PluginInfo.PluginBuilder = PluginBuilder;
+        PluginInfo.PluginConfig = Config;
+
+        m_PluginInfoMap.insert(std::make_pair(Name, PluginInfo));
     }
 
-    void SetConfig(const Json::Value & Config)
+    IPlugin * Builder(const char * Name)
     {
-        m_Config = Config;
-    }
+        auto Iterator = m_PluginInfoMap.find(Name);
 
-    IPlugin * Builder()
-    {
-        if (!m_PluginBuilder)
+        if (Iterator == m_PluginInfoMap.end())
             return nullptr;
 
-        IPlugin * Plugin =  m_PluginBuilder();
+        auto & PluginInfo = Iterator->second;
 
-        if (!Plugin->SetConfig(m_Config))
+        IPlugin * Plugin =  PluginInfo.PluginBuilder();
+
+        if (!Plugin->SetConfig(PluginInfo.PluginConfig))
         {
             delete Plugin;
 
@@ -69,9 +86,7 @@ public:
     }
 
 private:
-    void * m_DLHandle;
-    Json::Value m_Config;
-    FUNC_PluginBuilder m_PluginBuilder;
+    std::map<std::string, CPluginInfo> m_PluginInfoMap;
 };
 
 #endif //SHADOWSOCKSR_CPP_PLUGINLOADER_H

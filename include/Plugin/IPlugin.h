@@ -11,7 +11,7 @@
 class IPlugin : public Interface
 {
 public:
-    virtual bool SetConfig(Json::Value &Config) = 0;
+    virtual bool SetConfig(const Json::Value &Config) = 0;
 };
 
 #endif //SHADOWSOCKSR_CPP_IPLUGIN_H

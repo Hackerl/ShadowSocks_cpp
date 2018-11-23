@@ -18,7 +18,7 @@ CSSRLocal::CSSRLocal() : m_Config()
     m_HasInit = false;
 }
 
-bool CSSRLocal::SetConfig(Json::Value &Config)
+bool CSSRLocal::SetConfig(const Json::Value &Config)
 {
     std::string Server = g_JSON->GetString(Config, "Server");
     u_int Port = g_JSON->GetUInt(Config, "Port");

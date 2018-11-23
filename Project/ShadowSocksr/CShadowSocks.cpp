@@ -25,11 +25,6 @@ CShadowSocks::~CShadowSocks()
 
     delete m_Socket;
     m_Socket = nullptr;
-
-    for (auto const & PluginLoader : m_PluginLoaderList)
-        delete PluginLoader;
-
-    m_PluginLoaderList.clear();
 }
 
 bool CShadowSocks::SetConfig(Json::Value & Config)
@@ -50,16 +45,11 @@ bool CShadowSocks::SetConfig(Json::Value & Config)
 
     for (auto const & Plugin : Plugins)
     {
-        CPluginLoader * PluginLoader = new CPluginLoader;
-
         std::string Name = g_JSON->GetString(Plugin, "Name");
 
-        PluginLoader->Init(Name.c_str());
+        g_PluginLoader->Add(Name.c_str(), Plugin["Config"]);
 
-        if (g_JSON->HasObject(Plugin, "Config"))
-            PluginLoader->SetConfig(Plugin["Config"]);
-
-        m_PluginLoaderList.push_back(PluginLoader);
+        m_PluginNameList.push_back(Name);
     }
 
     return true;
@@ -76,9 +66,9 @@ void CShadowSocks::OnRead(int fd, short Event)
 
     NodeMgr->AddNode(LocalNode);
 
-    for (auto const & PluginLoader : m_PluginLoaderList)
+    for (auto const & PluginName : m_PluginNameList)
     {
-        IPlugin * Plugin = PluginLoader->Builder();
+        IPlugin * Plugin = g_PluginLoader->Builder(PluginName.c_str());
 
         if (!Plugin)
         {

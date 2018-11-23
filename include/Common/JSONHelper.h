@@ -9,7 +9,8 @@
 #include <cstdio>
 #include <json/json.h>
 
-class CJSONHelper {
+class CJSONHelper
+{
 #define g_JSON SINGLETON_(CJSONHelper)
 public:
     bool HasArray(const Json::Value &jv, const char *Name)

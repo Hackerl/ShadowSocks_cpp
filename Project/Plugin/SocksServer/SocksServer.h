@@ -15,7 +15,7 @@ public:
     CProxyServer();
 
 public:
-    bool SetConfig(Json::Value &Config) override;
+    bool SetConfig(const Json::Value &Config) override;
 
 public:
     bool OnUpStream(const void *Buffer, size_t Length) override;

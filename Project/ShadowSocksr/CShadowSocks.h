@@ -38,7 +38,7 @@ private:
     ITCPSocket * m_Socket;
     IEventLoop * m_EventLoop;
     CShadowConfig m_Config;
-    std::list<CPluginLoader *> m_PluginLoaderList;
+    std::vector<std::string> m_PluginNameList;
 };
 
 #endif //SHADOWSOCKSR_CPP_SHADOWSOCKSR_H

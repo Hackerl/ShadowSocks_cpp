@@ -13,7 +13,7 @@ CSocketConnector::CSocketConnector() : m_Config()
     m_Config.ProxyType = NOProxyType;
 }
 
-bool CSocketConnector::SetConfig(Json::Value &Config)
+bool CSocketConnector::SetConfig(const Json::Value &Config)
 {
     //TODO parse config
     std::string Type = g_JSON->GetString(Config, "ProxyType");

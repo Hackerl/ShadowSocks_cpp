@@ -35,7 +35,7 @@ public:
     bool OnNodeService(NodeServiceRegister ServiceID, void *Context) override;
 
 public:
-    bool SetConfig(Json::Value &Config) override;
+    bool SetConfig(const Json::Value &Config) override;
 
 public:
     bool NoProxyHandler(CConnectRequest * ConnectInfo);

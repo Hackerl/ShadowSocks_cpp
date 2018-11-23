@@ -10,7 +10,7 @@ CSocks5Proxy::CSocks5Proxy()
     m_Status = MethodRequestStage;
 }
 
-bool CSocks5Proxy::SetConfig(Json::Value &Config) {
+bool CSocks5Proxy::SetConfig(const Json::Value &Config) {
     return true;
 }
 
