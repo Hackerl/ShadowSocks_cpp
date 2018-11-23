@@ -8,9 +8,6 @@
 #include <Node/Node.h>
 #include <Plugin/IPlugin.h>
 #include <Protocol/IProtocol.h>
-#include "../SSRProtocol/AuthChain/AuthChainLocal.h"
-#include "../SSRObfs/HTTPSimple.h"
-#include "../SSRObfs/TLSTicketAuth.h"
 
 struct CSSRLocalConfig
 {
