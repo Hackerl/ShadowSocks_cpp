@@ -3,14 +3,13 @@
 //
 
 #include "SSRLocal.h"
-#include <Utils/Binascii.h>
-#include <Plugin/CommonProxy/CommonProtocol.h>
+#include <arpa/inet.h>
 #include <Common/JSONHelper.h>
 #include <Node/NodeService.h>
-#include <arpa/inet.h>
 #include <Utils/Encryptor.h>
-#include <Plugin/Socks5/Socks5Protocol.h>
 #include <Protocol/ProtocolLoader.h>
+#include <Plugin/Socks5/Socks5Protocol.h>
+#include <Plugin/CommonProxy/CommonProtocol.h>
 
 #define SOCKS5_REQUEST_SKIP 3
 
