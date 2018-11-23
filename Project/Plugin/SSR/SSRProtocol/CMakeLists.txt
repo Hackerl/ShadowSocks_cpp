@@ -3,10 +3,8 @@ project(SSRProtocol)
 
 set(CMAKE_CXX_STANDARD 14)
 
-if(CMAKE_DEBUGEXE)
-    add_executable(SSRProtocol LibMain.cpp AuthChain.h AuthChain.cpp AuthChainLocal.h AuthChainLocal.cpp)
-else()
-    add_library(SSRProtocol STATIC AuthChain.h AuthChain.cpp AuthChainLocal.h AuthChainLocal.cpp)
-endif()
+set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin/plugin/SSR)
 
-target_link_libraries(SSRProtocol libdl.so libpthread.so libssl.so libcrypto.so)
+add_subdirectory(AuthChain)
+add_subdirectory(TLSTicketAuth)
+add_subdirectory(HTTPSimple)

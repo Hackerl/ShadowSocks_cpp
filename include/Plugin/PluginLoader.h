@@ -24,18 +24,18 @@ class CPluginLoader
 public:
     ~CPluginLoader()
     {
-        for (auto const& PluginInfo : m_PluginInfoMap)
+        for (auto const& PluginInfo : m_ProtocolInfoMap)
             dlclose(PluginInfo.second.DLHandle);
 
-        m_PluginInfoMap.clear();
+        m_ProtocolInfoMap.clear();
     }
 
 public:
     void Add(const char * Name, const Json::Value & Config)
     {
-        auto Iterator = m_PluginInfoMap.find(Name);
+        auto Iterator = m_ProtocolInfoMap.find(Name);
 
-        if (Iterator != m_PluginInfoMap.end())
+        if (Iterator != m_ProtocolInfoMap.end())
             return;
 
         void * DLHandle = dlopen(Name, RTLD_LAZY);
@@ -43,6 +43,7 @@ public:
         if (!DLHandle)
         {
             LOG(ERROR) << "Open Library Failed: " << Name;
+            return;
         }
 
         auto PluginBuilder = (FUNC_PluginBuilder)dlsym(DLHandle, "NewPlugin");
@@ -59,19 +60,25 @@ public:
         PluginInfo.PluginBuilder = PluginBuilder;
         PluginInfo.PluginConfig = Config;
 
-        m_PluginInfoMap.insert(std::make_pair(Name, PluginInfo));
+        m_ProtocolInfoMap.insert(std::make_pair(Name, PluginInfo));
     }
 
     IPlugin * Builder(const char * Name)
     {
-        auto Iterator = m_PluginInfoMap.find(Name);
+        auto Iterator = m_ProtocolInfoMap.find(Name);
 
-        if (Iterator == m_PluginInfoMap.end())
+        if (Iterator == m_ProtocolInfoMap.end())
             return nullptr;
 
         auto & PluginInfo = Iterator->second;
 
         IPlugin * Plugin =  PluginInfo.PluginBuilder();
+
+        if (!Plugin)
+        {
+            LOG(ERROR) << "Plugin Builder Failed";
+            return nullptr;
+        }
 
         if (!Plugin->SetConfig(PluginInfo.PluginConfig))
         {
@@ -86,7 +93,7 @@ public:
     }
 
 private:
-    std::map<std::string, CPluginInfo> m_PluginInfoMap;
+    std::map<std::string, CPluginInfo> m_ProtocolInfoMap;
 };
 
 #endif //SHADOWSOCKSR_CPP_PLUGINLOADER_H

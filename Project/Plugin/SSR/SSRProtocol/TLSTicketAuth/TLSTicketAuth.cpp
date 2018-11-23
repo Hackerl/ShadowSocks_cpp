@@ -114,7 +114,7 @@ std::vector<u_char> CTLSTicketAuth::PackAuthData()
     return AuthData;
 }
 
-std::vector<u_char> CTLSTicketAuth::Encode(u_char *Buffer, size_t Length)
+std::vector<u_char> CTLSTicketAuth::ClientPack(const u_char *Buffer, size_t Length)
 {
     std::vector<u_char> EncodeStream;
 
@@ -209,7 +209,7 @@ std::vector<u_char> CTLSTicketAuth::Encode(u_char *Buffer, size_t Length)
     return EncodeStream;
 }
 
-std::vector<u_char> CTLSTicketAuth::Decode(u_char *Buffer, size_t Length)
+std::vector<u_char> CTLSTicketAuth::ClientUnPack(const u_char *Buffer, size_t Length)
 {
     std::vector<u_char> DecodeStream;
 

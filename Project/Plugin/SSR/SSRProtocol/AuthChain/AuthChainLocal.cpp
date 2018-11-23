@@ -74,7 +74,7 @@ CAuthHeader CAuthChainLocal::PackAuthData()
     return AuthHeader;
 }
 
-std::vector<u_char> CAuthChainLocal::PackClientData(u_char *Buffer, size_t Length)
+std::vector<u_char> CAuthChainLocal::PackClientData(const u_char *Buffer, size_t Length)
 {
     std::vector<u_char> CipherStream = m_RC4Utils.Encrypt(Buffer, Length);
     size_t RealCipherSize = CipherStream.size();
@@ -111,7 +111,7 @@ std::vector<u_char> CAuthChainLocal::PackClientData(u_char *Buffer, size_t Lengt
     return CipherStream;
 }
 
-std::vector<u_char> CAuthChainLocal::ClientEncrypt(u_char *Buffer, size_t Length)
+std::vector<u_char> CAuthChainLocal::ClientPack(const u_char *Buffer, size_t Length)
 {
     std::vector<u_char> CipherStream;
 
@@ -139,7 +139,7 @@ std::vector<u_char> CAuthChainLocal::ClientEncrypt(u_char *Buffer, size_t Length
     return CipherStream;
 }
 
-std::vector<u_char> CAuthChainLocal::ClientDecrypt(u_char *Buffer, size_t Length)
+std::vector<u_char> CAuthChainLocal::ClientUnPack(const u_char *Buffer, size_t Length)
 {
     VectorAppend(m_RecvBuffer, Buffer, Length);
 

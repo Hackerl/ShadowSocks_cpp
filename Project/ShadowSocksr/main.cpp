@@ -17,9 +17,9 @@ int main(int argc, char ** argv)
     FLAGS_alsologtostderr = true;
     google::InitGoogleLogging(argv[0]);
 
-    std::ifstream InFile("Config.json");
+    std::ifstream ConfigFile("Config.json");
 
-    if (!InFile.is_open())
+    if (!ConfigFile.is_open())
     {
         LOG(ERROR) << "Cant Not Open Config File";
         return 0;
@@ -28,15 +28,13 @@ int main(int argc, char ** argv)
     Json::Value jv;
     Json::Reader jr;
 
-    if (!jr.parse(InFile, jv))
+    if (!jr.parse(ConfigFile, jv))
     {
         LOG(ERROR) << "Cant Not Parse Config File";
-
-        InFile.close();
         return 0;
     }
 
-    InFile.close();
+    ConfigFile.close();
 
     CShadowSocks ShadowSocks;
 

@@ -7,7 +7,7 @@
 
 #include "AuthChain.h"
 #include <Common/Singleton.h>
-#include <Utils/Random.h>
+#include <Plugin/SSR/Utils/Random.h>
 
 class CAuthChainSession
 {
@@ -67,9 +67,11 @@ public:
 
 public:
     CAuthHeader PackAuthData();
-    std::vector<u_char> PackClientData(u_char * Buffer, size_t Length);
-    std::vector<u_char> ClientEncrypt(u_char * Buffer, size_t Length);
-    std::vector<u_char> ClientDecrypt(u_char * Buffer, size_t Length);
+    std::vector<u_char> PackClientData(const u_char *Buffer, size_t Length);
+
+public:
+    std::vector<u_char> ClientPack(const u_char *Buffer, size_t Length) override;
+    std::vector<u_char> ClientUnPack(const u_char *Buffer, size_t Length) override;
 
 private:
     u_int m_UserID;

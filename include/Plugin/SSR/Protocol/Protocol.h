@@ -5,33 +5,9 @@
 #ifndef SSRPLUGIN_PROTOCOL_H
 #define SSRPLUGIN_PROTOCOL_H
 
-#include <vector>
-#include <string>
+#include "IProtocol.h"
 
-struct CServerInfo
-{
-    std::string Host;
-    u_short Port;
-    std::string Param;
-    std::vector<u_char> IV;
-    std::vector<u_char> RecvIV;
-    std::vector<u_char> Key;
-    u_int HeadLen;
-    u_short TCPMss;
-    u_short OverHead;
-    u_int BufferSize;
-
-    CServerInfo()
-    {
-        Port = 0;
-        HeadLen = 0;
-        TCPMss = 1440;
-        OverHead = 0;
-        BufferSize = 0;
-    }
-};
-
-class CProtocol
+class CProtocol : public IProtocol
 {
 public:
     CProtocol()
@@ -40,19 +16,51 @@ public:
     }
 
 public:
-    void SetServerInfo(CServerInfo & Info)
+    void SetServerInfo(CServerInfo & Info) override
     {
         m_ServerInfo = Info;
     }
 
-    u_short GetOverHead()
+    u_short GetOverHead() override
     {
         return m_OverHead;
     }
 
+public:
+    bool NeedSendBack() override
+    {
+        return false;
+    }
+
+    std::vector<u_char> PackSendBackData() override
+    {
+        return std::vector<u_char>();
+    }
+
+public:
+    std::vector<u_char> ClientPack(const u_char *Buffer, size_t Length) override
+    {
+        return std::vector<u_char>(Buffer, Buffer + Length);
+    }
+
+    std::vector<u_char> ClientUnPack(const u_char *Buffer, size_t Length) override
+    {
+        return std::vector<u_char>(Buffer, Buffer + Length);
+    }
+
+    std::vector<u_char> ServerPack(const u_char *Buffer, size_t Length) override
+    {
+        return std::vector<u_char>(Buffer, Buffer + Length);
+    }
+
+    std::vector<u_char> ServerUnPack(const u_char *Buffer, size_t Length) override
+    {
+        return std::vector<u_char>(Buffer, Buffer + Length);
+    }
+
 protected:
-    CServerInfo m_ServerInfo;
     u_short m_OverHead;
+    CServerInfo m_ServerInfo;
 };
 
 #endif //SSRPLUGIN_PROTOCOL_H

@@ -9,4 +9,4 @@ else()
     add_library(SSRLocal SHARED LibExport.cpp SSRLocal.h SSRLocal.cpp)
 endif()
 
-target_link_libraries(SSRLocal libSSRObfs.a libSSRProtocol.a libdl.so libpthread.so ${JSONCPP_LIBRARIES} ${OPENSSL_LIBRARIES})
+target_link_libraries(SSRLocal libdl.so ${LIBGLOG_LIBRARIES} ${JSONCPP_LIBRARIES} ${OPENSSL_LIBRARIES})

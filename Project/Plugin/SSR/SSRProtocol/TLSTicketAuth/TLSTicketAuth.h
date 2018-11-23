@@ -55,8 +55,8 @@ public:
     std::vector<u_char> SNI(std::string Host);
 
 public:
-    std::vector<u_char> Encode(u_char * Buffer, size_t Length);
-    std::vector<u_char> Decode(u_char * Buffer, size_t Length);
+    std::vector<u_char> ClientPack(const u_char *Buffer, size_t Length) override;
+    std::vector<u_char> ClientUnPack(const u_char *Buffer, size_t Length) override;
 
 private:
     int m_Status;

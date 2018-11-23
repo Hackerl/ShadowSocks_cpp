@@ -16,7 +16,7 @@ CHTTPSimple::CHTTPSimple()
     m_HasRecvHeader = false;
 }
 
-std::string CHTTPSimple::GetHTTPHeader(u_char * Buffer, size_t Length)
+std::string CHTTPSimple::GetHTTPHeader(const u_char *Buffer, size_t Length)
 {
     std::string HTTPHeader;
 
@@ -59,7 +59,7 @@ std::string CHTTPSimple::GetHTTPHeader(u_char * Buffer, size_t Length)
     return HTTPHeader;
 }
 
-std::vector<u_char> CHTTPSimple::Encode(u_char *Buffer, size_t Length)
+std::vector<u_char> CHTTPSimple::ClientPack(const u_char *Buffer, size_t Length)
 {
     std::vector<u_char> EncodeStream;
 
@@ -78,7 +78,7 @@ std::vector<u_char> CHTTPSimple::Encode(u_char *Buffer, size_t Length)
     return EncodeStream;
 }
 
-std::vector<u_char> CHTTPSimple::Decode(u_char *Buffer, size_t Length)
+std::vector<u_char> CHTTPSimple::ClientUnPack(const u_char *Buffer, size_t Length)
 {
     std::vector<u_char> DecodeStream;
 

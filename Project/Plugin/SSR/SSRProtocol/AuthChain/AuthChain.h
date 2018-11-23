@@ -69,7 +69,7 @@ struct CAuthHeader
 };
 #pragma pack(pop)
 
-class CAuthChain : public  CProtocol
+class CAuthChain : public CProtocol
 {
 public:
     CAuthChain();

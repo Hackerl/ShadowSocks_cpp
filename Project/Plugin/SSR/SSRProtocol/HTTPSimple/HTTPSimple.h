@@ -15,11 +15,11 @@ public:
     CHTTPSimple();
 
 public:
-    std::string GetHTTPHeader(u_char * Buffer, size_t Length);
+    std::string GetHTTPHeader(const u_char *Buffer, size_t Length);
 
 public:
-    std::vector<u_char> Encode(u_char * Buffer, size_t Length);
-    std::vector<u_char> Decode(u_char * Buffer, size_t Length);
+    std::vector<u_char> ClientPack(const u_char *Buffer, size_t Length) override;
+    std::vector<u_char> ClientUnPack(const u_char *Buffer, size_t Length) override;
 
 private:
     bool m_HasRecvHeader;

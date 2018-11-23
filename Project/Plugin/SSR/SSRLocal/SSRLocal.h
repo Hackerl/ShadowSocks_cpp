@@ -7,7 +7,8 @@
 
 #include <Node/Node.h>
 #include <Plugin/IPlugin.h>
-#include "../SSRProtocol/AuthChainLocal.h"
+#include <Protocol/IProtocol.h>
+#include "../SSRProtocol/AuthChain/AuthChainLocal.h"
 #include "../SSRObfs/HTTPSimple.h"
 #include "../SSRObfs/TLSTicketAuth.h"
 
@@ -21,9 +22,14 @@ class CSSRLocal : public IPlugin, public CNode
 {
 public:
     CSSRLocal();
+    ~CSSRLocal();
 
 public:
     bool SetConfig(const Json::Value &Config) override;
+
+public:
+    std::vector<u_char> ClientProtocolPack(const u_char *Buffer, size_t Length);
+    std::vector<u_char> ClientProtocolUnPack(const u_char *Buffer, size_t Length);
 
 public:
     bool OnUpStream(const void *Buffer, size_t Length) override;
@@ -32,9 +38,7 @@ public:
 private:
     bool m_HasInit;
     CSSRLocalConfig m_Config;
-    CAuthChainLocal m_AuthChainLocal;
-    CHTTPSimple m_HTTPSimple;
-    CTLSTicketAuth m_TLSTicketAuth;
+    std::vector<IProtocol *> m_ProtocolList;
 };
 
 #endif //SSRPLUGIN_SSRLOCAL_H

@@ -22,7 +22,7 @@ inline void VectorAppend(std::vector<T> & v1, std::vector<T> v2, size_t Size)
 }
 
 template <class T>
-inline void VectorAppend(std::vector<T> & v1, T * v2, size_t Size)
+inline void VectorAppend(std::vector<T> & v1, const T * v2, size_t Size)
 {
     v1.insert(v1.end(), v2, v2 + Size);
 }
@@ -34,7 +34,7 @@ inline void VectorAppendStr(std::vector<T> & v1, std::string v2)
 }
 
 template <class T, class T_>
-inline void VectorAppendData(std::vector<T> & v1, T_ v2)
+inline void VectorAppendData(std::vector<T> & v1, const T_ v2)
 {
     v1.insert(v1.end(), (T *)&v2, (T *)&v2 + sizeof(T_));
 }
@@ -52,7 +52,7 @@ inline void VectorPrepend(std::vector<T> & v1, std::vector<T> v2, size_t Size)
 }
 
 template <class T>
-inline void VectorPrepend(std::vector<T> & v1, T * v2, size_t Size)
+inline void VectorPrepend(std::vector<T> & v1, const T * v2, size_t Size)
 {
     v1.insert(v1.begin(), v2, v2 + Size);
 }
@@ -64,7 +64,7 @@ inline void VectorPrependStr(std::vector<T> & v1, std::string v2)
 }
 
 template <class T, class T_>
-inline void VectorPrependData(std::vector<T> & v1, T_ v2)
+inline void VectorPrependData(std::vector<T> & v1, const T_ v2)
 {
     v1.insert(v1.begin(), (T *)&v2, (T *)&v2 + sizeof(T_));
 }

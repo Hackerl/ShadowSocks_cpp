@@ -28,7 +28,7 @@ public:
     }
 
 public:
-    std::vector<u_char> Encrypt(u_char * Buffer, size_t Length)
+    std::vector<u_char> Encrypt(const u_char *Buffer, size_t Length)
     {
         return RC4Stream(Buffer, Length, m_EncryptKey);
     }
@@ -38,7 +38,7 @@ public:
         return RC4Stream(Buffer, Length, m_DecryptKey);
     }
 
-    std::vector<u_char> RC4Stream(u_char * Buffer, size_t Length, RC4_KEY& RC4Key)
+    std::vector<u_char> RC4Stream(const u_char *Buffer, size_t Length, RC4_KEY &RC4Key)
     {
         auto TMP = new u_char[Length]();
 

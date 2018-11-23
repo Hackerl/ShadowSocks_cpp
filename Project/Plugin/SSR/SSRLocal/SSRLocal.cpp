@@ -10,12 +10,21 @@
 #include <Node/NodeService.h>
 #include <arpa/inet.h>
 #include <Plugin/Socks5/Socks5Protocol.h>
+#include <Protocol/ProtocolLoader.h>
 
 #define SOCKS5_REQUEST_SKIP 3
 
 CSSRLocal::CSSRLocal() : m_Config()
 {
     m_HasInit = false;
+}
+
+CSSRLocal::~CSSRLocal()
+{
+    for (auto const & Protocol : m_ProtocolList)
+        delete Protocol;
+
+    m_ProtocolList.clear();
 }
 
 bool CSSRLocal::SetConfig(const Json::Value &Config)
@@ -38,11 +47,60 @@ bool CSSRLocal::SetConfig(const Json::Value &Config)
 
     ServerInfo.Key = _0_.GetCipherKey();
 
-    m_AuthChainLocal.SetServerInfo(ServerInfo);
-    m_HTTPSimple.SetServerInfo(ServerInfo);
-    m_TLSTicketAuth.SetServerInfo(ServerInfo);
+    if (!g_JSON->HasArray(Config, "Protocols"))
+        return false;
+
+    Json::Value ProtocolNames = Config["Protocols"];
+
+    for (auto const & ProtocolName : ProtocolNames)
+    {
+        std::string ProtocolNameStr = ProtocolName.asString();
+
+        g_ProtocolLoader->Add(ProtocolNameStr.c_str());
+
+        IProtocol * Protocol = g_ProtocolLoader->Builder(ProtocolNameStr.c_str());
+
+        if (!Protocol)
+            continue;
+
+        m_ProtocolList.push_back(Protocol);
+    }
+
+    for (auto const & Protocol : m_ProtocolList)
+        Protocol->SetServerInfo(ServerInfo);
 
     return true;
+}
+
+std::vector<u_char> CSSRLocal::ClientProtocolPack(const u_char *Buffer, size_t Length)
+{
+    std::vector<u_char> PackStream(Buffer, Buffer + Length);
+
+    for (auto const & Protocol : m_ProtocolList)
+        PackStream = Protocol->ClientPack(PackStream.data(), PackStream.size());
+
+    return PackStream;
+}
+
+std::vector<u_char> CSSRLocal::ClientProtocolUnPack(const u_char *Buffer, size_t Length)
+{
+    std::vector<u_char> UnPackStream(Buffer, Buffer + Length);
+
+    for (std::vector<IProtocol *>::reverse_iterator it = m_ProtocolList.rbegin(); it != m_ProtocolList.rend(); it ++)
+    {
+        auto & Protocol = * it;
+
+        UnPackStream = Protocol->ClientUnPack(UnPackStream.data(), UnPackStream.size());
+
+        if (!Protocol->NeedSendBack())
+            continue;
+
+        std::vector<u_char> SendBackStream = Protocol->PackSendBackData();
+
+        UpStream(SendBackStream.data(), SendBackStream.size());
+    }
+
+    return UnPackStream;
 }
 
 bool CSSRLocal::OnUpStream(const void *Buffer, size_t Length)
@@ -56,8 +114,7 @@ bool CSSRLocal::OnUpStream(const void *Buffer, size_t Length)
         if (RequestSize == 0)
             return false;
 
-        std::vector<u_char> ProtocolStream = m_AuthChainLocal.ClientEncrypt((u_char *)Buffer + SOCKS5_REQUEST_SKIP, RequestSize - SOCKS5_REQUEST_SKIP);
-        std::vector<u_char> ObfStream = m_TLSTicketAuth.Encode(ProtocolStream.data(), ProtocolStream.size());
+        std::vector<u_char> PackStream = ClientProtocolPack((const u_char *)Buffer + SOCKS5_REQUEST_SKIP, RequestSize - SOCKS5_REQUEST_SKIP);
 
         in_addr Address = {};
         inet_pton(AF_INET, "127.0.0.1", &Address);
@@ -77,25 +134,17 @@ bool CSSRLocal::OnUpStream(const void *Buffer, size_t Length)
 
         Response.Header.Response = uint8_t(0x00);
 
-        return DownStream(&Response, sizeof(Response)) && UpStream(ObfStream.data(), ObfStream.size());
+        return DownStream(&Response, sizeof(Response)) && UpStream(PackStream.data(), PackStream.size());
     }
 
-    std::vector<u_char> ProtocolStream = m_AuthChainLocal.ClientEncrypt((u_char *)Buffer, Length);
-    std::vector<u_char> ObfStream = m_TLSTicketAuth.Encode(ProtocolStream.data(), ProtocolStream.size());
+    std::vector<u_char> PackStream = ClientProtocolPack((const u_char *)Buffer, Length);
 
-    return UpStream(ObfStream.data(), ObfStream.size());
+    return UpStream(PackStream.data(), PackStream.size());
 }
 
 bool CSSRLocal::OnDownStream(const void *Buffer, size_t Length)
 {
-    std::vector<u_char> ProtocolStream = m_TLSTicketAuth.Decode((u_char *)Buffer, Length);
-    std::vector<u_char> DataStream = m_AuthChainLocal.ClientDecrypt(ProtocolStream.data(), ProtocolStream.size());
+    std::vector<u_char> UnPackStream = ClientProtocolUnPack((const u_char *)Buffer, Length);
 
-    if (m_TLSTicketAuth.NeedSendBack())
-    {
-        std::vector<u_char> SendBackStream = m_TLSTicketAuth.PackSendBackData();
-        UpStream(SendBackStream.data(), SendBackStream.size());
-    }
-
-    return DataStream.empty() ? true : DownStream(DataStream.data(), DataStream.size());
+    return UnPackStream.empty() ? true : DownStream(UnPackStream.data(), UnPackStream.size());
 }
