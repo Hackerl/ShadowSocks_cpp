@@ -2,13 +2,13 @@
 // Created by hackerl on 10/28/18.
 //
 
-
 #include "SSRLocal.h"
 #include <Utils/Binascii.h>
 #include <Plugin/CommonProxy/CommonProtocol.h>
 #include <Common/JSONHelper.h>
 #include <Node/NodeService.h>
 #include <arpa/inet.h>
+#include <Utils/Encryptor.h>
 #include <Plugin/Socks5/Socks5Protocol.h>
 #include <Protocol/ProtocolLoader.h>
 
