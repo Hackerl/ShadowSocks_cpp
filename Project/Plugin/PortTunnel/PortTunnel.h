@@ -27,7 +27,7 @@ public:
     }
 
 public:
-    bool SetConfig(Json::Value &Config) override
+    bool SetConfig(const Json::Value &Config) override
     {
         u_int Port = g_JSON->GetUInt(Config, "TargetPort", 0x10000);
         std::string IP = g_JSON->GetString(Config, "TargetIP");

@@ -4,15 +4,14 @@
 
 #include "LocalSocketNode.h"
 #include "RemoteSocketNode.h"
-#include <Common/InstanceManager.h>
 #include <SocketNode/LibSocketNodeExport.h>
 
 extern "C" ISocketNode * NewLocalSocketNode()
 {
-    return new InstanceManager<CLocalSocketNode>;
+    return new CLocalSocketNode;
 }
 
 extern "C" ISocketNode * NewRemoteSocketNode()
 {
-    return new InstanceManager<CRemoteSocketNode>;
+    return new CRemoteSocketNode;
 }

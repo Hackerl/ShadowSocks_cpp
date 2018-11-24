@@ -3,10 +3,9 @@
 //
 
 #include "SocksServer.h"
-#include <Common/InstanceManager.h>
 #include <Plugin/LibPluginExport.h>
 
 extern "C" IPlugin * NewPlugin()
 {
-    return new InstanceManager<CProxyServer>;
+    return new CProxyServer;
 }
