@@ -12,7 +12,7 @@
 class CRemoteSocketNode : public CSocketNode, public INodeService
 {
 public:
-    bool NodeInit(INodeManager * NodeManager) override
+    bool NodeInit(std::shared_ptr<INodeManager> NodeManager) override
     {
         CSocketNode::NodeInit(NodeManager);
 

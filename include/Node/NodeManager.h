@@ -9,7 +9,6 @@
 #include "INodeManager.h"
 #include "NodeService.h"
 #include <vector>
-#include <Common/InstanceManager.h>
 #include <map>
 
 struct CNodeEventInfo
@@ -18,7 +17,7 @@ struct CNodeEventInfo
     INodeEvent * Node;
 };
 
-class CCNodeManager : public INodeManager, public INodeService
+class CCNodeManager : public INodeManager, public INodeService, public std::enable_shared_from_this<CCNodeManager>
 {
 public:
     CCNodeManager()
@@ -29,10 +28,8 @@ public:
 public:
     ~CCNodeManager()
     {
-        for (auto const & Iterator : m_NodeList)
-        {
-            Release(Iterator);
-        }
+        for (auto const & Node : m_NodeList)
+            delete Node;
 
         m_NodeList.clear();
         m_NodeEventList.clear();
@@ -84,9 +81,9 @@ public:
         if (ServiceID != REQUEST_CLOSE_PIPE)
             return false;
 
-        for (auto const & Iterator : m_NodeList)
+        for (auto const & Node : m_NodeList)
         {
-            Iterator->NodeClose();
+            Node->NodeClose();
         }
     }
 
@@ -94,9 +91,8 @@ public:
     void AddNode(INode * Node)
     {
         m_NodeList.push_back(Node);
-        AddRef(Node);
 
-        Node->NodeInit(this);
+        Node->NodeInit(shared_from_this());
     }
 
     void AddNode(Interface * I)
@@ -106,9 +102,8 @@ public:
         if (Node != nullptr)
         {
             m_NodeList.push_back(Node);
-            AddRef(Node);
 
-            Node->NodeInit(this);
+            Node->NodeInit(shared_from_this());
         }
     }
 

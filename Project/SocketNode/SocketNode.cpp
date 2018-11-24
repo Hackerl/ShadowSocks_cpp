@@ -161,7 +161,7 @@ void CSocketNode::OnWrite(int fd, short Event)
         BroadcastEvent(PIPE_STREAM_FLOW, this);
 }
 
-bool CSocketNode::NodeInit(INodeManager *NodeManager)
+bool CSocketNode::NodeInit(std::shared_ptr<INodeManager> NodeManager)
 {
     CNode::NodeInit(NodeManager);
 

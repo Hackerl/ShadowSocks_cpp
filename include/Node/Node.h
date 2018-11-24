@@ -7,7 +7,7 @@
 
 #include "INode.h"
 #include "NodeEvent.h"
-#include <Common/IInstanceManager.h>
+#include <memory>
 
 class CNode : public INode
 {
@@ -16,15 +16,13 @@ public:
     {
         m_UpNode = nullptr;
         m_DownNode = nullptr;
-        m_NodeManager = nullptr;
         m_NodeClosed = false;
     }
 
 public:
-    bool NodeInit(INodeManager * NodeManager) override
+    bool NodeInit(std::shared_ptr<INodeManager> NodeManager) override
     {
         m_NodeManager = NodeManager;
-        AddRef(NodeManager);
     }
 
     void NodeClose() override
@@ -34,16 +32,10 @@ public:
 
         m_NodeClosed = true;
 
-        //TODO Node Close
-
         m_UpNode = nullptr;
         m_DownNode = nullptr;
 
-        if (m_NodeManager != nullptr)
-        {
-            Release(m_NodeManager);
-            m_NodeManager = nullptr;
-        }
+        m_NodeManager.reset();
     }
 
 public:
@@ -61,7 +53,6 @@ public:
             return false;
 
         return m_DownNode->OnDownStream(Buffer, Length);
-
     }
 
     void SetUpNode(INodeCallback * UpNode) override
@@ -88,7 +79,7 @@ public:
 public:
     bool RegisterEvent(NodeEventRegister EventID, INodeEvent * Node)
     {
-        if (m_NodeManager == nullptr)
+        if (!m_NodeManager)
             return false;
 
         m_NodeManager->RegisterEvent(EventID, Node);
@@ -96,7 +87,7 @@ public:
 
     bool BroadcastEvent(NodeEventRegister EventID, void * Context, INodeEvent * Publisher = nullptr)
     {
-        if (m_NodeManager == nullptr)
+        if (!m_NodeManager)
             return false;
 
         m_NodeManager->BroadcastEvent(EventID, Context, Publisher);
@@ -104,7 +95,7 @@ public:
 
     bool RegisterService(NodeServiceRegister ServiceID, INodeService * Node)
     {
-        if (m_NodeManager == nullptr)
+        if (!m_NodeManager)
             return false;
 
         return m_NodeManager->RegisterService(ServiceID, Node);
@@ -112,7 +103,7 @@ public:
 
     bool InvokeService(NodeServiceRegister ServiceID, void * Context)
     {
-        if (m_NodeManager == nullptr)
+        if (!m_NodeManager)
             return false;
 
         return m_NodeManager->InvokeService(ServiceID, Context);
@@ -122,7 +113,7 @@ private:
     bool m_NodeClosed;
     INodeCallback * m_UpNode;
     INodeCallback * m_DownNode;
-    INodeManager * m_NodeManager;
+    std::shared_ptr<INodeManager> m_NodeManager;
 };
 
 #endif //SHADOWSOCKSR_CPP_NODE_H

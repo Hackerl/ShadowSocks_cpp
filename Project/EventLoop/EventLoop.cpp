@@ -3,7 +3,6 @@
 //
 
 #include "EventLoop.h"
-#include <Common/IInstanceManager.h>
 #include <glog/logging.h>
 
 CEventLoop::CEventLoop()
@@ -56,8 +55,6 @@ bool CEventLoop::Add(int fd, ISocketCallback * SocketHandler)
 
     m_SocketEventMap.insert(std::pair<int, EventSession>(fd, Session));
 
-    AddRef(SocketHandler);
-
     return true;
 }
 
@@ -109,8 +106,6 @@ bool CEventLoop::Remove(int fd)
 
     event_del(Session.Event);
     event_free(Session.Event);
-
-    Release(Session.SocketHandler);
 
     m_SocketEventMap.erase(Iterator);
 
