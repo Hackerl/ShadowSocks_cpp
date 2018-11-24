@@ -213,13 +213,13 @@ void CSocketNode::OnNodeEvent(NodeEventRegister EventID, void *Context)
 
 void CSocketNode::NodeClose()
 {
-    CNode::NodeClose();
-
     if (m_WriteBuffer.size() > 0)
         m_Socket->Send(m_WriteBuffer.data(), m_WriteBuffer.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
 
     if (m_Loop != nullptr && m_Socket != nullptr)
         m_Loop->Remove(m_Socket->GetSocket());
+
+    CNode::NodeClose();
 }
 
 void CSocketNode::OnClose(int fd, short Event)
