@@ -115,9 +115,6 @@ bool CSSRLocal::OnUpStream(const void *Buffer, size_t Length)
 
         std::vector<u_char> PackStream = ClientProtocolPack((const u_char *)Buffer + SOCKS5_REQUEST_SKIP, RequestSize - SOCKS5_REQUEST_SKIP);
 
-        in_addr Address = {};
-        inet_pton(AF_INET, "127.0.0.1", &Address);
-
         CConnectRequest ConnectRequest = {};
 
         ConnectRequest.Header.AddressType = IPv4Type;
