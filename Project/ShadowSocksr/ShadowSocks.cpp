@@ -2,7 +2,7 @@
 // Created by patteliu on 2018/11/20.
 //
 
-#include "CShadowSocks.h"
+#include "ShadowSocks.h"
 #include <EventLoop/LibEventExport.h>
 #include <Socket/LibSocketExport.h>
 #include <glog/logging.h>
@@ -99,6 +99,10 @@ void CShadowSocks::OnClose(int fd, short Event)
 
 void CShadowSocks::Run()
 {
+    int OptVal = 1;
+
+    m_Socket->SetSockOpt(SOL_SOCKET, SO_REUSEADDR, &OptVal, sizeof(OptVal));
+
     if (!m_Socket->Bind(m_Config.IP, m_Config.Port))
     {
         LOG(ERROR) << "Socket Bind Failed";

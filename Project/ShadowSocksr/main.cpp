@@ -1,4 +1,4 @@
-#include "CShadowSocks.h"
+#include "ShadowSocks.h"
 #include <fstream>
 #include <climits>
 #include <libgen.h>
