@@ -2,6 +2,7 @@
 #include <fstream>
 #include <climits>
 #include <libgen.h>
+#include <Common/CmdLine.h>
 
 void SetWorkPath()
 {
@@ -10,37 +11,48 @@ void SetWorkPath()
     chdir(dirname(ExePath));
 }
 
-int main(int argc, char ** argv)
+Json::Value ReadConfig(const char * Path)
 {
-    SetWorkPath();
+    Json::Value Config;
 
-    FLAGS_alsologtostderr = true;
-    google::InitGoogleLogging(argv[0]);
-
-    std::ifstream ConfigFile("Config.json");
+    std::ifstream ConfigFile(Path);
 
     if (!ConfigFile.is_open())
     {
-        LOG(ERROR) << "Cant Not Open Config File";
-        return 0;
+        LOG(ERROR) << "Cant Not Open Config File: " << Path;
+        return Config;
     }
 
-    Json::Value jv;
     Json::Reader jr;
 
-    if (!jr.parse(ConfigFile, jv))
+    if (!jr.parse(ConfigFile, Config))
     {
         LOG(ERROR) << "Cant Not Parse Config File";
-        return 0;
     }
 
-    ConfigFile.close();
+    return Config;
+}
+
+int main(int argc, char ** argv)
+{
+    FLAGS_alsologtostderr = true;
+    google::InitGoogleLogging(argv[0]);
+
+    SetWorkPath();
+
+    cmdline::parser CmdParser;
+
+    CmdParser.add<std::string>("config", 'c', "Config File Path", false, "Config.json");
+    CmdParser.parse_check(argc, argv);
+
+    std::string Path = CmdParser.get<std::string>("config");
+    Json::Value Config = ReadConfig(Path.c_str());
 
     CShadowSocks ShadowSocks;
 
-    if (!ShadowSocks.SetConfig(jv))
+    if (!ShadowSocks.SetConfig(Config))
     {
-        LOG(ERROR) << "ShadowSocks Cant Not Set Config";
+        LOG(ERROR) << "ShadowSocks Set Config Failed";
         return 0;
     }
 
