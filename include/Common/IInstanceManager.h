@@ -17,7 +17,7 @@ public:
 template <class T>
 inline void AddRef(T * Instance)
 {
-    auto * InstanceMgr = dynamic_cast<IInstanceManager *>(Instance);
+    auto InstanceMgr = dynamic_cast<IInstanceManager *>(Instance);
 
     if (InstanceMgr != nullptr)
         InstanceMgr->AddRef();
@@ -26,7 +26,7 @@ inline void AddRef(T * Instance)
 template <class T>
 inline void Release(T * Instance)
 {
-    auto * InstanceMgr = dynamic_cast<IInstanceManager *>(Instance);
+    auto InstanceMgr = dynamic_cast<IInstanceManager *>(Instance);
 
     if (InstanceMgr != nullptr)
         InstanceMgr->Release();
