@@ -29,7 +29,7 @@ CTCPSocket::~CTCPSocket()
     Close();
 }
 
-bool CTCPSocket::Bind(std::string IP, ushort Port)
+bool CTCPSocket::Bind(std::string IP, u_short Port)
 {
     if (!m_IsValid)
         return false;
@@ -72,7 +72,7 @@ ssize_t CTCPSocket::Send(const void *Buffer, size_t Length, int Flag)
     return send(m_Socket, Buffer, Length, Flag);
 }
 
-bool CTCPSocket::Connect(std::string IP, ushort Port, time_t TimeOut)
+bool CTCPSocket::Connect(std::string IP, u_short Port, time_t TimeOut)
 {
     if (!m_IsValid || m_IsConnected)
         return false;

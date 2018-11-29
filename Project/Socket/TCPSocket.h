@@ -18,9 +18,9 @@ public:
     int GetSocket() override;
 
 public:
-    bool Bind(std::string IP, ushort Port) override;
+    bool Bind(std::string IP, u_short Port) override;
     bool Listen(int backlog) override;
-    bool Connect(std::string IP, ushort Port, time_t TimeOut) override;
+    bool Connect(std::string IP, u_short Port, time_t TimeOut) override;
     bool Connect(in_addr_t IP, in_port_t Port, time_t TimeOut) override;
     ITCPSocket * Accept() override;
 

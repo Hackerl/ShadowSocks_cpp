@@ -23,9 +23,9 @@ public:
 class ITCPSocket : public IIOSocket
 {
 public:
-    virtual bool Bind(std::string IP, ushort Port) = 0;
+    virtual bool Bind(std::string IP, u_short Port) = 0;
     virtual bool Listen(int backlog = 255) = 0;
-    virtual bool Connect(std::string IP, ushort Port, time_t TimeOut = 2) = 0;
+    virtual bool Connect(std::string IP, u_short Port, time_t TimeOut = 2) = 0;
     virtual bool Connect(in_addr_t IP, in_port_t Port, time_t TimeOut = 2) = 0;
     virtual ITCPSocket * Accept() = 0;
 };
@@ -33,7 +33,7 @@ public:
 class IUDPSocket : public IIOSocket
 {
 public:
-    virtual bool Bind(std::string IP, ushort Port) = 0;
+    virtual bool Bind(std::string IP, u_short Port) = 0;
 };
 
 class ISocketCallback : public Interface

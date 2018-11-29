@@ -30,7 +30,7 @@ public:
         m_IsValid = true;
     }
 
-    bool Connect(ITCPSocket * Socket, std::string IP, ushort Port)
+    bool Connect(ITCPSocket * Socket, std::string IP, u_short Port)
     {
         if (!m_IsValid)
             return false;
