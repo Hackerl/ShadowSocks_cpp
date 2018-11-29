@@ -23,6 +23,7 @@ public:
     bool NodeInit(std::shared_ptr<INodeManager> NodeManager) override
     {
         m_NodeManager = NodeManager;
+        return true;
     }
 
     void NodeClose() override
@@ -83,6 +84,8 @@ public:
             return false;
 
         m_NodeManager->RegisterEvent(EventID, Node);
+
+        return true;
     }
 
     bool BroadcastEvent(NodeEventRegister EventID, void * Context, INodeEvent * Publisher = nullptr)
@@ -91,6 +94,8 @@ public:
             return false;
 
         m_NodeManager->BroadcastEvent(EventID, Context, Publisher);
+
+        return true;
     }
 
     bool RegisterService(NodeServiceRegister ServiceID, INodeService * Node)
