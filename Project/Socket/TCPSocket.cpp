@@ -138,7 +138,7 @@ ITCPSocket * CTCPSocket::Accept()
         return nullptr;
 
     sockaddr_in Address = {};
-    socklen_t AddressLen = 0;
+    socklen_t AddressLen = sizeof(Address);
 
     int fd = accept(m_Socket, (sockaddr *)&Address, &AddressLen);
 
