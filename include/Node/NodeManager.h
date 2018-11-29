@@ -63,6 +63,8 @@ public:
     {
         //TODO Check Service Exist
         m_NodeServiceList.insert(std::make_pair(ServiceID, Node));
+
+        return true;
     }
 
     bool InvokeService(NodeServiceRegister ServiceID, void *Context) override
@@ -85,6 +87,8 @@ public:
         {
             Node->NodeClose();
         }
+
+        return true;
     }
 
 public:
