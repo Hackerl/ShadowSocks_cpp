@@ -57,7 +57,7 @@ bool CShadowSocks::SetConfig(Json::Value & Config)
 
 void CShadowSocks::OnRead(int fd, short Event)
 {
-    std::shared_ptr<CCNodeManager> NodeMgr(new CCNodeManager);
+    auto NodeMgr = new CCNodeManager;
 
     ITCPSocket * Local = m_Socket->Accept();
 
