@@ -26,7 +26,7 @@ public:
     virtual bool DataOut(const void *Buffer, size_t Length);
 
 public:
-    bool NodeInit(std::shared_ptr<INodeManager> NodeManager) override;
+    bool NodeInit(INodeManager * NodeManager) override;
     void OnNodeEvent(NodeEventRegister EventID, void *Context) override;
     void NodeClose() override;
 

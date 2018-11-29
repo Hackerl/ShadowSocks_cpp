@@ -17,7 +17,7 @@ struct CNodeEventInfo
     INodeEvent * Node;
 };
 
-class CCNodeManager : public INodeManager, public INodeService, public std::enable_shared_from_this<CCNodeManager>
+class CCNodeManager : public INodeManager, public INodeService
 {
 public:
     CCNodeManager()
@@ -28,9 +28,6 @@ public:
 public:
     ~CCNodeManager()
     {
-        for (auto const & Node : m_NodeList)
-            delete Node;
-
         m_NodeList.clear();
         m_NodeEventList.clear();
         m_NodeServiceList.clear();
@@ -86,7 +83,11 @@ public:
         for (auto const & Node : m_NodeList)
         {
             Node->NodeClose();
+            delete Node;
         }
+
+        //Delete This Ptr
+        delete this;
 
         return true;
     }
@@ -96,7 +97,7 @@ public:
     {
         m_NodeList.push_back(Node);
 
-        Node->NodeInit(shared_from_this());
+        Node->NodeInit(this);
     }
 
     void AddNode(Interface * I)
@@ -107,7 +108,7 @@ public:
         {
             m_NodeList.push_back(Node);
 
-            Node->NodeInit(shared_from_this());
+            Node->NodeInit(this);
         }
     }
 

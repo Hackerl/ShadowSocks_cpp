@@ -29,7 +29,7 @@ public:
     CSocketConnector();
 
 public:
-    bool NodeInit(std::shared_ptr<INodeManager> NodeManager) override;
+    bool NodeInit(INodeManager *NodeManager) override;
 
 public:
     bool OnNodeService(NodeServiceRegister ServiceID, void *Context) override;
