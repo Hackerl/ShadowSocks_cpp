@@ -5,7 +5,7 @@
 #ifndef SHADOWSOCKSR_CPP_SOCKS5PROTOCOL_H
 #define SHADOWSOCKSR_CPP_SOCKS5PROTOCOL_H
 
-#include "cstdint"
+#include <cstdint>
 #include <netinet/in.h>
 
 #define SOCKS5_VERSION 0x5
