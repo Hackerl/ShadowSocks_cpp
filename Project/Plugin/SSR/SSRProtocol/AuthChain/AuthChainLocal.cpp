@@ -43,8 +43,7 @@ CAuthHeader CAuthChainLocal::PackAuthData()
     g_AuthChainSession->SetConnectionID(ConnectionID + 1);
     g_AuthChainSession->UnLockSession();
 
-    //TODO Remuse overhead GetOverHead()
-    AuthHeader.ClientInfo.SetInfo(ClientID, ConnectionID, 4);
+    AuthHeader.ClientInfo.SetInfo(ClientID, ConnectionID, m_OverHead);
 
     AuthHeader.UserID = m_UserID ^ * (u_int *)(m_LastClientHash + 8);
 
