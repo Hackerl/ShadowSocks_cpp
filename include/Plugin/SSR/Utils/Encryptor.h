@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <cstring>
+#include <cstdint>
 #include <openssl/md5.h>
 #include <openssl/evp.h>
 
