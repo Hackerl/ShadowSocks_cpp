@@ -14,6 +14,7 @@ script:
   - cmake . -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
   - make -j$(nproc)
   - mkdir -p appdir/usr/bin/ ; cp -r bin/* appdir/usr/bin/
+  - echo '{"http_simple":"plugin/SSR/libHTTPSimple.so","auth_chain_a":"plugin/SSR/libAuthChain.so","tls1.2_ticket_auth":"plugin/SSR/libTLSTicketAuth.so"}' > appdir/usr/bin/Protocol.json
   - mkdir -p appdir/usr/share/applications/ ; cp shadowsocksr.desktop appdir/usr/share/applications/
   - mkdir -p appdir/usr/share/icons/hicolor/512x512/apps/ ; wget -c "https://github.com/shadowsocks/shadowsocks-qt5/blob/0e600008bc03687aafd0ff919632ce208180e25b/src/icons/shadowsocks-qt5.png?raw=true" -O appdir/usr/share/icons/hicolor/512x512/apps/shadowsocksr.png # FIXME 请把图标放在这里
   - find appdir/
