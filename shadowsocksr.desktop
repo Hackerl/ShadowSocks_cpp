@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=ShadowSocksr
+GenericName=ShadowSocks Client
+GenericName[zh_CN]=影梭客户端
+Exec=ShadowSocksr
+Icon=shadowsocksr
+Terminal=true
+Type=Application
+Categories=Network;
+Keywords=ss;socks;shadowsocks;

@@ -1,0 +1,49 @@
+language: cpp
+compiler: gcc
+sudo: require
+dist: trusty
+
+before_install:
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo apt-get update -qq
+
+install:
+  - sudo apt-get -y install g++-4.9 cmake pkg-config libgoogle-glog-dev libssl-dev libevent-dev libjsoncpp-dev
+
+script:
+  - cmake . -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
+  - make -j$(nproc)
+  - mkdir -p appdir/usr/bin/ ; cp -r bin/* appdir/usr/bin/
+  - echo '{"http_simple":"plugin/SSR/libHTTPSimple.so","auth_chain_a":"plugin/SSR/libAuthChain.so","tls1.2_ticket_auth":"plugin/SSR/libTLSTicketAuth.so"}' > appdir/usr/bin/Protocol.json
+  - mkdir -p appdir/usr/share/applications/ ; cp shadowsocksr.desktop appdir/usr/share/applications/
+  - mkdir -p appdir/usr/share/icons/hicolor/512x512/apps/ ; wget -c "https://github.com/shadowsocks/shadowsocks-qt5/blob/0e600008bc03687aafd0ff919632ce208180e25b/src/icons/shadowsocks-qt5.png?raw=true" -O appdir/usr/share/icons/hicolor/512x512/apps/shadowsocksr.png # FIXME 请把图标放在这里
+  - find appdir/
+  - wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
+  - chmod a+x linuxdeployqt-continuous-x86_64.AppImage
+  - unset QTDIR; unset QT_PLUGIN_PATH ; unset LD_LIBRARY_PATH
+  - export VERSION=$(git rev-parse --short HEAD) # linuxdeployqt uses this for naming the file
+  - |
+    ./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -verbose=2 -appimage \
+    -executable=libEventLoop.so \
+    -executable=libSocketNode.so \
+    -executable=libSocket.so \
+    -executable=plugin/libPortTunnel.so \
+    -executable=plugin/libSocketConnector.so \
+    -executable=plugin/libSocksClient.so \
+    -executable=plugin/libSocksServer.so \
+    -executable=plugin/libSSRLocal.so \
+    -executable=plugin/ \
+    -executable=plugin/SSR/libAuthChain.so \
+    -executable=plugin/SSR/libHTTPSimple.so \
+    -executable=plugin/SSR/libTLSTicketAuth.so 
+    
+after_success:
+  - find appdir -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq
+  - # curl --upload-file ShadowSocksr*.AppImage https://transfer.sh/ShadowSocksr-git.$(git rev-parse --short HEAD)-x86_64.AppImage
+  - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
+  - bash upload.sh ShadowSocksr*.AppImage*
+  
+branches:
+  except:
+    - # Do not build tags that we create when we upload to GitHub Releases
+    - /^(?i:continuous)/

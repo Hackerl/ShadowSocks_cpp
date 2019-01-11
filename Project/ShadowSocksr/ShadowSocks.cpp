@@ -33,13 +33,19 @@ bool CShadowSocks::SetConfig(Json::Value & Config)
     u_int Port = g_JSON->GetUInt(Config, "Port");
 
     if (Server.empty() || Port == 0)
+    {
+        LOG(ERROR) << "Server Config Invalid";
         return false;
+    }
 
     m_Config.IP = Server;
     m_Config.Port = u_short(Port);
 
     if (!g_JSON->HasArray(Config, "Plugins"))
+    {
+        LOG(ERROR) << "Plugins Config Invalid";
         return false;
+    }
 
     Json::Value Plugins = Config["Plugins"];
 

@@ -13,7 +13,7 @@ pkg_check_modules(LIBEVENT REQUIRED libevent)
 pkg_check_modules(OPENSSL REQUIRED openssl)
 
 include_directories(${PROJECT_SOURCE_DIR}/include ${JSONCPP_INCLUDE_DIRS})
-link_directories(${PROJECT_SOURCE_DIR}/lib ${PROJECT_SOURCE_DIR}/bin)
+link_directories(${PROJECT_SOURCE_DIR}/bin)
 
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
