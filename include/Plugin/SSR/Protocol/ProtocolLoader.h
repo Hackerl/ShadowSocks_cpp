@@ -47,16 +47,17 @@ public:
             LOG(ERROR) << "Cant Not Open Protocol Config File";
         }
 
-        Json::Value jv;
-        Json::Reader jr;
+        Json::Value Config;
+        Json::CharReaderBuilder Builder;
+        std::string Error;
 
-        if (!jr.parse(ConfigFile, jv))
+        if (!Json::parseFromStream(Builder, ConfigFile, &Config, &Error))
         {
-            LOG(ERROR) << "Cant Not Parse Protocol Config File";
+            LOG(ERROR) << "Cant Not Parse Protocol Config File: " << Error;
             return;
         }
 
-        m_ProtocolConfig = jv;
+        m_ProtocolConfig = Config;
     }
 
 public:
