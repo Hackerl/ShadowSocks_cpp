@@ -11,26 +11,26 @@ void SetWorkPath()
     chdir(dirname(ExePath));
 }
 
-Json::Value ReadConfig(const char * Path)
+bool ReadConfig(const char * Path, Json::Value& Config)
 {
-    Json::Value Config;
-
     std::ifstream ConfigFile(Path);
 
     if (!ConfigFile.is_open())
     {
         LOG(ERROR) << "Cant Not Open Config File: " << Path;
-        return Config;
+        return false;
     }
 
-    Json::Reader jr;
+    Json::CharReaderBuilder Builder;
+    std::string Error;
 
-    if (!jr.parse(ConfigFile, Config))
+    if (!Json::parseFromStream(Builder, ConfigFile, &Config, &Error))
     {
-        LOG(ERROR) << "Cant Not Parse Config File";
+        LOG(ERROR) << "Cant Not Parse Config File: " << Error;
+        return false;
     }
 
-    return Config;
+    return true;
 }
 
 int main(int argc, char ** argv)
@@ -46,7 +46,13 @@ int main(int argc, char ** argv)
     CmdParser.parse_check(argc, argv);
 
     std::string Path = CmdParser.get<std::string>("config");
-    Json::Value Config = ReadConfig(Path.c_str());
+    Json::Value Config;
+
+    if (!ReadConfig(Path.c_str(), Config))
+    {
+        LOG(ERROR) << "ReadConfig Failed";
+        return 0;
+    }
 
     CShadowSocks ShadowSocks;
 
