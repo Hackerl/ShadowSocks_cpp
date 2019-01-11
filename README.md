@@ -1,7 +1,8 @@
 # ShadowSocks_cpp
 ## 编译
 ```shell=
-sudo apt install cmake pkg-config libgoogle-glog-dev libssl-dev libevent-dev libjsoncpp-dev
+apt: sudo apt install cmake pkg-config libgoogle-glog-dev libssl-dev libevent-dev libjsoncpp-dev
+pacman: sudo pacman -S cmake pkgconf google-glog openssl libevent jsoncpp
 ```
 ```shell=
 git clone https://github.com/Hackerl/ShadowSocks_cpp
