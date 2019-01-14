@@ -58,7 +58,9 @@ public:
 public:
     bool RegisterService(NodeServiceRegister ServiceID, INodeService *Node) override
     {
-        //TODO Check Service Exist
+        if (m_NodeServiceList.find(ServiceID) != m_NodeServiceList.end())
+            return false;
+
         m_NodeServiceList.insert(std::make_pair(ServiceID, Node));
 
         return true;
