@@ -167,6 +167,7 @@ bool CSocketNode::NodeInit(INodeManager *NodeManager)
 {
     CNode::NodeInit(NodeManager);
 
+    RegisterEvent(PIPE_NODE_BLOCK, this);
     RegisterEvent(PIPE_STREAM_BLOCK, this);
     RegisterEvent(PIPE_STREAM_FLOW, this);
 
