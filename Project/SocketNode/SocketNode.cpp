@@ -89,6 +89,8 @@ bool CSocketNode::DataOut(const void *Buffer, size_t Length)
         LOG(INFO) << "fd: " << m_Socket->GetSocket() << " Write Buffer Inset Size: " << Length - std::max(WriteLen, 0L);
 
         m_WriteBuffer.insert(m_WriteBuffer.end(), (u_char *)Buffer + std::max(WriteLen, 0L), (u_char *)Buffer + Length);
+
+        BroadcastEvent(PIPE_NODE_BLOCK, this);
     }
 
     return true;
@@ -184,6 +186,7 @@ void CSocketNode::OnNodeEvent(NodeEventRegister EventID, void *Context)
 
         switch (EventID)
         {
+            case PIPE_NODE_BLOCK:
             case PIPE_STREAM_BLOCK:
                 m_Loop->SetEvent(m_Socket->GetSocket(), m_Mode | short(EV_WRITE | EV_TIMEOUT), 20);
                 break;
