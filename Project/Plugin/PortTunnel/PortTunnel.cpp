@@ -3,6 +3,7 @@
 //
 
 #include "PortTunnel.h"
+#include <Plugin/CommonProxy/CommonProtocol.h>
 
 CPortTunnel::CPortTunnel() : m_Config()
 {
@@ -41,18 +42,16 @@ bool CPortTunnel::OnUpStream(const void *Buffer, size_t Length)
     {
         m_HasInit = true;
 
-        ITCPSocket * Socket = NewTCPSocket();
+        CConnectRequest ConnectRequest = {};
 
-        if (!Socket->Connect(m_Config.TargetIP, m_Config.TargetPort))
-        {
-            Socket->Close();
+        ConnectRequest.SocketAddress.Header.AddressType = IPv4Type;
+        ConnectRequest.SocketAddress.Header.SocketType = TCPSocketType;
 
-            delete Socket;
+        ConnectRequest.SocketAddress.Address = m_Config.TargetIP;
+        ConnectRequest.SocketAddress.Port = m_Config.TargetPort;
 
+        if (!InvokeService(REQUEST_SOCKET_CONNECT, &ConnectRequest) || InvokeService(INIT_REMOTE_SOCKET, ConnectRequest.Result))
             return false;
-        }
-
-        InvokeService(INIT_REMOTE_SOCKET, Socket);
     }
 
     return UpStream(Buffer, Length);
