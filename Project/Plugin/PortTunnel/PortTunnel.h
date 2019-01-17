@@ -7,9 +7,6 @@
 
 #include <Plugin/IPlugin.h>
 #include <Node/Node.h>
-#include <Node/NodeServiceDef.h>
-#include <Common/JSONHelper.h>
-#include <Socket/LibSocketExport.h>
 
 struct CTunnelConfig
 {

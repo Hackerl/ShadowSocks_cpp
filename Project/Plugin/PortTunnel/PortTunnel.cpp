@@ -4,6 +4,8 @@
 
 #include "PortTunnel.h"
 #include <Plugin/CommonProxy/CommonProtocol.h>
+#include <Node/NodeServiceDef.h>
+#include <Common/JSONHelper.h>
 
 CPortTunnel::CPortTunnel() : m_Config()
 {
