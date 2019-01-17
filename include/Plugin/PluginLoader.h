@@ -15,7 +15,7 @@ struct CPluginInfo
 {
     void * DLHandle;
     FUNC_PluginBuilder PluginBuilder;
-    Json::Value PluginConfig;
+    std::string PluginConfig;
 };
 
 class CPluginLoader
@@ -54,11 +54,12 @@ public:
             return;
         }
 
+        Json::FastWriter Writer;
         CPluginInfo PluginInfo = {};
 
         PluginInfo.DLHandle = DLHandle;
         PluginInfo.PluginBuilder = PluginBuilder;
-        PluginInfo.PluginConfig = Config;
+        PluginInfo.PluginConfig = Writer.write(Config);
 
         m_ProtocolInfoMap.insert(std::make_pair(Name, PluginInfo));
     }
@@ -80,7 +81,7 @@ public:
             return nullptr;
         }
 
-        if (!Plugin->SetConfig(PluginInfo.PluginConfig))
+        if (!Plugin->InitPlugin(PluginInfo.PluginConfig.data(), PluginInfo.PluginConfig.size()))
         {
             delete Plugin;
 

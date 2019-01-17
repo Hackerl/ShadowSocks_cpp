@@ -26,8 +26,14 @@ CSSRLocal::~CSSRLocal()
     m_ProtocolList.clear();
 }
 
-bool CSSRLocal::SetConfig(const Json::Value &Config)
+bool CSSRLocal::InitPlugin(const void *Context, size_t Size)
 {
+    Json::Value Config;
+    std::string Error;
+
+    if (!ParseJsonFromData((const char *)Context, Size, Config, Error))
+        return false;
+
     std::string Server = g_JSON->GetString(Config, "Server");
     u_int Port = g_JSON->GetUInt(Config, "Port");
 

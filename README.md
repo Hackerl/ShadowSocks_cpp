@@ -107,7 +107,7 @@ Socks5等代理服务也是在与客户端握手之后，客户端发送目的IP
 class IPlugin : public Interface
 {
 public:
-    virtual bool SetConfig(const Json::Value &Config) = 0;
+    virtual bool InitPlugin(const Json::Value &Config) = 0;
 };
 ```
 插件借鉴了COM接口思想，纯虚函数表作为接口，然后每个动态库通过导出函数创建一个实例。

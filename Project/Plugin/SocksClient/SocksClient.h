@@ -21,7 +21,7 @@ public:
     CSocks5Proxy();
 
 public:
-    bool SetConfig(const Json::Value &Config) override;
+    bool InitPlugin(const void *Context, size_t Size) override;
 
 public:
     bool OnUpStream(const void *Buffer, size_t Length) override;

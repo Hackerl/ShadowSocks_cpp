@@ -102,4 +102,16 @@ public:
     }
 };
 
+inline bool ParseJsonFromData(const char * Data, size_t Size, Json::Value& Root, std::string& Error)
+{
+    Json::CharReaderBuilder Builder;
+    Json::CharReader * Reader = Builder.newCharReader();
+
+    bool res = Reader->parse(Data, Data + Size, &Root, &Error);
+
+    delete Reader;
+
+    return res;
+}
+
 #endif //SHADOWSOCKSR_CPP_JSONHELPER_H

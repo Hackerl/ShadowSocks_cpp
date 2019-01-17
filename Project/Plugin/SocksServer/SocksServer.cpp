@@ -13,7 +13,7 @@ CProxyServer::CProxyServer()
     m_HasInit = false;
 }
 
-bool CProxyServer::SetConfig(const Json::Value &Config)
+bool CProxyServer::InitPlugin(const void *Context, size_t Size)
 {
     return true;
 }

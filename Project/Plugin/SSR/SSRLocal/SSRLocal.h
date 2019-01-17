@@ -22,7 +22,7 @@ public:
     ~CSSRLocal();
 
 public:
-    bool SetConfig(const Json::Value & Config) override;
+    bool InitPlugin(const void *Context, size_t Size) override;
 
 public:
     std::vector<u_char> ClientProtocolPack(const u_char * Buffer, size_t Length);
