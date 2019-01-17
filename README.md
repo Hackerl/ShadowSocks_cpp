@@ -107,7 +107,7 @@ Socks5等代理服务也是在与客户端握手之后，客户端发送目的IP
 class IPlugin : public Interface
 {
 public:
-    virtual bool InitPlugin(const Json::Value &Config) = 0;
+    virtual bool InitPlugin(const void Context, size_t Size) = 0;
 };
 ```
 插件借鉴了COM接口思想，纯虚函数表作为接口，然后每个动态库通过导出函数创建一个实例。
@@ -123,7 +123,7 @@ extern "C" IPlugin * NewPlugin()
 {
 	"Server" : "127.0.0.1",
 	"Port" : 1081,
-	"Plugins": 
+	"Nodes":
 	[
 		{
 			"Name" : "plugin/libPortTunnel.so",
@@ -132,11 +132,14 @@ extern "C" IPlugin * NewPlugin()
 				"TargetIP" : "127.0.0.1",
 				"TargetPort" : 2222
 			}
-		},
-		{
-			"Name" : "plugin/libSocketConnector.so"
 		}
-	]
+	],
+	"Services":
+        [
+            {
+                "Name" : "plugin/libSocketConnector.so",
+            }
+        ]
 }
 ```
 ### libSocketConnector
@@ -147,7 +150,7 @@ libSocketConnector还可以设置代理，现在只实现了HTTPTunnel代理。�
 {
 	"Server" : "127.0.0.1",
 	"Port" : 1081,
-	"Plugins": 
+	"Nodes":
 	[
 		{
 			"Name" : "plugin/libPortTunnel.so",
@@ -156,17 +159,20 @@ libSocketConnector还可以设置代理，现在只实现了HTTPTunnel代理。�
 				"TargetIP" : "www.baidu.com",
 				"TargetPort" : 80
 			}
-		},
-		{
-			"Name" : "plugin/libSocketConnector.so",
-			"Config" : 
-			{
-				"ProxyType" : "HTTPTunnel",
-				"ProxyServer" : "127.0.0.1",
-				"ProxyPort" : 8080
-			}
 		}
-	]
+	],
+    "Services":
+    [
+        {
+            "Name" : "plugin/libSocketConnector.so",
+            "Config" :
+            {
+                "ProxyType" : "HTTPTunnel",
+                "ProxyServer" : "127.0.0.1",
+                "ProxyPort" : 12759
+            }
+        }
+    ]
 }
 ```
 ## SSR
@@ -225,7 +231,7 @@ libSocketConnector可以设置代理，用于网络受限的情况。
 {
 	"Server" : "127.0.0.1",
 	"Port" : 1081,
-	"Plugins": 
+	"Nodes":
 	[
 		{
 			"Name" : "plugin/libPortTunnel.so",
@@ -234,11 +240,14 @@ libSocketConnector可以设置代理，用于网络受限的情况。
 				"TargetIP" : "www.baidu.com",
 				"TargetPort" : 80
 			}
-		},
-		{
-			"Name" : "plugin/libSocketConnector.so"
 		}
-	]
+	],
+    "Services":
+    [
+        {
+            "Name" : "plugin/libSocketConnector.so",
+        }
+    ]
 }
 ```
 ### 本地Socks5代理
@@ -246,18 +255,21 @@ libSocketConnector可以设置代理，用于网络受限的情况。
 {
 	"Server" : "127.0.0.1",
 	"Port" : 1081,
-	"Plugins": 
+	"Nodes":
 	[
 		{
 			"Name" : "plugin/libSocksClient.so"
 		},
 		{
 			"Name" : "plugin/libSocksServer.so"
-		},
-		{
-			"Name" : "plugin/libSocketConnector.so"
 		}
-	]
+	],
+    "Services":
+    [
+        {
+            "Name" : "plugin/libSocketConnector.so",
+        }
+    ]
 }
 ```
 ### SSR客户端
@@ -265,7 +277,7 @@ libSocketConnector可以设置代理，用于网络受限的情况。
 {
     "Server" : "127.0.0.1",
     "Port" : 1080,
-    "Plugins": 
+    "Nodes":
     [
         {
             "Name" : "plugin/libSocksClient.so"
@@ -279,9 +291,12 @@ libSocketConnector可以设置代理，用于网络受限的情况。
                 "PassWord" : "123456",
                 "Protocols" : ["auth_chain_a", "tls1.2_ticket_auth"]
             }
-        },
+        }
+    ]
+    "Services":
+    [
         {
-            "Name" : "plugin/libSocketConnector.so"
+            "Name" : "plugin/libSocketConnector.so",
         }
     ]
 }
