@@ -50,7 +50,7 @@ bool CPortTunnel::OnUpStream(const void *Buffer, size_t Length)
         ConnectRequest.SocketAddress.Address = m_Config.TargetIP;
         ConnectRequest.SocketAddress.Port = m_Config.TargetPort;
 
-        if (!InvokeService(REQUEST_SOCKET_CONNECT, &ConnectRequest) || InvokeService(INIT_REMOTE_SOCKET, ConnectRequest.Result))
+        if (!InvokeService(REQUEST_SOCKET_CONNECT, &ConnectRequest) || !InvokeService(INIT_REMOTE_SOCKET, ConnectRequest.Result))
             return false;
     }
 
