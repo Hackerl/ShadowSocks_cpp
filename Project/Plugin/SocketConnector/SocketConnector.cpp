@@ -3,7 +3,6 @@
 //
 
 #include "SocketConnector.h"
-#include <Socket/LibSocketExport.h>
 #include <Common/JSONHelper.h>
 #include <Node/NodeServiceDef.h>
 #include <Socket/HTTPTunnel.h>
@@ -43,44 +42,40 @@ bool CSocketConnector::InitPlugin(const void *Context, size_t Size)
 
 bool CSocketConnector::OnInitManager(INodeManager *NodeManager)
 {
-    CNode::OnInitManager(NodeManager);
-
-    return RegisterService(REQUEST_SOCKET_CONNECT, this);
+    return NodeManager->RegisterService(REQUEST_SOCKET_CONNECT, this);
 }
 
 bool CSocketConnector::OnNodeService(NodeServiceRegister ServiceID, void *Context)
 {
-    //TODO parse target ip and port, connect with proxy config, init remote socket node
-
     if (ServiceID != REQUEST_SOCKET_CONNECT)
         return false;
 
-    auto ConnectInfo = static_cast<CConnectRequest *>(Context);
+    auto ConnectRequest = static_cast<CConnectRequest *>(Context);
 
     bool Res = false;
 
     switch (m_Config.ProxyType)
     {
         case NOProxyType:
-            Res = NoProxyHandler(ConnectInfo);
+            Res = NoProxyHandler(ConnectRequest);
             break;
 
         case HTTPTunnelType:
-            Res = HTTPTunnelHandler(ConnectInfo);
+            Res = HTTPTunnelHandler(ConnectRequest);
             break;
     }
 
     return Res;
 }
 
-bool CSocketConnector::NoProxyHandler(CConnectRequest * ConnectInfo)
+bool CSocketConnector::NoProxyHandler(CConnectRequest *ConnectRequest)
 {
-    if (ConnectInfo->Header.AddressType != IPv4Type || ConnectInfo->Header.SocketType != TCPSocketType)
+    if (ConnectRequest->SocketAddress.Header.AddressType != IPv4Type || ConnectRequest->SocketAddress.Header.SocketType != TCPSocketType)
         return false;
 
     ITCPSocket * Socket = NewTCPSocket();
 
-    if (!Socket->Connect(ConnectInfo->Address, ConnectInfo->Port))
+    if (!Socket->Connect(ConnectRequest->SocketAddress.Address, ConnectRequest->SocketAddress.Port))
     {
         Socket->Close();
         delete Socket;
@@ -88,10 +83,12 @@ bool CSocketConnector::NoProxyHandler(CConnectRequest * ConnectInfo)
         return false;
     }
 
-    return InvokeService(INIT_REMOTE_SOCKET, Socket);
+    ConnectRequest->Result = Socket;
+
+    return true;
 }
 
-bool CSocketConnector::HTTPTunnelHandler(CConnectRequest * ConnectInfo)
+bool CSocketConnector::HTTPTunnelHandler(CConnectRequest *ConnectRequest)
 {
     ITCPSocket * Socket = NewTCPSocket();
 
@@ -99,7 +96,7 @@ bool CSocketConnector::HTTPTunnelHandler(CConnectRequest * ConnectInfo)
 
     HTTPTunnel.SetProxy(m_Config.ProxyServer, m_Config.ProxyPort);
 
-    if (!HTTPTunnel.Connect(Socket, ConnectInfo->Address, ConnectInfo->Port))
+    if (!HTTPTunnel.Connect(Socket, ConnectRequest->SocketAddress.Address, ConnectRequest->SocketAddress.Port))
     {
         Socket->Close();
         delete Socket;
@@ -107,5 +104,7 @@ bool CSocketConnector::HTTPTunnelHandler(CConnectRequest * ConnectInfo)
         return false;
     }
 
-    return InvokeService(INIT_REMOTE_SOCKET, Socket);
+    ConnectRequest->Result = Socket;
+
+    return true;
 }

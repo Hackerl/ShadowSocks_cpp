@@ -27,8 +27,7 @@ enum CCommonAddressType
     UnknownType
 };
 
-#pragma pack(push, 1)
-struct CConnectRequest
+struct CCommonSocketAddress
 {
     struct
     {
@@ -39,11 +38,16 @@ struct CConnectRequest
     std::string Address;
     u_short Port;
 };
-#pragma pack(pop)
 
-inline CConnectRequest ParseSocks5Address(Socks5_Connect_Request * Request, size_t Length)
+struct CConnectRequest
 {
-    CConnectRequest ProxyRequest = {};
+    CCommonSocketAddress SocketAddress;
+    void * Result;
+};
+
+inline CCommonSocketAddress ParseSocks5Address(Socks5_Connect_Request * Request, size_t Length)
+{
+    CCommonSocketAddress ProxyRequest = {};
 
     ProxyRequest.Header.SocketType = TCPSocketType;
     ProxyRequest.Header.AddressType = UnknownType;

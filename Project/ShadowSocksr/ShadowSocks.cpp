@@ -25,6 +25,11 @@ CShadowSocks::~CShadowSocks()
 
     delete m_Socket;
     m_Socket = nullptr;
+
+    for (auto const & Service : m_ServiceList)
+        delete Service;
+
+    m_ServiceList.clear();
 }
 
 bool CShadowSocks::SetConfig(Json::Value & Config)
@@ -41,21 +46,40 @@ bool CShadowSocks::SetConfig(Json::Value & Config)
     m_Config.IP = Server;
     m_Config.Port = u_short(Port);
 
-    if (!g_JSON->HasArray(Config, "Plugins"))
+    if (!g_JSON->HasArray(Config, "Nodes"))
     {
         LOG(ERROR) << "Plugins Config Invalid";
         return false;
     }
 
-    Json::Value Plugins = Config["Plugins"];
+    Json::Value Nodes = Config["Nodes"];
 
-    for (auto const & Plugin : Plugins)
+    for (auto const & Node : Nodes)
     {
-        std::string Name = g_JSON->GetString(Plugin, "Name");
+        std::string Name = g_JSON->GetString(Node, "Name");
 
-        g_PluginLoader->Add(Name.c_str(), Plugin["Config"]);
+        g_PluginLoader->Add(Name.c_str(), Node["Config"]);
 
-        m_PluginNameList.push_back(Name);
+        m_NodeNameList.push_back(Name);
+    }
+
+    Json::Value Services = Config["Services"];
+
+    for (auto const & Service : Services)
+    {
+        std::string Name = g_JSON->GetString(Service, "Name");
+
+        g_PluginLoader->Add(Name.c_str(), Service["Config"]);
+
+        IPlugin * Plugin = g_PluginLoader->Builder(Name.c_str());
+
+        if (!Plugin)
+        {
+            LOG(ERROR) << "Build Plugin Failed";
+            continue;
+        }
+
+        m_ServiceList.push_back(Plugin);
     }
 
     return true;
@@ -72,7 +96,7 @@ void CShadowSocks::OnRead(int fd, short Event)
 
     NodeMgr->AddNode(LocalNode);
 
-    for (auto const & PluginName : m_PluginNameList)
+    for (auto const & PluginName : m_NodeNameList)
     {
         IPlugin * Plugin = g_PluginLoader->Builder(PluginName.c_str());
 
@@ -84,6 +108,9 @@ void CShadowSocks::OnRead(int fd, short Event)
 
         NodeMgr->AddNode(Plugin);
     }
+
+    for (auto const & Service : m_ServiceList)
+        NodeMgr->AddService(Service);
 
     ISocketNode * RemoteNode = NewRemoteSocketNode();
     RemoteNode->SocketNodeInit(m_EventLoop);

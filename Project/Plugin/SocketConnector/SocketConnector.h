@@ -8,6 +8,7 @@
 #include <Node/Node.h>
 #include <Plugin/IPlugin.h>
 #include <Plugin/CommonProxy/CommonProtocol.h>
+#include <Socket/LibSocketExport.h>
 
 enum CSocketProxyType
 {
@@ -23,7 +24,7 @@ struct CConnectorConfig
     u_short ProxyPort;
 };
 
-class CSocketConnector : public IPlugin, public CNode, public INodeServiceCallback
+class CSocketConnector : public IPlugin, public INodeManagerRegister, public INodeServiceCallback
 {
 public:
     CSocketConnector();
@@ -38,8 +39,8 @@ public:
     bool InitPlugin(const void *Context, size_t Size) override;
 
 public:
-    bool NoProxyHandler(CConnectRequest * ConnectInfo);
-    bool HTTPTunnelHandler(CConnectRequest * ConnectInfo);
+    bool NoProxyHandler(CConnectRequest *ConnectRequest);
+    bool HTTPTunnelHandler(CConnectRequest *ConnectRequest);
 
 private:
     CConnectorConfig m_Config;

@@ -33,14 +33,17 @@ bool CProxyServer::SocksProxyHandler(Socks5_Connect_Request * Request, size_t Le
     if (Length < sizeof(Request->Header))
         return false;
 
-    CConnectRequest ProxyRequest = ParseSocks5Address(Request, Length);
+    CCommonSocketAddress SocketAddress = ParseSocks5Address(Request, Length);
 
-    if (ProxyRequest.Header.AddressType == UnknownType)
+    if (SocketAddress.Header.AddressType == UnknownType)
         return false;
 
+    CConnectRequest ConnectRequest = {};
     Socks5_Connect_Response Response = {};
 
-    if (InvokeService(REQUEST_SOCKET_CONNECT ,&ProxyRequest))
+    ConnectRequest.SocketAddress = SocketAddress;
+
+    if (InvokeService(REQUEST_SOCKET_CONNECT, &ConnectRequest) && InvokeService(INIT_REMOTE_SOCKET, ConnectRequest.Result))
         Response.Header.Response = uint8_t(0x00);
 
     return DownStream(&Response, sizeof(Socks5_Connect_Response));

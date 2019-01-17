@@ -123,13 +123,16 @@ bool CSSRLocal::OnUpStream(const void *Buffer, size_t Length)
 
         CConnectRequest ConnectRequest = {};
 
-        ConnectRequest.Header.AddressType = IPv4Type;
-        ConnectRequest.Header.SocketType = TCPSocketType;
+        ConnectRequest.SocketAddress.Header.AddressType = IPv4Type;
+        ConnectRequest.SocketAddress.Header.SocketType = TCPSocketType;
 
-        ConnectRequest.Address = m_Config.Server;
-        ConnectRequest.Port = m_Config.ServerPort;
+        ConnectRequest.SocketAddress.Address = m_Config.Server;
+        ConnectRequest.SocketAddress.Port = m_Config.ServerPort;
 
         if (!InvokeService(REQUEST_SOCKET_CONNECT, &ConnectRequest))
+            return false;
+
+        if (!InvokeService(INIT_REMOTE_SOCKET, ConnectRequest.Result))
             return false;
 
         Socks5_Connect_Response Response = {};
