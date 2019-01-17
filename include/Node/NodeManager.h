@@ -7,17 +7,17 @@
 
 #include "INode.h"
 #include "INodeManager.h"
-#include "NodeService.h"
+#include "NodeServiceDef.h"
 #include <vector>
 #include <map>
 
 struct CNodeEventInfo
 {
     unsigned int EventID;
-    INodeEvent * Node;
+    INodeEventCallback * Node;
 };
 
-class CCNodeManager : public INodeManager, public INodeService
+class CCNodeManager : public INodeManager, public INodeServiceCallback
 {
 public:
     CCNodeManager()
@@ -34,7 +34,7 @@ public:
     }
 
 public:
-    void RegisterEvent(NodeEventRegister EventID, INodeEvent *Node) override
+    void RegisterEvent(NodeEventRegister EventID, INodeEventCallback *Node) override
     {
         CNodeEventInfo NodeEventInfo = {};
 
@@ -44,7 +44,7 @@ public:
         m_NodeEventList.push_back(NodeEventInfo);
     }
 
-    void BroadcastEvent(NodeEventRegister EventID, void *Context, INodeEvent *Publisher) override
+    void BroadcastEvent(NodeEventRegister EventID, void *Context, INodeEventCallback *Publisher) override
     {
         for (auto const & Iterator : m_NodeEventList)
         {
@@ -56,7 +56,7 @@ public:
     }
 
 public:
-    bool RegisterService(NodeServiceRegister ServiceID, INodeService *Node) override
+    bool RegisterService(NodeServiceRegister ServiceID, INodeServiceCallback *Node) override
     {
         if (m_NodeServiceList.find(ServiceID) != m_NodeServiceList.end())
             return false;
@@ -95,11 +95,25 @@ public:
     }
 
 public:
+    void AddService(INodeManagerRegister * Service)
+    {
+        Service->OnInitManager(this);
+    }
+
+    void AddService(Interface * I)
+    {
+        auto Service = dynamic_cast<INodeManagerRegister *>(I);
+
+        if (Service != nullptr)
+            Service->OnInitManager(this);
+    }
+
+public:
     void AddNode(INode * Node)
     {
         m_NodeList.push_back(Node);
 
-        Node->NodeInit(this);
+        Node->OnInitManager(this);
     }
 
     void AddNode(Interface * I)
@@ -110,7 +124,7 @@ public:
         {
             m_NodeList.push_back(Node);
 
-            Node->NodeInit(this);
+            Node->OnInitManager(this);
         }
     }
 
@@ -133,7 +147,7 @@ public:
 private:
     std::vector<INode *> m_NodeList;
     std::vector<CNodeEventInfo> m_NodeEventList;
-    std::map<unsigned int, INodeService *> m_NodeServiceList;
+    std::map<unsigned int, INodeServiceCallback *> m_NodeServiceList;
 };
 
 #endif //SHADOWSOCKSR_CPP_NODEMANAGER_H

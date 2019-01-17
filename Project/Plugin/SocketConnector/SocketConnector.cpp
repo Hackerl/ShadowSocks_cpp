@@ -5,7 +5,7 @@
 #include "SocketConnector.h"
 #include <Socket/LibSocketExport.h>
 #include <Common/JSONHelper.h>
-#include <Node/NodeService.h>
+#include <Node/NodeServiceDef.h>
 #include <Socket/HTTPTunnel.h>
 
 CSocketConnector::CSocketConnector() : m_Config()
@@ -41,9 +41,9 @@ bool CSocketConnector::InitPlugin(const void *Context, size_t Size)
     return true;
 }
 
-bool CSocketConnector::NodeInit(INodeManager *NodeManager)
+bool CSocketConnector::OnInitManager(INodeManager *NodeManager)
 {
-    CNode::NodeInit(NodeManager);
+    CNode::OnInitManager(NodeManager);
 
     return RegisterService(REQUEST_SOCKET_CONNECT, this);
 }

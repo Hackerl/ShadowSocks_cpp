@@ -61,7 +61,7 @@ public:
 class INode : public INodeCallback
 {
 public:
-    virtual bool NodeInit(std::shared_ptr<INodeManager> NodeManager) = 0;
+    virtual bool OnInitManager(std::shared_ptr<INodeManager> NodeManager) = 0;
     virtual bool UpStream(const void *Buffer, size_t Length) = 0;
     virtual bool DownStream(const void *Buffer, size_t Length) = 0;
     virtual void SetUpNode(INodeCallback * UpNode) = 0;
@@ -74,13 +74,13 @@ public:
 ### 节点管理
 节点除了上行下行数据流之外，还需要一个负责管理的类。例如客户端接收数据不及时，本地端口节点Socket写操作便会失败，因为内核缓冲区已满。但此时远程端口节点没有任何改变，有读事件时会立刻读数据然后下行。所以需要一个可以发布事件的机制，引入INodeManager接口。
 ```c=
-class INodeEvent : public Interface
+class INodeEventCallback : public Interface
 {
 public:
     virtual void OnNodeEvent(NodeEventRegister EventID, void *Context) = 0;
 };
 
-class INodeService : public Interface
+class INodeServiceCallback : public Interface
 {
 public:
     virtual bool OnNodeService(NodeServiceRegister ServiceID, void *Context) = 0;
@@ -89,9 +89,9 @@ public:
 class INodeManager : public Interface
 {
 public:
-    virtual void RegisterEvent(NodeEventRegister EventID, INodeEvent *Node) = 0;
-    virtual void BroadcastEvent(NodeEventRegister EventID, void *Context, INodeEvent *Publisher) = 0;
-    virtual bool RegisterService(NodeServiceRegister ServiceID, INodeService *Node) = 0;
+    virtual void RegisterEvent(NodeEventRegister EventID, INodeEventCallback *Node) = 0;
+    virtual void BroadcastEvent(NodeEventRegister EventID, void *Context, INodeEventCallback *Publisher) = 0;
+    virtual bool RegisterService(NodeServiceRegister ServiceID, INodeServiceCallback *Node) = 0;
     virtual bool InvokeService(NodeServiceRegister ServiceID, void *Context) = 0;
 };
 ```

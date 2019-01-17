@@ -23,13 +23,13 @@ struct CConnectorConfig
     u_short ProxyPort;
 };
 
-class CSocketConnector : public IPlugin, public CNode, public INodeService
+class CSocketConnector : public IPlugin, public CNode, public INodeServiceCallback
 {
 public:
     CSocketConnector();
 
 public:
-    bool NodeInit(INodeManager *NodeManager) override;
+    bool OnInitManager(INodeManager *NodeManager) override;
 
 public:
     bool OnNodeService(NodeServiceRegister ServiceID, void *Context) override;

@@ -12,7 +12,7 @@
 #include <Socket/ISocket.h>
 #include <EventLoop/IEventLoop.h>
 
-class CSocketNode : public CNode , public ISocketCallback, public ISocketNode, public INodeEvent
+class CSocketNode : public CNode , public ISocketCallback, public ISocketNode, public INodeEventCallback
 {
 public:
     CSocketNode();
@@ -26,7 +26,7 @@ public:
     virtual bool DataOut(const void *Buffer, size_t Length);
 
 public:
-    bool NodeInit(INodeManager * NodeManager) override;
+    bool OnInitManager(INodeManager *NodeManager) override;
     void OnNodeEvent(NodeEventRegister EventID, void *Context) override;
     void NodeClose() override;
 

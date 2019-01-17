@@ -22,10 +22,9 @@ public:
     virtual bool OnDownStream(const void *Buffer, size_t Length) = 0;
 };
 
-class INode : public INodeCallback
+class INode : public INodeCallback, public INodeManagerRegister
 {
 public:
-    virtual bool NodeInit(INodeManager * NodeManager) = 0;
     virtual bool UpStream(const void * Buffer, size_t Length) = 0;
     virtual bool DownStream(const void * Buffer, size_t Length) = 0;
     virtual void SetUpNode(INodeCallback * UpNode) = 0;

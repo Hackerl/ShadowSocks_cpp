@@ -3,7 +3,7 @@
 //
 
 #include "SocksServer.h"
-#include <Node/NodeService.h>
+#include <Node/NodeServiceDef.h>
 #include <Socket/LibSocketExport.h>
 #include <Plugin/Socks5/Socks5Protocol.h>
 #include <Plugin/PluginLoader.h>

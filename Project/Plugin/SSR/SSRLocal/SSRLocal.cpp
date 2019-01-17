@@ -5,7 +5,7 @@
 #include "SSRLocal.h"
 #include <arpa/inet.h>
 #include <Common/JSONHelper.h>
-#include <Node/NodeService.h>
+#include <Node/NodeServiceDef.h>
 #include <Utils/Encryptor.h>
 #include <Protocol/ProtocolLoader.h>
 #include <Plugin/Socks5/Socks5Protocol.h>

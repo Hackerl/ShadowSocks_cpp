@@ -6,7 +6,7 @@
 #include <event.h>
 #include <netinet/tcp.h>
 #include <glog/logging.h>
-#include <Node/NodeService.h>
+#include <Node/NodeServiceDef.h>
 #include <algorithm>
 
 #define USER_TCP_MSS 1460UL
@@ -163,9 +163,9 @@ void CSocketNode::OnWrite(int fd, short Event)
         BroadcastEvent(PIPE_STREAM_FLOW, this);
 }
 
-bool CSocketNode::NodeInit(INodeManager *NodeManager)
+bool CSocketNode::OnInitManager(INodeManager *NodeManager)
 {
-    CNode::NodeInit(NodeManager);
+    CNode::OnInitManager(NodeManager);
 
     RegisterEvent(PIPE_NODE_BLOCK, this);
     RegisterEvent(PIPE_STREAM_BLOCK, this);

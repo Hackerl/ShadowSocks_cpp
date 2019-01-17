@@ -6,7 +6,7 @@
 #define SHADOWSOCKSR_CPP_NODE_H
 
 #include "INode.h"
-#include "NodeEvent.h"
+#include "NodeEventDef.h"
 
 class CNode : public INode
 {
@@ -20,7 +20,7 @@ public:
     }
 
 public:
-    bool NodeInit(INodeManager * NodeManager) override
+    bool OnInitManager(INodeManager *NodeManager) override
     {
         m_NodeManager = NodeManager;
         return true;
@@ -77,7 +77,7 @@ public:
     }
 
 public:
-    bool RegisterEvent(NodeEventRegister EventID, INodeEvent * Node)
+    bool RegisterEvent(NodeEventRegister EventID, INodeEventCallback * Node)
     {
         if (m_NodeManager == nullptr)
             return false;
@@ -87,7 +87,7 @@ public:
         return true;
     }
 
-    bool BroadcastEvent(NodeEventRegister EventID, void * Context, INodeEvent * Publisher = nullptr)
+    bool BroadcastEvent(NodeEventRegister EventID, void * Context, INodeEventCallback * Publisher = nullptr)
     {
         if (m_NodeManager == nullptr)
             return false;
@@ -97,7 +97,7 @@ public:
         return true;
     }
 
-    bool RegisterService(NodeServiceRegister ServiceID, INodeService * Node)
+    bool RegisterService(NodeServiceRegister ServiceID, INodeServiceCallback * Node)
     {
         if (m_NodeManager == nullptr)
             return false;
