@@ -6,6 +6,7 @@
 #include <Common/JSONHelper.h>
 #include <Node/NodeServiceDef.h>
 #include <Socket/HTTPTunnel.h>
+#include <glog/logging.h>
 
 CSocketConnector::CSocketConnector() : m_Config()
 {
@@ -52,26 +53,29 @@ bool CSocketConnector::OnNodeService(NodeServiceRegister ServiceID, void *Contex
 
     auto ConnectRequest = static_cast<CConnectRequest *>(Context);
 
-    bool Res = false;
+    bool res = false;
 
     switch (m_Config.ProxyType)
     {
         case NOProxyType:
-            Res = NoProxyHandler(ConnectRequest);
+            res = NoProxyHandler(ConnectRequest);
             break;
 
         case HTTPTunnelType:
-            Res = HTTPTunnelHandler(ConnectRequest);
+            res = HTTPTunnelHandler(ConnectRequest);
             break;
     }
 
-    return Res;
+    return res;
 }
 
 bool CSocketConnector::NoProxyHandler(CConnectRequest *ConnectRequest)
 {
-    if (ConnectRequest->SocketAddress.Header.AddressType != IPv4Type || ConnectRequest->SocketAddress.Header.SocketType != TCPSocketType)
+    if (ConnectRequest->SocketAddress.Header.AddressType == IPv6Type || ConnectRequest->SocketAddress.Header.SocketType != TCPSocketType)
+    {
+        LOG(ERROR) << "Connect Request Not Support";
         return false;
+    }
 
     ITCPSocket * Socket = NewTCPSocket();
 
@@ -79,6 +83,8 @@ bool CSocketConnector::NoProxyHandler(CConnectRequest *ConnectRequest)
     {
         Socket->Close();
         delete Socket;
+
+        LOG(ERROR) << "Connect Failed";
 
         return false;
     }
@@ -100,6 +106,8 @@ bool CSocketConnector::HTTPTunnelHandler(CConnectRequest *ConnectRequest)
     {
         Socket->Close();
         delete Socket;
+
+        LOG(ERROR) << "Connect Failed";
 
         return false;
     }

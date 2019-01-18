@@ -130,10 +130,16 @@ bool CSSRLocal::OnUpStream(const void *Buffer, size_t Length)
         ConnectRequest.SocketAddress.Port = m_Config.ServerPort;
 
         if (!InvokeService(REQUEST_SOCKET_CONNECT, &ConnectRequest))
+        {
+            LOG(ERROR) << "Invoke Service REQUEST_SOCKET_CONNECT Failed";
             return false;
+        }
 
         if (!InvokeService(INIT_REMOTE_SOCKET, ConnectRequest.Result))
+        {
+            LOG(ERROR) << "Invoke Service INIT_REMOTE_SOCKET Failed";
             return false;
+        }
 
         Socks5_Connect_Response Response = {};
 

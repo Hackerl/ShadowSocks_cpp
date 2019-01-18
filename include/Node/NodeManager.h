@@ -46,12 +46,12 @@ public:
 
     void BroadcastEvent(NodeEventRegister EventID, void *Context, INodeEventCallback *Publisher) override
     {
-        for (auto const & Iterator : m_NodeEventList)
+        for (auto const & it : m_NodeEventList)
         {
-            if (Iterator.EventID != EventID || Publisher == Iterator.Node)
+            if (it.EventID != EventID || Publisher == it.Node)
                 continue;
 
-            Iterator.Node->OnNodeEvent(EventID, Context);
+            it.Node->OnNodeEvent(EventID, Context);
         }
     }
 
@@ -68,12 +68,12 @@ public:
 
     bool InvokeService(NodeServiceRegister ServiceID, void *Context) override
     {
-        auto Iterator = m_NodeServiceList.find(ServiceID);
+        auto it = m_NodeServiceList.find(ServiceID);
 
-        if(Iterator == m_NodeServiceList.end())
+        if(it == m_NodeServiceList.end())
             return false;
 
-        return Iterator->second->OnNodeService(ServiceID, Context);
+        return it->second->OnNodeService(ServiceID, Context);
     }
 
 public:

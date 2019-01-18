@@ -64,12 +64,12 @@ bool CEventLoop::SetEvent(int fd, short Mode, time_t TimeOut)
 
     AutoMutex _0_(m_Mutex);
 
-    auto Iterator = m_SocketEventMap.find(fd);
+    auto it = m_SocketEventMap.find(fd);
 
-    if(Iterator == m_SocketEventMap.end())
+    if(it == m_SocketEventMap.end())
         return false;
 
-    EventSession& Session = Iterator->second;
+    EventSession& Session = it->second;
 
     event_del(Session.Event);
 
@@ -97,17 +97,17 @@ bool CEventLoop::Remove(int fd)
 
     AutoMutex _0_(m_Mutex);
 
-    auto Iterator = m_SocketEventMap.find(fd);
+    auto it = m_SocketEventMap.find(fd);
 
-    if(Iterator == m_SocketEventMap.end())
+    if(it == m_SocketEventMap.end())
         return false;
 
-    EventSession & Session = Iterator->second;
+    EventSession & Session = it->second;
 
     event_del(Session.Event);
     event_free(Session.Event);
 
-    m_SocketEventMap.erase(Iterator);
+    m_SocketEventMap.erase(it);
 
     return true;
 }
@@ -123,8 +123,8 @@ void CEventLoop::Destroy()
 
     m_Mutex.Lock();
 
-    for (auto const& Iterator : m_SocketEventMap)
-        EventSessionList.push_back(Iterator.second);
+    for (auto const& it : m_SocketEventMap)
+        EventSessionList.push_back(it.second);
 
     m_Mutex.UnLock();
 
