@@ -3,14 +3,13 @@
 //
 
 #include "ShadowSocks.h"
-#include <EventLoop/LibEventExport.h>
-#include <Socket/LibSocketExport.h>
 #include <glog/logging.h>
-#include <SocketNode/LibSocketNodeExport.h>
 #include <Plugin/IPlugin.h>
-#include <Plugin/LibPluginExport.h>
 #include <Node/NodeManager.h>
 #include <Common/JSONHelper.h>
+#include <Socket/LibSocketExport.h>
+#include <EventLoop/LibEventExport.h>
+#include <SocketNode/LibSocketNodeExport.h>
 
 CShadowSocks::CShadowSocks()
 {
