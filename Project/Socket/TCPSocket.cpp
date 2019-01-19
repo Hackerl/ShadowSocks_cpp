@@ -77,7 +77,7 @@ bool CTCPSocket::Connect(std::string IP, u_short Port, time_t TimeOut)
     if (!m_IsValid || m_IsConnected)
         return false;
 
-    std::vector<in_addr> IPList = CDNS::Query(IP.c_str());
+    std::vector<in_addr> IPList = CDNS::QueryAdvance(IP.c_str());
 
     if (IPList.empty())
         return false;

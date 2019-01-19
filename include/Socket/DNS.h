@@ -32,6 +32,27 @@ public:
 
         return IPList;
     }
+
+    static std::vector<in_addr> QueryAdvance(const char * HostName)
+    {
+        std::vector<in_addr> IPList;
+
+        addrinfo * DNSInfo;
+        addrinfo Hints = {};
+
+        Hints.ai_family = AF_INET;
+        Hints.ai_socktype = SOCK_STREAM;
+
+        if (getaddrinfo(HostName, nullptr, &Hints, &DNSInfo))
+            return IPList;
+
+        for(auto Info = DNSInfo; Info != nullptr; Info = Info->ai_next)
+            IPList.push_back(((sockaddr_in *)Info->ai_addr)->sin_addr);
+
+        freeaddrinfo(DNSInfo);
+
+        return IPList;
+    }
 };
 
 #endif //SHADOWSOCKSR_CPP_DNS_H
