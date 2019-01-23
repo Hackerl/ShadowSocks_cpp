@@ -49,7 +49,7 @@ CAuthHeader CAuthChainLocal::PackAuthData()
 
     std::vector<u_char> AESKey;
 
-    std::string UserKeyBase64 = Base64::encode(m_ServerInfo.Key.data(), m_ServerInfo.Key.size());
+    std::string UserKeyBase64 = CBase64::Encode(m_ServerInfo.Key.data(), m_ServerInfo.Key.size());
 
     VectorAppendStr(AESKey, UserKeyBase64);
     VectorAppendStr(AESKey, m_Salt);
@@ -65,8 +65,8 @@ CAuthHeader CAuthChainLocal::PackAuthData()
     memcpy(AuthHeader.InfoHMACMd5, InfoHMACMd5, sizeof(AuthHeader.InfoHMACMd5));
 
     //Init RC4 Key
-    std::string RC4Key = Base64::encode(m_ServerInfo.Key.data(), m_ServerInfo.Key.size())
-                         + Base64::encode(m_LastClientHash, sizeof(m_LastClientHash));
+    std::string RC4Key = CBase64::Encode(m_ServerInfo.Key.data(), m_ServerInfo.Key.size())
+                         + CBase64::Encode(m_LastClientHash, sizeof(m_LastClientHash));
 
     m_RC4Utils.Init((u_char *)RC4Key.c_str(), RC4Key.size());
 

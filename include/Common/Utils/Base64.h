@@ -24,17 +24,17 @@ static const char to_base64[] =
         "abcdefghijklmnopqrstuvwxyz"
         "0123456789+/";
 
-class Base64
+class CBase64
 {
 public:
-    static std::string encode(const std::vector<BYTE>& buf)
+    static std::string Encode(const std::vector<BYTE> &buf)
     {
         if (buf.empty())
             return ""; // Avoid dereferencing buf if it's empty
-        return encode(&buf[0], (unsigned int)buf.size());
+        return Encode(&buf[0], (unsigned int) buf.size());
     }
 
-    static std::string encode(const BYTE* buf, size_t bufLen)
+    static std::string Encode(const BYTE *buf, size_t bufLen)
     {
         // Calculate how many bytes that needs to be added to get a multiple of 3
         size_t missing = 0;
@@ -81,7 +81,7 @@ public:
         return ret;
     }
 
-    static std::vector<BYTE> decode(std::string encoded_string)
+    static std::vector<BYTE> Decode(std::string encoded_string)
     {
         // Make sure string length is a multiple of 4
         while ((encoded_string.size() % 4) != 0)
