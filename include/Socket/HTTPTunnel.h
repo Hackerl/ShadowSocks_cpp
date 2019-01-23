@@ -64,7 +64,7 @@ public:
 
         for (int i = 0; i <= ReadLen - sizeof(HTTPSuccessStatus); i++)
         {
-            if (Buffer[i] != ' ')
+            if (Buffer[i] != HTTPSuccessStatus[0])
                 continue;
 
             if (!memcmp(Buffer + i, HTTPSuccessStatus, sizeof(HTTPSuccessStatus)))

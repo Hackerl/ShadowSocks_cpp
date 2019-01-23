@@ -9,6 +9,7 @@
 #include <string>
 #include <netdb.h>
 #include <arpa/inet.h>
+#include <glog/logging.h>
 
 class CDNS
 {
@@ -20,7 +21,10 @@ public:
         hostent * DNSInfo = gethostbyname(HostName);
 
         if (DNSInfo == nullptr)
+        {
+            LOG(ERROR) << "DNS Query Failed: " << h_errno;
             return IPList;
+        }
 
         if (DNSInfo->h_addrtype != AF_INET || DNSInfo->h_length != sizeof(in_addr))
             return IPList;
@@ -43,8 +47,13 @@ public:
         Hints.ai_family = AF_INET;
         Hints.ai_socktype = SOCK_STREAM;
 
-        if (getaddrinfo(HostName, nullptr, &Hints, &DNSInfo))
+        int res = getaddrinfo(HostName, nullptr, &Hints, &DNSInfo);
+
+        if (res)
+        {
+            LOG(ERROR) << "Advance DNS Query Failed: " << gai_strerror(res);
             return IPList;
+        }
 
         for(auto Info = DNSInfo; Info != nullptr; Info = Info->ai_next)
             IPList.push_back(((sockaddr_in *)Info->ai_addr)->sin_addr);
