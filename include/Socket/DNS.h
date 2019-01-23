@@ -51,7 +51,7 @@ public:
 
         if (res)
         {
-            LOG(ERROR) << "Advance DNS Query Failed: " << gai_strerror(res);
+            LOG(ERROR) << "Advance DNS Query Failed: " << res << " Info: " << gai_strerror(res);
             return IPList;
         }
 
