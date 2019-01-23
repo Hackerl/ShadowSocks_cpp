@@ -3,7 +3,7 @@
 //
 
 #include "AuthChain.h"
-#include <Utils/Random.h>
+#include <Common/Utils/Random.h>
 
 CAuthChain::CAuthChain() : m_LastClientHash(), m_LastServerHash()
 {

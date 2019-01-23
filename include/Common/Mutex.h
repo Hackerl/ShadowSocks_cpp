@@ -58,6 +58,6 @@ public:
 private:
     T&	m_Lock;
 };
-//******************************************************************************
+
 typedef AutoMutex_<Mutex> AutoMutex;
 #endif //SHADOWSOCKSR_CPP_MUTEX_H

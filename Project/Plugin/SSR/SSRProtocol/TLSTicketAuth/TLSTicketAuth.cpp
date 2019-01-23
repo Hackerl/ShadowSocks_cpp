@@ -4,8 +4,8 @@
 
 #include "TLSTicketAuth.h"
 #include <Utils/HMAC.h>
-#include <Utils/Binascii.h>
-#include <Utils/Vector.h>
+#include <Common/Utils/Binascii.h>
+#include <Common/Utils/VectorHelper.h>
 #include <algorithm>
 
 static u_char TLSVersion[2] = {0x03, 0x03};

@@ -4,7 +4,7 @@
 
 #include "HTTPSimple.h"
 #include <cstring>
-#include <Utils/Binascii.h>
+#include <Common/Utils/Binascii.h>
 
 #define HTTP_LINE_SPLIT "\r\n"
 #define HTTP_HEADER_END "\r\n\r\n"

@@ -6,7 +6,7 @@
 #include <glog/logging.h>
 #include <Plugin/IPlugin.h>
 #include <Node/NodeManager.h>
-#include <Common/JSONHelper.h>
+#include <Common/Utils/JSONHelper.h>
 #include <Socket/LibSocketExport.h>
 #include <EventLoop/LibEventExport.h>
 #include <SocketNode/LibSocketNodeExport.h>

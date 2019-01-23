@@ -10,7 +10,7 @@
 #include <dlfcn.h>
 #include <fstream>
 #include <glog/logging.h>
-#include <Common/JSONHelper.h>
+#include <Common/Utils/JSONHelper.h>
 
 typedef IProtocol * (* FUNC_ProtocolBuilder)(const char * ProtocolName);
 

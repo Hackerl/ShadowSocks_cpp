@@ -3,9 +3,9 @@
 //
 
 #include "AuthChainLocal.h"
-#include <Utils/Base64.h>
+#include <Common/Utils/Base64.h>
 #include <Utils/RC4.h>
-#include <Utils/Vector.h>
+#include <Common/Utils/VectorHelper.h>
 #include <cstring>
 #include <algorithm>
 

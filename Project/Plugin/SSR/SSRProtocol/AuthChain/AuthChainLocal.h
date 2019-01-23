@@ -7,7 +7,7 @@
 
 #include "AuthChain.h"
 #include <Common/Singleton.h>
-#include <Plugin/SSR/Utils/Random.h>
+#include <Common/Utils/Random.h>
 
 class CAuthChainSession
 {

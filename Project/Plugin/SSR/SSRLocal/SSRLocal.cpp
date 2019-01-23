@@ -4,7 +4,7 @@
 
 #include "SSRLocal.h"
 #include <arpa/inet.h>
-#include <Common/JSONHelper.h>
+#include <Common/Utils/JSONHelper.h>
 #include <Node/NodeServiceDef.h>
 #include <Utils/Encryptor.h>
 #include <Protocol/ProtocolLoader.h>

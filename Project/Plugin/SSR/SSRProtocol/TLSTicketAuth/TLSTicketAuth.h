@@ -9,7 +9,7 @@
 #include <vector>
 #include <sys/param.h>
 #include <Protocol/Protocol.h>
-#include <Utils/Random.h>
+#include <Common/Utils/Random.h>
 
 class CTLSAuthSession
 {

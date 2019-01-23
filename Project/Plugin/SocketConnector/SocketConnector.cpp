@@ -3,7 +3,7 @@
 //
 
 #include "SocketConnector.h"
-#include <Common/JSONHelper.h>
+#include <Common/Utils/JSONHelper.h>
 #include <Node/NodeServiceDef.h>
 #include <Socket/HTTPTunnel.h>
 #include <glog/logging.h>

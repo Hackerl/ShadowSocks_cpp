@@ -5,7 +5,7 @@
 #ifndef SHADOWSOCKSR_CPP_JSONHELPER_H
 #define SHADOWSOCKSR_CPP_JSONHELPER_H
 
-#include "Singleton.h"
+#include "Common/Singleton.h"
 #include <cstdio>
 #include <json/json.h>
 
