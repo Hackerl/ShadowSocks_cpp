@@ -8,6 +8,7 @@
 #include "IPlugin.h"
 #include <dlfcn.h>
 #include <glog/logging.h>
+#include <json/json.h>
 
 typedef IPlugin * (* FUNC_PluginBuilder)();
 
